@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JayTech Smart Systems Ltd</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    h1,h2,h3,h4,h5,.font-display { font-family: 'Syne', sans-serif; }
+
+    /* Nav scroll */
+    .nav-scrolled {
+      background: rgba(10,10,10,0.93) !important;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.45);
+    }
+
+    /* Hero parallax bg */
+    .hero-bg { transform: scale(1.06); transition: transform 7s ease-out; }
+    .hero-bg.loaded { transform: scale(1); }
+
+    /* Nav underline */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute;
+      bottom: -3px; left: 0; width: 0; height: 2px;
+      background: #f87171; transition: width 0.3s;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Hamburger */
+    .ham-open .bar1 { transform: translateY(7px) rotate(45deg); }
+    .ham-open .bar2 { opacity: 0; }
+    .ham-open .bar3 { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Bounce */
+    @keyframes bounce-y {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(7px); }
+    }
+    .bounce { animation: bounce-y 2s infinite; }
+
+    /* Buttons */
+    .btn-red { transition: background 0.2s, transform 0.2s, box-shadow 0.2s; }
+    .btn-red:hover { background: #b91c1c; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(220,38,38,0.35); }
+
+    /* ── SERVICE SIDEBAR SECTION ── */
+    .srv-sidebar-item {
+      position: relative;
+      cursor: pointer;
+      padding: 14px 20px 14px 18px;
+      border-left: 3px solid transparent;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .srv-sidebar-item:hover {
+      background: rgba(220,38,38,0.06);
+      border-left-color: rgba(220,38,38,0.4);
+    }
+    .srv-sidebar-item.active {
+      background: rgba(220,38,38,0.08);
+      border-left-color: #dc2626;
+    }
+    .srv-sidebar-item.active .srv-label { color: #dc2626; font-weight: 700; }
+    .srv-sidebar-item .srv-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: #f3f4f6;
+      flex-shrink: 0;
+      transition: background 0.25s;
+    }
+    .srv-sidebar-item.active .srv-icon { background: rgba(220,38,38,0.12); }
+    .srv-sidebar-item .srv-icon img { width: 20px; height: 20px; object-fit: contain; }
+    .srv-sidebar-item .srv-label { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; color: #374151; transition: color 0.25s; line-height: 1.25; }
+    .srv-sidebar-item .srv-arrow { margin-left: auto; color: #dc2626; opacity: 0; transform: translateX(-4px); transition: opacity 0.2s, transform 0.2s; font-size: 0.65rem; }
+    .srv-sidebar-item.active .srv-arrow, .srv-sidebar-item:hover .srv-arrow { opacity: 1; transform: translateX(0); }
+
+    /* Service content panel */
+    .srv-panel { display: none; }
+    .srv-panel.active { display: flex; }
+
+    /* Slide-in animation for panels */
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .srv-panel.active { animation: panelIn 0.35s cubic-bezier(0.33,1,0.68,1) forwards; }
+
+    /* Mobile tabs for services */
+    .srv-tab {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #f3f4f6;
+      color: #6b7280;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .srv-tab.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    /* Gallery slideshow */
+    .slide { position: absolute; width: 100%; opacity: 0; transform: translateY(16px) scale(0.99); transition: opacity 0.65s cubic-bezier(0.33,1,0.68,1), transform 0.65s cubic-bezier(0.33,1,0.68,1); pointer-events: none; }
+    .slide.active { opacity: 1; transform: none; pointer-events: auto; position: relative; }
+    .slide.exit { opacity: 0; transform: translateY(-12px) scale(1.005); position: absolute; }
+
+    .prog-fill { transform-origin: left center; transform: scaleX(0); }
+    .prog-dot.done  .prog-fill { transform: scaleX(1); }
+    .prog-dot.active .prog-fill { animation: progFill 4000ms linear forwards; }
+    @keyframes progFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* Marquee */
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-inner { animation: marquee 14s linear infinite; }
+    .marquee-outer {
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    /* Footer */
+    .footer-link { transition: color 0.2s; }
+    .footer-link:hover { color: #f87171; }
+    .social-btn { transition: background 0.2s, color 0.2s, border-color 0.2s; }
+    .social-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    /* Why card hover */
+    .why-card { transition: box-shadow 0.3s, transform 0.3s; }
+    .why-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
+
+    /* Stat card */
+    .stat-card::before {
+      content: ''; position: absolute; top: -28px; right: -28px;
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.08); border-radius: 50%;
+    }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+
+<body class="m-0 p-0 overflow-x-hidden bg-white text-gray-900">
+
+<!-- ═══════════════ MOBILE MENU ═══════════════ -->
+<div id="mobileMenu"
+  class="hidden fixed inset-0 z-[999] bg-black/97 flex-col items-center justify-center gap-9 text-center">
+  <a href="#"         onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Home</a>
+  <a href="#about"    onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">About Us</a>
+  <a href="#services" onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Services</a>
+  <a href="#gallery"  onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Gallery</a>
+  <a href="#contact"  onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Contact</a>
+  <button class="btn-red bg-red-700 text-white font-display font-bold px-8 py-3 rounded-lg text-lg mt-2">Get a Quote</button>
+</div>
+
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav id="mainNav"
+  class="fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 lg:px-16 py-5 transition-all duration-400">
+  <a href="#" class="font-display font-extrabold text-[1.1rem] text-white tracking-tight">
+    Jay<span class="text-red-400">Tech</span> Smart Systems
+  </a>
+  <ul class="hidden lg:flex items-center gap-8 list-none m-0 p-0">
+    <li><a href="#"         class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Home</a></li>
+    <li><a href="#about"    class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">About Us</a></li>
+    <li><a href="#services" class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Services</a></li>
+    <li><a href="#gallery"  class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Gallery</a></li>
+    <li><a href="#contact"  class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Contact Us</a></li>
+  </ul>
+  <button class="btn-red hidden lg:block bg-red-700 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-lg">Get a Quote</button>
+  <button id="hamburger" onclick="toggleMobile()"
+    class="lg:hidden flex flex-col gap-[5px] p-1 cursor-pointer bg-transparent border-0">
+    <span class="bar1 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
+    <span class="bar2 block w-6 h-[2px] bg-white rounded transition-opacity duration-300"></span>
+    <span class="bar3 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
+  </button>
+</nav>
+
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+  <img id="heroBg"
+    src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773038289/ai-generated-8029019_1920_mgks7k.jpg"
+    alt="" class="hero-bg absolute inset-0 w-full h-full object-cover -z-10" />
+  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/55 to-red-900/30 -z-10"></div>
+  <div class="relative z-10 px-6 max-w-3xl mx-auto">
+    <span class="inline-block bg-white/10 border border-white/20 backdrop-blur-md text-white/90 text-xs font-bold tracking-[0.18em] uppercase px-5 py-2 rounded-full mb-6">
+      We Create The World You Want
+    </span>
+    <h1 class="font-display text-5xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
+      Unique <span class="text-red-400">Innovation</span>
+    </h1>
+    <p class="text-white/70 text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-9">
+      Powering businesses with intelligent ICT infrastructure — from enterprise networking to smart energy and beyond.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="#services" class="btn-red bg-red-700 text-white font-display font-bold px-9 py-4 rounded-lg text-sm">Our Services</a>
+      <a href="#about" class="bg-white/10 border border-white/35 backdrop-blur-sm text-white font-display font-bold px-9 py-4 rounded-lg text-sm hover:bg-white/20 hover:border-white/60 transition-all">About Us</a>
+    </div>
+  </div>
+  <div class="bounce absolute bottom-10 left-1/2 flex flex-col items-center gap-1.5 text-white/40 text-[10px] tracking-widest uppercase">
+    <span>Scroll</span>
+    <i class="fa-solid fa-chevron-down"></i>
+  </div>
+</section>
+
+
+<!-- ═══════════════ SERVICES — SIDEBAR LAYOUT ═══════════════ -->
+<section id="services" class="bg-white py-20 px-6 md:px-16">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Header -->
+    <div class="reveal text-center mb-14">
+      <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-3">What We Do</p>
+      <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Our Services</h2>
+      <p class="text-gray-500 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        JayTech delivers innovative ICT solutions — from enterprise networking and surveillance to smart energy and web development.
+      </p>
+    </div>
+
+    <!-- Mobile: horizontal scrollable tabs -->
+    <div class="flex lg:hidden gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide" id="srvTabBar">
+      <!-- Tabs injected by JS -->
+    </div>
+
+    <!-- Desktop: sidebar + panel -->
+    <div class="flex flex-col lg:flex-row gap-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+
+      <!-- Sidebar -->
+      <aside class="hidden lg:flex flex-col w-64 shrink-0 bg-gray-50 border-r border-gray-100 py-4">
+        <p class="text-[10px] font-bold tracking-[0.18em] uppercase text-gray-400 px-5 mb-3">Select Service</p>
+        <div id="srvSidebar"><!-- items injected by JS --></div>
+      </aside>
+
+      <!-- Panel area -->
+      <div class="flex-1 min-h-[480px] lg:min-h-[560px] relative" id="srvPanelArea">
+        <!-- Panels injected by JS -->
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ WHY CHOOSE US ═══════════════ -->
+<section id="about" class="bg-gray-50 px-6 md:px-16 py-20">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div class="reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg"
+        alt="Why JayTech"
+        class="w-full rounded-2xl object-cover max-h-[480px] shadow-xl" />
+    </div>
+    <div class="reveal flex flex-col gap-6">
+      <div>
+        <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Why JayTech</p>
+        <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Why You Should Choose Us</h2>
+      </div>
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed">
+        Our commitment to strong business ethics, professional engagement, and service excellence has positioned us as a trusted and preferred choice in the ICT industry.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="why-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-shield-halved text-red-600 text-sm"></i>
+          </div>
+          <h5 class="font-display font-bold text-sm mb-1.5">Reliable Source</h5>
+          <p class="text-gray-500 text-xs leading-relaxed">Backed by industry expertise and trusted technological standards for the most reliable ICT solutions.</p>
+        </div>
+        <div class="why-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-users text-red-600 text-sm"></i>
+          </div>
+          <h5 class="font-display font-bold text-sm mb-1.5">Client-Focused</h5>
+          <p class="text-gray-500 text-xs leading-relaxed">Carefully tailored services to meet each customer's unique needs for optimal performance and long-term value.</p>
+        </div>
+        <div class="why-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-bolt text-red-600 text-sm"></i>
+          </div>
+          <h5 class="font-display font-bold text-sm mb-1.5">Fast Response</h5>
+          <p class="text-gray-500 text-xs leading-relaxed">Average 18-minute response time ensuring your systems are back up with minimal downtime.</p>
+        </div>
+        <div class="why-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-award text-red-600 text-sm"></i>
+          </div>
+          <h5 class="font-display font-bold text-sm mb-1.5">Proven Excellence</h5>
+          <p class="text-gray-500 text-xs leading-relaxed">4.8/5 customer rating with a track record of delivering above expectations every single time.</p>
+        </div>
+      </div>
+      <a href="#contact" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3.5 rounded-lg text-sm self-start inline-block">
+        Get in Touch
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ GALLERY SLIDESHOW ═══════════════ -->
+<section id="gallery" class="bg-white py-20 px-6 md:px-16">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal flex items-end justify-between mb-10 flex-wrap gap-4">
+      <div>
+        <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Our Work</p>
+        <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight">Field Gallery</h2>
+      </div>
+      <div id="galCounter" class="font-display text-sm text-gray-400 tracking-widest"></div>
+    </div>
+
+    <!-- Slideshow stage -->
+    <div class="relative w-full flex items-center justify-center" id="galTrack">
+      <!-- Slides injected by JS -->
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-3 mt-5">
+      <button id="galPrev" class="w-9 h-9 border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-red-600 hover:text-white hover:border-red-600 rounded transition-all duration-200">&#8592;</button>
+      <div class="flex-1 flex gap-1.5" id="galDots"></div>
+      <button id="galNext" class="w-9 h-9 border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-red-600 hover:text-white hover:border-red-600 rounded transition-all duration-200">&#8594;</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ BRANDS ═══════════════ -->
+<section class="bg-gray-50 px-6 md:px-16 py-16">
+  <div class="reveal text-center mb-10">
+    <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Partners</p>
+    <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-tight">Our Brands</h2>
+  </div>
+  <div class="marquee-outer overflow-hidden w-full">
+    <div class="marquee-inner flex gap-16 w-max items-center">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Brand" class="h-14 object-contain opacity-50 hover:opacity-100 transition-opacity" />
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<section class="bg-gray-900 py-20 px-6">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+    <div class="stat-card relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
+      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Avg. Response Time</p>
+      <p class="font-display text-5xl font-extrabold counter" data-target="18" data-suffix="">0</p>
+      <p class="text-xs opacity-50 mt-1.5">minutes</p>
+    </div>
+    <div class="stat-card relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
+      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Customer Rating</p>
+      <p class="font-display text-5xl font-extrabold counter" data-target="4.8" data-suffix="">0</p>
+      <p class="text-xs opacity-50 mt-1.5">out of 5.0</p>
+    </div>
+    <div class="stat-card relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
+      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Avg. Cost Saving</p>
+      <p class="font-display text-5xl font-extrabold counter" data-target="26" data-suffix="%">0</p>
+      <p class="text-xs opacity-50 mt-1.5">per client</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer id="contact" class="bg-black border-t border-white/[0.06]">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 md:px-16 py-16 max-w-6xl mx-auto">
+    <div>
+      <p class="font-display font-extrabold text-lg text-white mb-4">Jay<span class="text-red-400">Tech</span> Smart Systems Ltd</p>
+      <div class="flex flex-col gap-3 text-sm text-white/55">
+        <span><i class="fa-solid fa-location-dot text-red-400 w-4 mr-2"></i>Suite 23 Grace Plaza, Ibafo</span>
+        <a href="tel:+2349059949644"             class="footer-link hover:text-red-300"><i class="fa-solid fa-phone text-red-400 w-4 mr-2"></i>+234 905 994 9644</a>
+        <a href="mailto:adeboyejojide5@gmail.com" class="footer-link hover:text-red-300"><i class="fa-solid fa-envelope text-red-400 w-4 mr-2"></i>adeboyejojide5@gmail.com</a>
+      </div>
+      <div class="flex gap-2.5 mt-5">
+        <a href="#" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Services</h4>
+      <div class="flex flex-col gap-3">
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Solar Energy Solutions</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>CCTV Security Solutions</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Enterprise Networking</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Web & Software Dev</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Internet Connectivity</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Access Control</a>
+      </div>
+    </div>
+    <div>
+      <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Quick Links</h4>
+      <div class="flex flex-col gap-3">
+        <a href="#about"    class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>About Us</a>
+        <a href="#contact"  class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Contact Us</a>
+        <a href="#services" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Our Services</a>
+        <a href="#"         class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Terms & Conditions</a>
+        <a href="#"         class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-white/[0.06] px-6 md:px-16 py-4 text-center text-white/25 text-xs">
+    &copy; 2025 JayTech Smart Systems Ltd. All rights reserved.
+  </div>
+</footer>
+
+
+<script>
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('nav-scrolled', window.scrollY > 40);
+});
+
+function toggleMobile() {
+  const m = document.getElementById('mobileMenu');
+  const h = document.getElementById('hamburger');
+  const open = m.classList.toggle('hidden');
+  m.style.display = open ? 'none' : 'flex';
+  h.classList.toggle('ham-open', !open);
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').style.display = 'none';
+  document.getElementById('mobileMenu').classList.add('hidden');
+  document.getElementById('hamburger').classList.remove('ham-open');
+}
+
+document.getElementById('heroBg').addEventListener('load', function(){ this.classList.add('loaded'); });
+
+
+/* ─────────────────────────────────────────
+   SERVICES SIDEBAR
+───────────────────────────────────────── */
+const services = [
+  {
+    id: 'solar',
+    label: 'Solar / Inverter',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png',
+    title: 'Solar / Inverter Installation',
+    desc: 'Efficient solar and inverter systems delivering reliable, clean, and uninterrupted electricity for homes and businesses. We design, supply, install, and maintain solar power systems tailored to your energy needs.',
+    features: ['Solar panel installation', 'Inverter & battery setup', 'Hybrid power systems', 'Energy monitoring', 'Maintenance & support'],
+    bg: 'from-amber-50 to-orange-50'
+  },
+  {
+    id: 'network',
+    label: 'Enterprise Networking',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg',
+    title: 'Enterprise Networking',
+    desc: 'Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure for businesses of any size.',
+    features: ['LAN / WAN deployment', 'Structured cabling', 'Network security', 'Wireless (Wi-Fi) setup', 'Firewall & routing'],
+    bg: 'from-blue-50 to-indigo-50'
+  },
+  {
+    id: 'cctv',
+    label: 'CCTV Surveillance',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png',
+    title: 'CCTV Installation & Maintenance',
+    desc: 'Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras. We cover design, installation, and ongoing support.',
+    features: ['HD IP & analog cameras', '24/7 remote monitoring', 'DVR / NVR installation', 'Motion detection alerts', 'Preventive maintenance'],
+    bg: 'from-gray-50 to-slate-50'
+  },
+  {
+    id: 'access',
+    label: 'Access Control',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg',
+    title: 'Access Control Systems',
+    desc: 'Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure through biometric and card-based solutions.',
+    features: ['Biometric readers', 'Card & PIN systems', 'Door lock integration', 'Visitor management', 'Audit trail & reporting'],
+    bg: 'from-green-50 to-emerald-50'
+  },
+  {
+    id: 'telephony',
+    label: 'IP Telephony',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png',
+    title: 'IP Telephony',
+    desc: 'Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations — replacing legacy phone systems with flexible VoIP.',
+    features: ['VoIP PBX setup', 'SIP trunk integration', 'IP desk phones', 'Call recording', 'Multi-site connectivity'],
+    bg: 'from-purple-50 to-violet-50'
+  },
+  {
+    id: 'web',
+    label: 'Web & Software Dev',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png',
+    title: 'Web & Software Development',
+    desc: 'Modern, responsive websites and web applications using full-stack technologies. From business websites to custom software solutions, we build your digital presence.',
+    features: ['Responsive web design', 'Custom web apps', 'API integrations', 'CMS platforms', 'Ongoing maintenance'],
+    bg: 'from-rose-50 to-pink-50'
+  },
+  {
+    id: 'internet',
+    label: 'Internet Connectivity',
+    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png',
+    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png',
+    title: 'Internet Connectivity Installation',
+    desc: 'High-speed internet solutions including Starlink and other broadband technologies providing reliable, fast, and secure internet access for homes and businesses.',
+    features: ['Starlink installation', 'Broadband setup', 'Point-to-point links', 'Wi-Fi coverage extension', 'Network optimization'],
+    bg: 'from-cyan-50 to-teal-50'
+  },
+];
+
+const srvSidebar   = document.getElementById('srvSidebar');
+const srvPanelArea = document.getElementById('srvPanelArea');
+const srvTabBar    = document.getElementById('srvTabBar');
+let activeSrv = 0;
+
+services.forEach((s, i) => {
+  // ── Sidebar item
+  const item = document.createElement('button');
+  item.className = 'srv-sidebar-item w-full text-left' + (i === 0 ? ' active' : '');
+  item.innerHTML = `
+    <div class="srv-icon"><img src="${s.icon}" alt="${s.label}"/></div>
+    <span class="srv-label">${s.label}</span>
+    <i class="fa-solid fa-chevron-right srv-arrow"></i>
+  `;
+  item.addEventListener('click', () => switchSrv(i));
+  srvSidebar.appendChild(item);
+
+  // ── Mobile tab
+  const tab = document.createElement('button');
+  tab.className = 'srv-tab' + (i === 0 ? ' active' : '');
+  tab.textContent = s.label;
+  tab.addEventListener('click', () => switchSrv(i));
+  srvTabBar.appendChild(tab);
+
+  // ── Panel
+  const isImg = s.heroImg.match(/\.(jpg|jpeg|png|webp)/i) && !s.heroImg.includes('removebg');
+  const panel = document.createElement('div');
+  panel.className = 'srv-panel flex-col lg:flex-row items-stretch' + (i === 0 ? ' active' : '');
+  panel.innerHTML = `
+    <!-- Left: content -->
+    <div class="flex-1 p-8 md:p-10 flex flex-col justify-center bg-gradient-to-br ${s.bg}">
+      <p class="text-red-600 font-bold text-[10px] tracking-[0.2em] uppercase mb-2">Service 0${i+1}</p>
+      <h3 class="font-display text-2xl md:text-3xl font-extrabold tracking-tight mb-4 leading-tight">${s.title}</h3>
+      <p class="text-gray-600 text-sm leading-relaxed mb-6 max-w-md">${s.desc}</p>
+      <ul class="flex flex-col gap-2 mb-8">
+        ${s.features.map(f => `
+          <li class="flex items-center gap-2.5 text-sm text-gray-700">
+            <span class="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-check text-red-600 text-[8px]"></i>
+            </span>
+            ${f}
+          </li>`).join('')}
+      </ul>
+      <a href="#contact" class="btn-red bg-red-700 text-white font-display font-bold px-6 py-3 rounded-lg text-sm self-start inline-block">Get a Quote</a>
+    </div>
+    <!-- Right: image -->
+    <div class="w-full lg:w-72 xl:w-80 bg-white flex items-center justify-center p-8 border-t lg:border-t-0 lg:border-l border-gray-100">
+      <img src="${s.heroImg}" alt="${s.title}"
+        class="max-h-52 lg:max-h-72 w-full ${isImg ? 'object-cover rounded-xl' : 'object-contain'}"
+        loading="${i === 0 ? 'eager' : 'lazy'}" />
+    </div>
+  `;
+  srvPanelArea.appendChild(panel);
+});
+
+function switchSrv(index) {
+  const sidebarItems = srvSidebar.querySelectorAll('.srv-sidebar-item');
+  const tabs         = srvTabBar.querySelectorAll('.srv-tab');
+  const panels       = srvPanelArea.querySelectorAll('.srv-panel');
+
+  sidebarItems[activeSrv].classList.remove('active');
+  tabs[activeSrv].classList.remove('active');
+  panels[activeSrv].classList.remove('active');
+
+  activeSrv = index;
+
+  sidebarItems[activeSrv].classList.add('active');
+  tabs[activeSrv].classList.add('active');
+  panels[activeSrv].classList.add('active');
+
+  // Scroll mobile tab into view
+  tabs[activeSrv].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+
+/* ─────────────────────────────────────────
+   GALLERY SLIDESHOW
+───────────────────────────────────────── */
+const galImages = [
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640005/Feyi_climbing_ladder_mo0nc8.jpg',        cap: 'Climbing' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640076/Installing_Starlink_kbuvbt.jpg',         cap: 'Installing Starlink' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640120/Configuring_poe_access_point_uqms9f.jpg', cap: 'Configuring POE Access Point' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640153/Rack_tpqmfi.jpg',                        cap: 'Rack Setup' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640190/Feyi_cabling_ncud97.jpg',                cap: 'Cabling' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640241/CCTV_Installed_aupb2l.jpg',              cap: 'CCTV Installed' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640278/Inverter_connection_zz87tx.jpg',         cap: 'Inverter Connection' },
+  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640310/2_cctv_qtzoa9.jpg',                     cap: 'CCTV Overview' },
+];
+
+const galTrack   = document.getElementById('galTrack');
+const galDots    = document.getElementById('galDots');
+const galCounter = document.getElementById('galCounter');
+
+let galCurrent = 0, galTimer = null;
+
+const galSlideEls = galImages.map((img, i) => {
+  const slide = document.createElement('div');
+  slide.className = 'slide' + (i === 0 ? ' active' : '');
+  slide.innerHTML = `
+    <div class="w-full bg-gray-100 rounded-2xl overflow-hidden shadow-md">
+      <img src="${img.src}" alt="${img.cap}"
+        loading="${i < 2 ? 'eager' : 'lazy'}"
+        class="w-full h-auto max-h-[65vh] object-contain block bg-gray-900" />
+    </div>
+    <div class="mt-3 flex items-center justify-between">
+      <span class="font-display font-bold text-xs tracking-widest uppercase text-gray-800">${img.cap}</span>
+      <span class="text-[0.65rem] tracking-[0.2em] text-red-500 font-medium">${String(i+1).padStart(2,'0')} / ${String(galImages.length).padStart(2,'0')}</span>
+    </div>`;
+  galTrack.appendChild(slide);
+  return slide;
+});
+
+const galDotEls = galImages.map((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = `prog-dot relative flex-1 h-[3px] bg-gray-200 overflow-hidden cursor-pointer${i === 0 ? ' active' : ''}`;
+  dot.innerHTML = `<div class="prog-fill absolute inset-0 bg-red-600"></div>`;
+  dot.addEventListener('click', () => galGoTo(i));
+  galDots.appendChild(dot);
+  return dot;
+});
+
+function updateGalCounter() {
+  galCounter.textContent = `${String(galCurrent+1).padStart(2,'0')} / ${String(galImages.length).padStart(2,'0')}`;
+}
+
+function galResetDot(dotEl) {
+  const f = dotEl.querySelector('.prog-fill');
+  f.style.animation = 'none'; dotEl.offsetHeight; f.style.animation = '';
+}
+
+function galGoTo(index) {
+  if (index === galCurrent) return;
+  clearTimeout(galTimer);
+  const prev = galCurrent;
+  galCurrent = ((index % galImages.length) + galImages.length) % galImages.length;
+  galSlideEls[prev].classList.remove('active'); galSlideEls[prev].classList.add('exit');
+  setTimeout(() => galSlideEls[prev].classList.remove('exit'), 700);
+  galSlideEls[galCurrent].classList.add('active');
+  galDotEls[prev].classList.remove('active'); galDotEls[prev].classList.add('done');
+  if (galCurrent === 0) galDotEls.forEach(d => d.classList.remove('done'));
+  galDotEls[galCurrent].classList.remove('done'); galDotEls[galCurrent].classList.add('active');
+  galResetDot(galDotEls[galCurrent]);
+  updateGalCounter();
+  galTimer = setTimeout(() => galGoTo(galCurrent + 1), 4000);
+}
+
+document.getElementById('galPrev').addEventListener('click', () => galGoTo(galCurrent - 1));
+document.getElementById('galNext').addEventListener('click', () => galGoTo(galCurrent + 1));
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') galGoTo(galCurrent + 1);
+  if (e.key === 'ArrowLeft')  galGoTo(galCurrent - 1);
+});
+updateGalCounter();
+galTimer = setTimeout(() => galGoTo(1), 4000);
+
+
+/* ─────────────────────────────────────────
+   COUNTER ANIMATION
+───────────────────────────────────────── */
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const isDecimal = String(target).includes('.');
+    const duration = 1800, steps = 60;
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const val = target * (step / steps);
+      el.textContent = (isDecimal ? val.toFixed(1) : Math.floor(val)) + suffix;
+      if (step >= steps) { el.textContent = target + suffix; clearInterval(timer); }
+    }, duration / steps);
+  });
+}
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL + COUNTER TRIGGER
+───────────────────────────────────────── */
+let counterDone = false;
+const statsSection = document.querySelector('.stat-card');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      if (e.target.classList.contains('reveal')) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+      if (e.target.classList.contains('stat-card') && !counterDone) {
+        counterDone = true;
+        animateCounters();
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+if (statsSection) io.observe(statsSection);
+</script>
+
+</body>
+</html>
