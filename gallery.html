@@ -2,21 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Field Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Gallery — JayTech Smart Systems Ltd</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        black: ['Archivo Black', 'sans-serif'],
-                        sans:  ['Archivo', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                        sans:    ['DM Sans', 'sans-serif'],
                     },
                     colors: {
                         gold: '#c9a84c',
-                        dark: '#111010',
+                        dark: '#0a0a0a',
+                        red:  '#dc2626',
                     },
                     keyframes: {
                         progFill: {
@@ -31,8 +35,8 @@
             }
         }
     </script>
+
     <style>
-        /* Slide transitions — can't be done with pure Tailwind utilities */
         .slide {
             position: absolute;
             width: 100%;
@@ -54,202 +58,288 @@
             position: absolute;
         }
 
-        /* Progress bar fill animation restart helper */
         .prog-fill { transform-origin: left center; transform: scaleX(0); }
-        .prog-dot.done  .prog-fill { transform: scaleX(1); }
+        .prog-dot.done   .prog-fill { transform: scaleX(1); }
         .prog-dot.active .prog-fill { animation: progFill 4000ms linear forwards; }
 
         @keyframes progFill {
             from { transform: scaleX(0); }
             to   { transform: scaleX(1); }
         }
+
+        /* Nav underline */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute;
+            bottom: -3px; left: 0;
+            width: 0; height: 2px;
+            background: #f87171;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 100%; }
+
+        /* Hamburger */
+        .ham-open .bar1 { transform: translateY(7px) rotate(45deg); }
+        .ham-open .bar2 { opacity: 0; }
+        .ham-open .bar3 { transform: translateY(-7px) rotate(-45deg); }
     </style>
 </head>
+
 <body class="bg-dark font-sans overflow-hidden w-screen h-screen text-white">
 
-    <!-- Top Bar -->
-    <header class="fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4">
-        <div class="font-black text-sm tracking-widest uppercase">
-          Our <span class="text-gold">Gallery .</span>
-        </div>
-        <button id="pauseBtn"
-            class="border border-white/20 text-white/70 px-4 py-1.5 text-xs tracking-widest uppercase hover:bg-gold hover:border-gold hover:text-dark transition-all duration-200">
-            Pause
-        </button>
-    </header>
+<!-- ══════════════════════════════════════
+     MOBILE MENU
+══════════════════════════════════════ -->
+<div id="mobileMenu"
+    class="hidden fixed inset-0 z-[999] bg-black/97 flex-col items-center justify-center gap-10 text-center">
+    <a href="index.html"     onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Home</a>
+    <a href="about.html"     onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">About Us</a>
+    <a href="service.html"   onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Services</a>
+    <a href="gallery.html"   onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors" style="color:#f87171">Gallery</a>
+    <a href="contactus.html" onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Contact</a>
+    <a href="contactus.html" onclick="closeMobile()" class="bg-red-700 text-white font-display font-bold px-8 py-3 rounded-lg text-lg mt-2 inline-block hover:bg-red-800 transition-colors">Get a Quote</a>
+</div>
 
-    <!-- Main Gallery -->
-    <main class="w-full h-full flex items-center justify-center">
-        <div class="relative w-full max-w-5xl px-5 flex items-center justify-center" id="slideTrack">
-            <!-- Slides injected by JS -->
-        </div>
-    </main>
+<!-- ══════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════ -->
+<nav id="mainNav"
+    class="fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 lg:px-16 py-5 bg-black/80 backdrop-blur-md border-b border-white/[0.06]">
 
-    <!-- Thumbnail Strip (right side) -->
-    <aside id="thumbStrip"
-        class="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2 max-md:hidden">
-        <!-- Thumbnails injected by JS -->
-    </aside>
+    <a href="index.html" class="font-display font-extrabold text-[1.05rem] text-white tracking-tight">
+        Jay<span class="text-red-400">Tech</span> Smart Systems
+    </a>
 
-    <!-- Bottom Bar -->
-    <footer class="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-3 px-6 py-4">
-        <button id="prevBtn"
-            class="w-9 h-9 border border-white/20 flex items-center justify-center text-base shrink-0 hover:bg-gold hover:border-gold hover:text-dark transition-all duration-200">
-            &#8592;
-        </button>
+    <!-- Desktop links -->
+    <ul class="hidden lg:flex items-center gap-8 list-none m-0 p-0">
+        <li><a href="index.html"     class="nav-link text-white/80 text-sm font-medium hover:text-white transition-colors">Home</a></li>
+        <li><a href="about.html"     class="nav-link text-white/80 text-sm font-medium hover:text-white transition-colors">About Us</a></li>
+        <li><a href="service.html"   class="nav-link text-white/80 text-sm font-medium hover:text-white transition-colors">Services</a></li>
+        <li><a href="gallery.html"   class="nav-link active text-white text-sm font-medium">Gallery</a></li>
+        <li><a href="contactus.html" class="nav-link text-white/80 text-sm font-medium hover:text-white transition-colors">Contact Us</a></li>
+    </ul>
 
-        <!-- Progress dots -->
-        <div id="progressTrack" class="flex-1 flex gap-1.5 items-center">
-            <!-- Dots injected by JS -->
-        </div>
+    <a href="contactus.html"
+        class="hidden lg:block bg-red-700 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-lg hover:bg-red-800 transition-colors">
+        Get a Quote
+    </a>
 
-        <button id="nextBtn"
-            class="w-9 h-9 border border-white/20 flex items-center justify-center text-base shrink-0 hover:bg-gold hover:border-gold hover:text-dark transition-all duration-200">
-            &#8594;
-        </button>
-    </footer>
+    <!-- Hamburger -->
+    <button id="hamburger" onclick="toggleMobile()"
+        class="lg:hidden flex flex-col gap-[5px] p-1 cursor-pointer bg-transparent border-0" aria-label="Toggle menu">
+        <span class="bar1 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
+        <span class="bar2 block w-6 h-[2px] bg-white rounded transition-opacity duration-300"></span>
+        <span class="bar3 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
+    </button>
+</nav>
 
-    <script>
-        const images = [
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640005/Feyi_climbing_ladder_mo0nc8.jpg",        caption: "Climbing" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640076/Installing_Starlink_kbuvbt.jpg",         caption: "Installing Starlink" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640120/Configuring_poe_access_point_uqms9f.jpg", caption: "Configuring POE Access Point" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640153/Rack_tpqmfi.jpg",                         caption: "Rack Setup" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640190/Feyi_cabling_ncud97.jpg",                 caption: "Cabling" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640241/CCTV_Installed_aupb2l.jpg",               caption: "CCTV Installed" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640278/Inverter_connection_zz87tx.jpg",          caption: "Inverter Connection" },
-            { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640310/2_cctv_qtzoa9.jpg",                      caption: "CCTV " },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641620/Network_rack_q0jtlz.jpg",                      caption: "Network Rack" },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641714/Configuration_cxxojo.jpg",                      caption: "Engineer Configuring " },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641808/Feyi_on_height_t0d9ei.jpg",                      caption: "Engineer Configuring " },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641847/AP_x5wt9e.jpg",                      caption: "Engineer Configuring " },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641924/Working_on_ladder_g94oft.jpg",                      caption: "Engineer on Ladder " },
-             { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641966/Insurance_House_Ghana_wtecd2.jpg",                      caption: "Insurance House Ghana " },
-        ];
+<!-- ══════════════════════════════════════
+     GALLERY LABEL
+══════════════════════════════════════ -->
+<div class="fixed top-[72px] left-6 z-20 flex items-center gap-2">
+    <span class="font-display text-xs font-bold tracking-widest uppercase text-white/50">Our</span>
+    <span class="font-display text-xs font-bold tracking-widest uppercase text-red-400">Gallery .</span>
+</div>
 
-        const DURATION = 4000;
-        const track      = document.getElementById('slideTrack');
-        const progTrack  = document.getElementById('progressTrack');
-        const thumbStrip = document.getElementById('thumbStrip');
-        const pauseBtn   = document.getElementById('pauseBtn');
-        const prevBtn    = document.getElementById('prevBtn');
-        const nextBtn    = document.getElementById('nextBtn');
+<!-- Pause button (top right) -->
+<div class="fixed top-[68px] right-6 z-20">
+    <button id="pauseBtn"
+        class="border border-white/20 text-white/70 px-4 py-1.5 text-xs tracking-widest uppercase hover:bg-red-700 hover:border-red-700 hover:text-white transition-all duration-200">
+        Pause
+    </button>
+</div>
 
-        let current = 0, paused = false, timer = null;
+<!-- ══════════════════════════════════════
+     MAIN GALLERY
+══════════════════════════════════════ -->
+<main class="w-full h-full flex items-center justify-center pt-[56px]">
+    <div class="relative w-full max-w-5xl px-5 flex items-center justify-center" id="slideTrack">
+        <!-- Slides injected by JS -->
+    </div>
+</main>
 
-        // Build slides
-        const slideEls = images.map((img, i) => {
-            const slide = document.createElement('div');
-            slide.className = 'slide' + (i === 0 ? ' active' : '');
+<!-- Thumbnail Strip (right side, desktop only) -->
+<aside id="thumbStrip"
+    class="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2 max-md:hidden">
+    <!-- Thumbnails injected by JS -->
+</aside>
 
-            slide.innerHTML = `
-                <div class="w-full bg-[#181818] shadow-[0_16px_48px_rgba(0,0,0,0.7)] ring-1 ring-white/5 overflow-hidden">
-                    <img
-                        src="${img.src}"
-                        alt="${img.caption}"
-                        loading="${i < 2 ? 'eager' : 'lazy'}"
-                        class="w-full h-auto max-h-[74vh] object-contain block bg-[#181818]"
-                    />
-                </div>
-                <div class="mt-3 w-full flex items-center justify-between gap-4">
-                    <span class="font-black text-xs tracking-widest uppercase text-white">${img.caption}</span>
-                    <span class="text-[0.68rem] tracking-[0.22em] text-gold font-light whitespace-nowrap">
-                        ${String(i+1).padStart(2,'0')} / ${String(images.length).padStart(2,'0')}
-                    </span>
-                </div>
-            `;
-            track.appendChild(slide);
-            return slide;
-        });
+<!-- ══════════════════════════════════════
+     BOTTOM BAR
+══════════════════════════════════════ -->
+<footer class="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-3 px-6 py-4">
+    <button id="prevBtn"
+        class="w-9 h-9 border border-white/20 flex items-center justify-center text-base shrink-0 hover:bg-red-700 hover:border-red-700 transition-all duration-200">
+        &#8592;
+    </button>
 
-        // Build progress dots
-        const dotEls = images.map((_, i) => {
-            const dot = document.createElement('div');
-            dot.className = `prog-dot relative flex-1 h-[3px] bg-white/[0.12] overflow-hidden cursor-pointer hover:bg-white/25 transition-colors${i === 0 ? ' active' : ''}`;
-            dot.innerHTML = `<div class="prog-fill absolute inset-0 bg-gold"></div>`;
-            dot.addEventListener('click', () => goTo(i));
-            progTrack.appendChild(dot);
-            return dot;
-        });
+    <div id="progressTrack" class="flex-1 flex gap-1.5 items-center">
+        <!-- Dots injected by JS -->
+    </div>
 
-        // Build thumbnails
-        const thumbEls = images.map((img, i) => {
-            const thumb = document.createElement('div');
-            thumb.className = `w-14 h-10 overflow-hidden cursor-pointer border-2 transition-all duration-200${i === 0 ? ' border-gold opacity-100 scale-x-105' : ' border-transparent opacity-40'}`;
-            thumb.innerHTML = `<img src="${img.src}" alt="${img.caption}" loading="lazy" class="w-full h-full object-cover pointer-events-none block" />`;
-            thumb.addEventListener('click', () => goTo(i));
-            thumbStrip.appendChild(thumb);
-            return thumb;
-        });
+    <button id="nextBtn"
+        class="w-9 h-9 border border-white/20 flex items-center justify-center text-base shrink-0 hover:bg-red-700 hover:border-red-700 transition-all duration-200">
+        &#8594;
+    </button>
+</footer>
 
-        function restartDotAnim(dotEl) {
-            const fill = dotEl.querySelector('.prog-fill');
-            fill.style.animation = 'none';
-            dotEl.offsetHeight; // reflow
-            fill.style.animation = '';
-        }
+<script>
+    /* ── MOBILE MENU ── */
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function toggleMobile() {
+        const isOpen = mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden', !isOpen);
+        mobileMenu.classList.toggle('flex',    isOpen);
+        hamburger.classList.toggle('ham-open', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+    function closeMobile() {
+        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.remove('flex');
+        hamburger.classList.remove('ham-open');
+        document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeMobile(); });
 
-        function goTo(index) {
-            if (index === current) return;
+    /* ── GALLERY DATA ── */
+    const images = [
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640005/Feyi_climbing_ladder_mo0nc8.jpg",        caption: "Climbing" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640076/Installing_Starlink_kbuvbt.jpg",         caption: "Installing Starlink" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640120/Configuring_poe_access_point_uqms9f.jpg", caption: "Configuring POE Access Point" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640153/Rack_tpqmfi.jpg",                         caption: "Rack Setup" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640190/Feyi_cabling_ncud97.jpg",                 caption: "Cabling" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640241/CCTV_Installed_aupb2l.jpg",               caption: "CCTV Installed" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640278/Inverter_connection_zz87tx.jpg",          caption: "Inverter Connection" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto,fl_progressive/v1773640310/2_cctv_qtzoa9.jpg",                       caption: "CCTV" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641620/Network_rack_q0jtlz.jpg",                                              caption: "Network Rack" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641714/Configuration_cxxojo.jpg",                                             caption: "Engineer Configuring" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641808/Feyi_on_height_t0d9ei.jpg",                                            caption: "Engineer on Height" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641847/AP_x5wt9e.jpg",                                                        caption: "Access Point" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641924/Working_on_ladder_g94oft.jpg",                                         caption: "Engineer on Ladder" },
+        { src: "https://res.cloudinary.com/dezoqbzim/image/upload/v1773641966/Insurance_House_Ghana_wtecd2.jpg",                                     caption: "Insurance House Ghana" },
+    ];
+
+    const DURATION   = 4000;
+    const track      = document.getElementById('slideTrack');
+    const progTrack  = document.getElementById('progressTrack');
+    const thumbStrip = document.getElementById('thumbStrip');
+    const pauseBtn   = document.getElementById('pauseBtn');
+    const prevBtn    = document.getElementById('prevBtn');
+    const nextBtn    = document.getElementById('nextBtn');
+
+    let current = 0, paused = false, timer = null;
+
+    /* Build slides */
+    const slideEls = images.map((img, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i === 0 ? ' active' : '');
+        slide.innerHTML = `
+            <div class="w-full bg-[#181818] shadow-[0_16px_48px_rgba(0,0,0,0.7)] ring-1 ring-white/5 overflow-hidden">
+                <img
+                    src="${img.src}"
+                    alt="${img.caption}"
+                    loading="${i < 2 ? 'eager' : 'lazy'}"
+                    class="w-full h-auto max-h-[68vh] object-contain block bg-[#181818]"
+                />
+            </div>
+            <div class="mt-3 w-full flex items-center justify-between gap-4">
+                <span class="font-display text-xs font-bold tracking-widest uppercase text-white">${img.caption}</span>
+                <span class="text-[0.68rem] tracking-[0.22em] text-red-400 font-light whitespace-nowrap">
+                    ${String(i+1).padStart(2,'0')} / ${String(images.length).padStart(2,'0')}
+                </span>
+            </div>
+        `;
+        track.appendChild(slide);
+        return slide;
+    });
+
+    /* Build progress dots */
+    const dotEls = images.map((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `prog-dot relative flex-1 h-[3px] bg-white/[0.12] overflow-hidden cursor-pointer hover:bg-white/25 transition-colors${i === 0 ? ' active' : ''}`;
+        dot.innerHTML = `<div class="prog-fill absolute inset-0 bg-red-600"></div>`;
+        dot.addEventListener('click', () => goTo(i));
+        progTrack.appendChild(dot);
+        return dot;
+    });
+
+    /* Build thumbnails */
+    const thumbEls = images.map((img, i) => {
+        const thumb = document.createElement('div');
+        thumb.className = `w-14 h-10 overflow-hidden cursor-pointer border-2 transition-all duration-200${i === 0 ? ' border-red-600 opacity-100 scale-x-105' : ' border-transparent opacity-40'}`;
+        thumb.innerHTML = `<img src="${img.src}" alt="${img.caption}" loading="lazy" class="w-full h-full object-cover pointer-events-none block" />`;
+        thumb.addEventListener('click', () => goTo(i));
+        thumbStrip.appendChild(thumb);
+        return thumb;
+    });
+
+    function restartDotAnim(dotEl) {
+        const fill = dotEl.querySelector('.prog-fill');
+        fill.style.animation = 'none';
+        dotEl.offsetHeight; // reflow
+        fill.style.animation = '';
+    }
+
+    function goTo(index) {
+        if (index === current) return;
+        clearTimeout(timer);
+
+        const prev = current;
+        current = ((index % images.length) + images.length) % images.length;
+
+        slideEls[prev].classList.remove('active');
+        slideEls[prev].classList.add('exit');
+        setTimeout(() => slideEls[prev].classList.remove('exit'), 750);
+        slideEls[current].classList.add('active');
+
+        dotEls[prev].classList.remove('active');
+        dotEls[prev].classList.add('done');
+        if (current === 0) dotEls.forEach(d => d.classList.remove('done'));
+        dotEls[current].classList.remove('done');
+        dotEls[current].classList.add('active');
+        restartDotAnim(dotEls[current]);
+
+        thumbEls[prev].classList.remove('border-red-600', 'opacity-100', 'scale-x-105');
+        thumbEls[prev].classList.add('border-transparent', 'opacity-40');
+        thumbEls[current].classList.remove('border-transparent', 'opacity-40');
+        thumbEls[current].classList.add('border-red-600', 'opacity-100', 'scale-x-105');
+
+        if (!paused) startTimer();
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function startTimer() {
+        clearTimeout(timer);
+        timer = setTimeout(next, DURATION);
+    }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    pauseBtn.addEventListener('click', () => {
+        paused = !paused;
+        pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+        const fill = dotEls[current].querySelector('.prog-fill');
+        if (paused) {
             clearTimeout(timer);
-
-            const prev = current;
-            current = ((index % images.length) + images.length) % images.length;
-
-            // Slide transition
-            slideEls[prev].classList.remove('active');
-            slideEls[prev].classList.add('exit');
-            setTimeout(() => slideEls[prev].classList.remove('exit'), 750);
-            slideEls[current].classList.add('active');
-
-            // Dots
-            dotEls[prev].classList.remove('active');
-            dotEls[prev].classList.add('done');
-            if (current === 0) dotEls.forEach(d => d.classList.remove('done'));
-            dotEls[current].classList.remove('done');
-            dotEls[current].classList.add('active');
-            restartDotAnim(dotEls[current]);
-
-            // Thumbnails
-            thumbEls[prev].classList.remove('border-gold', 'opacity-100', 'scale-x-105');
-            thumbEls[prev].classList.add('border-transparent', 'opacity-40');
-            thumbEls[current].classList.remove('border-transparent', 'opacity-40');
-            thumbEls[current].classList.add('border-gold', 'opacity-100', 'scale-x-105');
-
-            if (!paused) startTimer();
+            fill.style.animationPlayState = 'paused';
+        } else {
+            fill.style.animationPlayState = 'running';
+            startTimer();
         }
+    });
 
-        function next() { goTo(current + 1); }
-        function prev() { goTo(current - 1); }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft')  prev();
+        if (e.key === ' ') { e.preventDefault(); pauseBtn.click(); }
+    });
 
-        function startTimer() {
-            clearTimeout(timer);
-            timer = setTimeout(next, DURATION);
-        }
-
-        prevBtn.addEventListener('click', prev);
-        nextBtn.addEventListener('click', next);
-
-        pauseBtn.addEventListener('click', () => {
-            paused = !paused;
-            pauseBtn.textContent = paused ? 'Resume' : 'Pause';
-            const fill = dotEls[current].querySelector('.prog-fill');
-            if (paused) {
-                clearTimeout(timer);
-                fill.style.animationPlayState = 'paused';
-            } else {
-                fill.style.animationPlayState = 'running';
-                startTimer();
-            }
-        });
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') next();
-            if (e.key === 'ArrowLeft')  prev();
-            if (e.key === ' ') { e.preventDefault(); pauseBtn.click(); }
-        });
-
-        startTimer();
-    </script>
+    startTimer();
+</script>
 </body>
 </html>
