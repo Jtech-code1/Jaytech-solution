@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — JayTech Smart Systems Ltd</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #dc2626;
+      --red-dark: #b91c1c;
+      --red-glow: rgba(220,38,38,0.18);
+      --black: #0a0a0a;
+      --surface: #111111;
+      --surface2: #161616;
+      --border: rgba(255,255,255,0.07);
+      --text: #f1f1f1;
+      --muted: rgba(255,255,255,0.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--black);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, h5, .font-display { font-family: 'Syne', sans-serif; }
+
+    /* ── GRID NOISE BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── GLOW ORBS ── */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 10s ease-in-out infinite alternate;
+    }
+    .glow-orb-1 {
+      width: 420px; height: 420px;
+      background: rgba(220,38,38,0.12);
+      top: -100px; right: -100px;
+    }
+    .glow-orb-2 {
+      width: 320px; height: 320px;
+      background: rgba(220,38,38,0.07);
+      bottom: 10%; left: -80px;
+      animation-delay: -5s;
+    }
+    @keyframes orbFloat {
+      from { transform: translate(0,0); }
+      to   { transform: translate(20px, 30px); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(10,10,10,0.72);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: padding 0.3s;
+    }
+    nav.scrolled { padding: 14px 40px; }
+
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-brand span { color: #f87171; }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--red);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: #fff; }
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--red);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 6px 20px var(--red-glow); }
+
+    /* Ham */
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile Nav */
+    .mobile-nav {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(5,5,5,0.97);
+      flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem; font-weight: 800;
+      color: #fff; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: #f87171; }
+
+    /* ── HERO BANNER ── */
+    .page-hero {
+      position: relative; z-index: 1;
+      padding: 160px 40px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .page-hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(220,38,38,0.12);
+      border: 1px solid rgba(220,38,38,0.3);
+      color: #f87171;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .page-hero h1 {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+    .page-hero h1 .outline-text {
+      -webkit-text-stroke: 2px rgba(255,255,255,0.25);
+      color: transparent;
+    }
+    .page-hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── CONTACT GRID ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── INFO PANEL ── */
+    .info-panel {
+      display: flex; flex-direction: column; gap: 16px;
+      position: sticky; top: 100px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .info-card:hover {
+      border-color: rgba(220,38,38,0.3);
+      transform: translateX(4px);
+    }
+
+    .info-card .ic-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+    .info-card .ic-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .info-card p, .info-card a {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .info-card a:hover { color: #f87171; }
+
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .contact-item:last-child { margin-bottom: 0; }
+    .contact-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(220,38,38,0.1);
+      border: 1px solid rgba(220,38,38,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #f87171;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+    .contact-detail strong {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+
+    /* Social row */
+    .socials {
+      display: flex; gap: 10px; margin-top: 20px;
+    }
+    .social-pill {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .social-pill i { font-size: 0.9rem; }
+    .social-pill:hover {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(220,38,38,0.3);
+    }
+
+    /* ── FORM PANEL ── */
+    .form-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-panel::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(220,38,38,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .form-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .form-sub {
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+    .form-group:last-of-type { margin-bottom: 0; }
+
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .form-control {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+      width: 100%;
+    }
+    .form-control::placeholder { color: rgba(255,255,255,0.2); }
+    .form-control:focus {
+      border-color: rgba(220,38,38,0.5);
+      background: rgba(220,38,38,0.04);
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+    }
+    textarea.form-control { resize: vertical; min-height: 130px; }
+
+    /* Select wrapper */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '\f107';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+      font-size: 0.8rem;
+    }
+    .select-wrap select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+    .select-wrap select option { background: #1a1a1a; color: #fff; }
+
+    /* Service checkboxes */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .service-check {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .service-check:hover { border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.05); }
+    .service-check input[type="checkbox"] { display: none; }
+    .check-box {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      font-size: 0.65rem; color: #fff;
+    }
+    .service-check:has(input:checked) .check-box {
+      background: var(--red);
+      border-color: var(--red);
+    }
+    .service-check:has(input:checked) { border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.06); }
+    .service-check span { font-size: 0.8rem; color: var(--muted); }
+    .service-check:has(input:checked) span { color: #fff; }
+
+    /* File upload */
+    .file-drop {
+      border: 1.5px dashed rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.02);
+    }
+    .file-drop:hover { border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.04); }
+    .file-drop i { font-size: 1.4rem; color: var(--muted); margin-bottom: 8px; }
+    .file-drop p { font-size: 0.8rem; color: var(--muted); }
+    .file-drop p strong { color: #f87171; }
+    .file-drop input { display: none; }
+
+    /* Submit */
+    .submit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 14px;
+      margin-top: 28px;
+    }
+    .submit-note { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .submit-note i { color: #22c55e; }
+
+    .btn-submit {
+      background: var(--red);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 15px 36px;
+      border-radius: 10px;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(220,38,38,0.4); }
+    .btn-submit:hover::before { opacity: 1; }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* Spinner */
+    .spinner {
+      display: none; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-submit.loading .btn-text { opacity: 0; }
+    .btn-submit.loading .spinner { display: block; position: absolute; }
+
+    /* ── SUCCESS STATE ── */
+    .success-overlay {
+      display: none;
+      position: absolute; inset: 0;
+      background: var(--surface);
+      border-radius: 20px;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 40px;
+      z-index: 10;
+    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: rgba(34,197,94,0.1);
+      border: 2px solid rgba(34,197,94,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #22c55e;
+      margin-bottom: 24px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.3); } 50% { box-shadow: 0 0 0 14px rgba(34,197,94,0); } }
+    .success-overlay h3 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; }
+    .success-overlay p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 28px; }
+    .btn-back {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 12px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.12); }
+
+    /* ── MAP STRIP ── */
+    .map-section {
+      position: relative; z-index: 1;
+      padding: 0 24px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .map-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .map-wrap iframe { display: block; width: 100%; height: 380px; border: none; filter: grayscale(30%) invert(1) hue-rotate(200deg); }
+    .map-badge {
+      position: absolute; bottom: 20px; left: 20px;
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .map-badge i { color: var(--red); font-size: 0.9rem; }
+    .map-badge span { font-size: 0.82rem; color: rgba(255,255,255,0.8); }
+
+    /* ── FAQ STRIP ── */
+    .faq-section {
+      position: relative; z-index: 1;
+      padding: 0 24px 100px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .faq-header { text-align: center; margin-bottom: 48px; }
+    .faq-header .eyebrow {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 12px;
+    }
+    .faq-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.02em;
+    }
+
+    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .faq-item.open { border-color: rgba(220,38,38,0.3); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 22px;
+      cursor: pointer;
+      gap: 12px;
+    }
+    .faq-q span {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+    }
+    .faq-icon {
+      width: 28px; height: 28px; flex-shrink: 0;
+      background: rgba(220,38,38,0.1);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--red); font-size: 0.7rem;
+      transition: transform 0.3s, background 0.2s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--red); color: #fff; }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.3s;
+      padding: 0 22px;
+    }
+    .faq-a p {
+      font-size: 0.85rem; color: var(--muted);
+      line-height: 1.7;
+      padding-bottom: 20px;
+    }
+    .faq-item.open .faq-a { max-height: 200px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    .footer-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 14px; }
+    .footer-brand span { color: #f87171; }
+    .footer-col h4 { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 18px; }
+    .footer-col a, .footer-col p { color: var(--muted); font-size: 0.85rem; text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.2s; line-height: 1.6; }
+    .footer-col a:hover { color: #f87171; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px 24px; border-top: 1px solid var(--border); text-align: center; color: rgba(255,255,255,0.2); font-size: 0.78rem; }
+
+    /* ── ANIMATIONS ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 18px 20px; }
+      nav.scrolled { padding: 12px 20px; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .info-panel { position: static; }
+      .form-panel { padding: 28px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+      .page-hero { padding: 130px 20px 60px; }
+      main { padding: 0 16px 60px; }
+      .map-section, .faq-section { padding-left: 16px; padding-right: 16px; }
+    }
+    @media (max-width: 500px) {
+      .socials { flex-direction: row; flex-wrap: wrap; }
+      .submit-row { flex-direction: column-reverse; align-items: flex-start; }
+      .btn-submit { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- GLOW ORBS -->
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="closeMobile()">Home</a>
+  <a href="index.html#about" onclick="closeMobile()">About</a>
+  <a href="service.html" onclick="closeMobile()">Services</a>
+  <a href="gallery.html" onclick="closeMobile()">Gallery</a>
+  <a href="contact.html" onclick="closeMobile()" style="color:#f87171">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-brand">Jay<span>Tech</span> Smart Systems</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#about">About Us</a></li>
+    <li><a href="service.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contact.html" class="active">Contact Us</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="eyebrow reveal">
+    <i class="fa-solid fa-tower-broadcast" style="font-size:0.65rem"></i>
+    Let's Connect
+  </div>
+  <h1 class="reveal" style="transition-delay:0.1s">
+    Talk to <span class="outline-text">Our</span><br/>
+    Experts
+  </h1>
+  <p class="reveal" style="transition-delay:0.2s">
+    Ready to power your business with intelligent ICT solutions? Drop us a message and our team will get back to you within 18 minutes.
+  </p>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="contact-grid">
+
+    <!-- INFO PANEL -->
+    <div class="info-panel">
+
+      <div class="info-card reveal-left">
+        <p class="ic-label"><i class="fa-solid fa-circle-nodes" style="margin-right:6px"></i>Get In Touch</p>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div class="contact-detail">
+            <strong>Address</strong>
+            <a href="#">Suite 23 Grace Plaza, Ibafo, Ogun State, Nigeria</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+          <div class="contact-detail">
+            <strong>Phone</strong>
+            <a href="tel:+2349059949644">+234 905 994 9644</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div class="contact-detail">
+            <strong>Email</strong>
+            <a href="mailto:adeboyejojide5@gmail.com">adeboyejojide5@gmail.com</a>
+          </div>
+        </div>
+        <div class="contact-item" style="margin-bottom:0">
+          <div class="contact-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="contact-detail">
+            <strong>Working Hours</strong>
+            <p style="color:rgba(255,255,255,0.45);font-size:0.875rem">Mon – Fri: 8:00 AM – 6:00 PM<br/>Sat: 9:00 AM – 3:00 PM</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card reveal-left" style="transition-delay:0.1s">
+        <p class="ic-label"><i class="fa-solid fa-bolt" style="margin-right:6px"></i>Response Time</p>
+        <div style="display:flex;gap:10px;align-items:stretch;">
+          <div style="flex:1;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.18);border-radius:12px;padding:16px;text-align:center;">
+            <p style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#f87171;line-height:1">18</p>
+            <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px">min response</p>
+          </div>
+          <div style="flex:1;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.18);border-radius:12px;padding:16px;text-align:center;">
+            <p style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#f87171;line-height:1">4.8</p>
+            <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px">customer rating</p>
+          </div>
+          <div style="flex:1;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.18);border-radius:12px;padding:16px;text-align:center;">
+            <p style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#f87171;line-height:1">26%</p>
+            <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:4px">avg. savings</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card reveal-left" style="transition-delay:0.2s">
+        <p class="ic-label"><i class="fa-solid fa-share-nodes" style="margin-right:6px"></i>Follow Us</p>
+        <div class="socials">
+          <a href="#" class="social-pill"><i class="fa-brands fa-x-twitter"></i><span>Twitter</span></a>
+          <a href="#" class="social-pill"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
+          <a href="#" class="social-pill"><i class="fa-brands fa-linkedin-in"></i><span>LinkedIn</span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FORM PANEL -->
+    <div class="form-panel reveal" style="transition-delay:0.15s">
+
+      <!-- Success Overlay -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h3>Message Sent!</h3>
+        <p>Thanks for reaching out. Our team will get back to you within 18 minutes during working hours.</p>
+        <button class="btn-back" onclick="resetForm()">
+          <i class="fa-solid fa-rotate-left" style="margin-right:8px"></i>Send Another
+        </button>
+      </div>
+
+      <h2 class="form-heading">Send Us a Message</h2>
+      <p class="form-sub">Fill in the details below and one of our ICT specialists will be in touch.</p>
+
+      <form id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="John" required />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Doe" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="john@company.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" class="form-control" placeholder="+234 800 000 0000" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company / Organization</label>
+          <input type="text" id="company" name="company" class="form-control" placeholder="Your company name" />
+        </div>
+
+        <div class="form-group">
+          <label for="service">Service of Interest</label>
+          <div class="select-wrap">
+            <select id="service" name="service" class="form-control">
+              <option value="" disabled selected>Select a service...</option>
+              <option>Solar / Inverter Installation</option>
+              <option>Enterprise Networking</option>
+              <option>CCTV Installation & Maintenance</option>
+              <option>Access Control Systems</option>
+              <option>IP Telephony</option>
+              <option>Web & Software Development</option>
+              <option>Internet Connectivity Installation</option>
+              <option>General Inquiry</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Interested In (select all that apply)</label>
+          <div class="services-grid">
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="solar" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>⚡ Solar Energy</span>
+            </label>
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="networking" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>🌐 Networking</span>
+            </label>
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="cctv" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>📷 CCTV</span>
+            </label>
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="access" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>🔐 Access Control</span>
+            </label>
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="software" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>💻 Software Dev</span>
+            </label>
+            <label class="service-check">
+              <input type="checkbox" name="interests" value="internet" />
+              <div class="check-box"><i class="fa-solid fa-check"></i></div>
+              <span>🛰️ Starlink / ISP</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="budget">Estimated Budget</label>
+          <div class="select-wrap">
+            <select id="budget" name="budget" class="form-control">
+              <option value="" disabled selected>Select a range...</option>
+              <option>Under ₦200,000</option>
+              <option>₦200,000 – ₦500,000</option>
+              <option>₦500,000 – ₦1,000,000</option>
+              <option>₦1,000,000 – ₦5,000,000</option>
+              <option>Above ₦5,000,000</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message *</label>
+          <textarea id="message" name="message" class="form-control" placeholder="Describe your project, requirements, or questions in detail..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Attach a File (optional)</label>
+          <div class="file-drop" onclick="document.getElementById('fileInput').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p>Drag & drop or <strong>click to upload</strong></p>
+            <p style="margin-top:4px;font-size:0.73rem">PDF, DOCX, JPG, PNG — Max 10MB</p>
+            <input type="file" id="fileInput" accept=".pdf,.docx,.jpg,.jpeg,.png" />
+          </div>
+          <p id="fileName" style="font-size:0.78rem;color:#f87171;margin-top:8px;display:none;"></p>
+        </div>
+
+        <div class="submit-row">
+          <p class="submit-note"><i class="fa-solid fa-shield-halved"></i> Your data is secure and never shared.</p>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> &nbsp;Send Message</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<!-- MAP -->
+<div class="map-section">
+  <div class="map-wrap reveal">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0!2d3.4833!3d6.7167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c7b45c7e289%3A0x1!2sIbafo%2C+Ogun+State!5e0!3m2!1sen!2sng!4v1234567890"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="JayTech Location">
+    </iframe>
+    <div class="map-badge">
+      <i class="fa-solid fa-location-dot"></i>
+      <span>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="faq-header">
+    <p class="eyebrow">Common Questions</p>
+    <h2 class="reveal">Frequently Asked Questions</h2>
+  </div>
+  <div class="faq-grid" id="faqGrid">
+
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>How quickly do you respond to inquiries?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>We pride ourselves on a fast response time — typically within 18 minutes during working hours. After hours, we respond first thing the next business day.</p></div>
+    </div>
+
+    <div class="faq-item reveal" style="transition-delay:0.05s">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Do you offer free site assessments?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>Yes! We offer complimentary on-site assessments within Ogun and Lagos State for qualifying projects. This helps us design the most effective solution for your specific needs.</p></div>
+    </div>
+
+    <div class="faq-item reveal" style="transition-delay:0.1s">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>What industries do you serve?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>We serve a wide range of industries including corporate offices, healthcare facilities, educational institutions, manufacturing plants, retail chains, and residential complexes.</p></div>
+    </div>
+
+    <div class="faq-item reveal" style="transition-delay:0.15s">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Do you provide after-installation support?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>Absolutely. All our installations come with a warranty and we offer maintenance packages to ensure your systems remain optimal. Our support team is available 6 days a week.</p></div>
+    </div>
+
+    <div class="faq-item reveal" style="transition-delay:0.2s">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Can you handle large enterprise projects?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>Yes, JayTech is equipped to handle projects of any scale — from single-office setups to multi-site enterprise deployments across multiple states.</p></div>
+    </div>
+
+    <div class="faq-item reveal" style="transition-delay:0.25s">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>How do I get a detailed quotation?</span>
+        <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
+      </div>
+      <div class="faq-a"><p>Simply fill out the contact form on this page with as much detail as possible about your project. Our team will review your requirements and send a comprehensive proposal within 24 hours.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-brand">Jay<span>Tech</span> Smart Systems Ltd</p>
+      <p style="color:rgba(255,255,255,0.4);font-size:0.83rem;line-height:1.6;margin-bottom:16px;">Powering businesses with intelligent ICT infrastructure across Nigeria.</p>
+      <div style="display:flex;gap:8px;">
+        <a href="#" style="width:34px;height:34px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.8rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#dc2626';this.style.color='#fff';this.style.borderColor='#dc2626'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" style="width:34px;height:34px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.8rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#dc2626';this.style.color='#fff';this.style.borderColor='#dc2626'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" style="width:34px;height:34px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.8rem;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#dc2626';this.style.color='#fff';this.style.borderColor='#dc2626'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#">Solar Energy Solutions</a>
+      <a href="#">CCTV Security Systems</a>
+      <a href="#">Enterprise Networking</a>
+      <a href="#">Access Control</a>
+      <a href="#">Web & Software Dev</a>
+      <a href="#">IP Telephony</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="index.html">Home</a>
+      <a href="index.html#about">About Us</a>
+      <a href="service.html">Services</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2025 JayTech Smart Systems Ltd. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  /* ── NAV SCROLL ── */
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  /* ── MOBILE MENU ── */
+  const mobileNav = document.getElementById('mobileNav');
+  const ham = document.getElementById('hamburger');
+  function toggleMobile() {
+    const open = mobileNav.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  function closeMobile() {
+    mobileNav.classList.remove('open');
+    ham.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── SCROLL REVEAL ── */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+
+  /* ── FILE INPUT ── */
+  document.getElementById('fileInput').addEventListener('change', function() {
+    const name = this.files[0]?.name;
+    const label = document.getElementById('fileName');
+    if (name) { label.textContent = '📎 ' + name; label.style.display = 'block'; }
+  });
+
+  /* ── FORM SUBMIT ── */
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      document.getElementById('successOverlay').classList.add('show');
+    }, 2200);
+  });
+
+  function resetForm() {
+    document.getElementById('successOverlay').classList.remove('show');
+    document.getElementById('contactForm').reset();
+    document.getElementById('fileName').style.display = 'none';
+  }
+
+  /* ── FAQ ── */
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
