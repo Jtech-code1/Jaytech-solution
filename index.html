@@ -5,414 +5,749 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>JayTech Smart Systems Ltd</title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body { font-family: 'DM Sans', sans-serif; }
-    h1, h2, h3, h4, h5, .font-display { font-family: 'Syne', sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .nav-scrolled {
-      background: rgba(10,10,10,0.92) !important;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    :root {
+      --red:       #dc2626;
+      --red-dark:  #b91c1c;
+      --red-light: #f87171;
+      --black:     #080808;
+      --gray-50:   #f9fafb;
+      --gray-100:  #f3f4f6;
+      --gray-500:  #6b7280;
+      --gray-900:  #111827;
     }
-    .hero-bg { transform: scale(1.06); transition: transform 7s ease-out; }
-    .hero-bg.loaded { transform: scale(1); }
 
-    .nav-link { position: relative; }
-    .nav-link::after {
-      content: ''; position: absolute;
-      bottom: -3px; left: 0;
-      width: 0; height: 2px;
-      background: #f87171;
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--gray-900); overflow-x: hidden; }
+    h1,h2,h3,h4,h5,.font-display { font-family: 'Syne', sans-serif; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    #mainNav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 64px;
+      transition: all 0.35s ease;
+    }
+    #mainNav.scrolled {
+      background: rgba(8,8,8,0.94);
+      backdrop-filter: blur(18px);
+      padding: 14px 64px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1rem; color: #fff; white-space: nowrap;
+    }
+    .nav-brand span { color: var(--red-light); }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.8); font-size: 0.85rem; font-weight: 500;
+      position: relative; transition: color 0.25s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: var(--red);
       transition: width 0.3s;
     }
-    .nav-link:hover::after { width: 100%; }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--red); color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.82rem;
+      padding: 10px 20px; border-radius: 9px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(220,38,38,0.35); }
 
-    .ham-open .bar1 { transform: translateY(7px) rotate(45deg); }
-    .ham-open .bar2 { opacity: 0; }
-    .ham-open .bar3 { transform: translateY(-7px) rotate(-45deg); }
+    /* hamburger */
+    .ham {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .ham span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+    .ham.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .ham.open span:nth-child(2) { opacity: 0; }
+    .ham.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    .dot-pill {
-      width: 8px; height: 8px;
-      border-radius: 999px;
-      background: #d1d5db;
-      border: none; cursor: pointer;
+    /* ── MOBILE MENU ── */
+    #mobileMenu {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(5,5,5,0.98);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; text-align: center;
+    }
+    #mobileMenu.open { display: flex; }
+    #mobileMenu a {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.8rem,8vw,3rem);
+      font-weight: 800; color: #fff; transition: color 0.2s;
+    }
+    #mobileMenu a:hover { color: var(--red-light); }
+    #mobileMenu .mob-cta {
+      background: var(--red); color: #fff !important;
+      font-size: 1.1rem !important; padding: 14px 40px;
+      border-radius: 10px; margin-top: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      #mainNav { padding: 18px 24px; }
+      #mainNav.scrolled { padding: 12px 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .ham { display: flex; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: -2;
+      transform: scale(1.06); transition: transform 7s ease-out;
+    }
+    .hero-bg.loaded { transform: scale(1); }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 60%, rgba(180,20,20,0.28) 100%);
+    }
+    .hero-content { position: relative; z-index: 1; padding: 0 24px; max-width: 760px; }
+    .hero-pill {
+      display: inline-block;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px); color: rgba(255,255,255,0.9);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 8px 20px; border-radius: 999px; margin-bottom: 24px;
+      display: inline-block;
+    }
+    .hero h1 {
+      font-size: clamp(3rem,9vw,6rem); font-weight: 800;
+      color: #fff; line-height: 1.04; letter-spacing: -0.03em; margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--red-light); }
+    .hero p {
+      color: rgba(255,255,255,0.68); font-size: clamp(0.9rem,2vw,1.08rem);
+      max-width: 500px; margin: 0 auto 36px; line-height: 1.75;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .btn-primary {
+      background: var(--red); color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+      padding: 15px 34px; border-radius: 10px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(220,38,38,0.38); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px); color: #fff;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+      padding: 15px 34px; border-radius: 10px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.55); }
+
+    .scroll-indicator {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.38); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+      animation: bounce 2.2s infinite;
+    }
+    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+    /* ── SECTIONS ── */
+    .section-eyebrow {
+      color: var(--red); font-weight: 700; font-size: 0.68rem;
+      letter-spacing: 0.18em; text-transform: uppercase; display: block; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.7rem,4vw,2.6rem); font-weight: 800;
+      letter-spacing: -0.025em; line-height: 1.15;
+    }
+
+    /* ── SERVICES INTRO ── */
+    .services-intro {
+      background: #fff; padding: 80px 24px 32px; text-align: center;
+    }
+    .services-intro p.desc {
+      color: var(--gray-500); max-width: 680px; margin: 16px auto 0;
+      font-size: clamp(0.88rem,2vw,1rem); line-height: 1.75;
+    }
+
+    /* ── SERVICE GRID ── */
+    .services-grid {
+      background: #fff; padding: 32px 64px 80px;
+    }
+    .services-grid .grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 16px; max-width: 1100px; margin: 0 auto;
+    }
+    .service-card {
+      display: flex; gap: 16px; padding: 20px;
+      border: 1px solid #e5e7eb; border-radius: 14px;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: pointer;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color: rgba(220,38,38,0.25); }
+    .service-card img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+    .service-card h4 { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; }
+    .service-card p { color: var(--gray-500); font-size: 0.82rem; line-height: 1.65; }
+
+    @media (max-width: 900px) { .services-grid .grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 580px) { .services-grid .grid { grid-template-columns: 1fr; } .services-grid { padding: 24px; } }
+
+    /* ── WHY US ── */
+    .why-us {
+      background: var(--gray-50); padding: 80px 64px;
+    }
+    .why-us .inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .why-us img { width: 100%; border-radius: 20px; object-fit: cover; max-height: 460px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+    .why-us .content { display: flex; flex-direction: column; gap: 24px; }
+    .why-us p.desc { color: var(--gray-500); font-size: 0.93rem; line-height: 1.75; }
+    .why-point { display: flex; gap: 14px; align-items: flex-start; }
+    .why-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); flex-shrink: 0; margin-top: 5px; }
+    .why-point h5 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .why-point p { color: var(--gray-500); font-size: 0.84rem; line-height: 1.65; }
+
+    @media (max-width: 900px) { .why-us .inner { grid-template-columns: 1fr; gap: 36px; } .why-us { padding: 60px 24px; } }
+
+    /* ── GALLERY ── */
+    .gallery-section { background: #fff; padding: 80px 64px; }
+    .gallery-section .header {
+      max-width: 1100px; margin: 0 auto 40px;
+      display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .gallery-section .grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
+    }
+    .gallery-item {
+      background: var(--gray-100); border-radius: 16px; overflow: hidden;
+      height: clamp(160px,18vw,240px);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s;
+    }
+    .gallery-item:hover { transform: scale(1.02); }
+    .gallery-item img { height: 78%; object-fit: contain; transition: transform 0.4s; }
+    .gallery-item:hover img { transform: scale(1.08); }
+
+    @media (max-width: 720px) { .gallery-section .grid { grid-template-columns: repeat(2,1fr); } .gallery-section { padding: 60px 24px; } }
+
+    /* ── SLIDER ── */
+    .slider-section { background: var(--gray-50); padding: 80px 24px; }
+    .slider-section .hd { text-align: center; margin-bottom: 48px; }
+    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; overflow: hidden; }
+    .slider-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide { min-width: 100%; padding: 0 52px; }
+    .slide-card {
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      padding: clamp(24px,5vw,48px); text-align: center;
+    }
+    .slide-card img { height: clamp(140px,20vw,200px); margin: 0 auto 24px; object-fit: contain; }
+    .slide-card h3 { font-size: clamp(1.1rem,3vw,1.4rem); font-weight: 800; margin-bottom: 12px; }
+    .slide-card p { color: var(--gray-500); font-size: 0.85rem; line-height: 1.7; margin-bottom: 24px; }
+    .slider-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #fff; border: 1px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: var(--gray-900); cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      z-index: 10;
+    }
+    .slider-btn:hover { background: var(--red); color: #fff; border-color: var(--red); transform: translateY(-50%) scale(1.08); box-shadow: 0 4px 18px rgba(220,38,38,0.32); }
+    .slider-btn.prev { left: 0; }
+    .slider-btn.next { right: 0; }
+    .dots { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 24px; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 999px;
+      background: #d1d5db; border: none; cursor: pointer;
       transition: width 0.3s, background 0.3s;
     }
-    .dot-pill.active { width: 24px; background: #dc2626; }
+    .dot.active { width: 24px; background: var(--red); }
 
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+    /* ── BRANDS ── */
+    .brands-section { background: #fff; padding: 80px 64px; }
+    .brands-section .header {
+      max-width: 1100px; margin: 0 auto 40px;
+      display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
     }
-    .marquee-inner { animation: marquee 14s linear infinite; }
     .marquee-outer {
+      overflow: hidden; width: 100%;
       -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
       mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     }
-
-    .stat-deco::before {
-      content: ''; position: absolute;
-      top: -28px; right: -28px;
-      width: 90px; height: 90px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 50%;
+    .marquee-inner {
+      display: flex; gap: 64px; width: max-content; align-items: center;
+      animation: marquee 14s linear infinite;
     }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-inner img { height: 52px; object-fit: contain; opacity: 0.55; transition: opacity 0.2s; }
+    .marquee-inner img:hover { opacity: 1; }
 
-    .service-card { transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
-    .service-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.09);
-      border-color: rgba(220,38,38,0.25) !important;
+    @media (max-width: 768px) { .brands-section { padding: 60px 24px; } }
+
+    /* ── STATS ── */
+    .stats-section { background: var(--gray-900); padding: 80px 24px; }
+    .stats-grid {
+      max-width: 700px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
     }
-
-    .gallery-item { transition: transform 0.3s; }
-    .gallery-item:hover { transform: scale(1.02); }
-    .gallery-item img { transition: transform 0.4s; }
-    .gallery-item:hover img { transform: scale(1.07); }
-
-    .slider-btn { transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
-    .slider-btn:hover {
-      background: #dc2626 !important;
-      color: #fff !important;
-      border-color: #dc2626 !important;
-      transform: translateY(-50%) scale(1.08) !important;
-      box-shadow: 0 4px 20px rgba(220,38,38,0.35);
+    .stat-card {
+      background: var(--red); border-radius: 18px; padding: 32px 16px;
+      text-align: center; color: #fff;
+      position: relative; overflow: hidden;
     }
-
-    .footer-link { transition: color 0.2s; }
-    .footer-link:hover { color: #f87171; }
-    .social-btn { transition: background 0.2s, color 0.2s, border-color 0.2s; }
-    .social-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
-
-    .btn-red { transition: background 0.2s, transform 0.2s, box-shadow 0.2s; }
-    .btn-red:hover { background: #b91c1c; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(220,38,38,0.35); }
-
-    @keyframes bounce-y {
-      0%,100% { transform: translateX(-50%) translateY(0); }
-      50%      { transform: translateX(-50%) translateY(7px); }
+    .stat-card::before {
+      content: ''; position: absolute; top: -28px; right: -28px;
+      width: 88px; height: 88px; background: rgba(255,255,255,0.08); border-radius: 50%;
     }
-    .bounce { animation: bounce-y 2s infinite; }
+    .stat-card .label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8; margin-bottom: 12px; }
+    .stat-card .value { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem,6vw,3rem); font-weight: 800; line-height: 1; }
+    .stat-card .sub { font-size: 0.68rem; opacity: 0.5; margin-top: 6px; }
 
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.revealed { opacity: 1; transform: none; }
+    @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; max-width: 280px; } }
+
+    /* ── FOOTER ── */
+    footer { background: var(--black); border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 48px; padding: 64px 64px 48px;
+    }
+    .footer-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 16px; }
+    .footer-brand span { color: var(--red-light); }
+    .footer-contacts { display: flex; flex-direction: column; gap: 10px; }
+    .footer-contacts a, .footer-contacts span { color: rgba(255,255,255,0.5); font-size: 0.84rem; transition: color 0.2s; }
+    .footer-contacts a:hover { color: var(--red-light); }
+    .footer-contacts i { color: var(--red-light); width: 16px; margin-right: 8px; }
+    .footer-socials { display: flex; gap: 8px; margin-top: 20px; }
+    .soc-icon {
+      width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.5); font-size: 0.78rem;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .soc-icon:hover { background: var(--red); color: #fff; border-color: var(--red); }
+    .footer-col h4 { font-family: 'Syne', sans-serif; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.28); margin-bottom: 20px; }
+    .footer-col a { display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.52); font-size: 0.84rem; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--red-light); }
+    .footer-col a i { color: var(--red); font-size: 0.58rem; }
+    .footer-bar { border-top: 1px solid rgba(255,255,255,0.06); padding: 16px 64px; text-align: center; color: rgba(255,255,255,0.2); font-size: 0.76rem; max-width: 100%; }
+
+    @media (max-width: 900px) { .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; padding: 48px 24px 32px; } .footer-bar { padding: 14px 24px; } }
+    @media (max-width: 560px) { .footer-inner { grid-template-columns: 1fr; } }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
   </style>
 </head>
-
-<body class="m-0 p-0 overflow-x-hidden bg-white text-gray-900">
+<body>
 
 <!-- MOBILE MENU -->
-<div id="mobileMenu"
-  class="hidden fixed inset-0 z-[999] bg-black/97 flex-col items-center justify-center gap-10 text-center">
-  <a href="index.html"     onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Home</a>
-  <a href="about.html"     onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">About Us</a>
-  <a href="service.html"   onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Services</a>
-  <a href="gallery.html"   onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Gallery</a>
-  <a href="contactus.html" onclick="closeMobile()" class="font-display text-4xl font-bold text-white hover:text-red-400 transition-colors">Contact</a>
-  <a href="contactus.html" onclick="closeMobile()" class="btn-red bg-red-700 text-white font-display font-bold px-8 py-3 rounded-lg text-lg mt-2 inline-block">Get a Quote</a>
+<div id="mobileMenu">
+  <a href="index.html"     onclick="closeMobile()">Home</a>
+  <a href="about.html"     onclick="closeMobile()">About Us</a>
+  <a href="service.html"   onclick="closeMobile()">Services</a>
+  <a href="gallery.html"   onclick="closeMobile()">Gallery</a>
+  <a href="contactus.html" onclick="closeMobile()">Contact</a>
+  <a href="contactus.html" onclick="closeMobile()" class="mob-cta">Get a Quote</a>
 </div>
 
 <!-- NAV -->
-<nav id="mainNav"
-  class="fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 lg:px-16 py-5 transition-all duration-400">
-  <a href="index.html" class="font-display font-extrabold text-[1.1rem] text-white tracking-tight">
-    Jay<span class="text-red-400">Tech</span> Smart Systems
-  </a>
-  <ul class="hidden lg:flex items-center gap-8 list-none m-0 p-0">
-    <li><a href="index.html"     class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Home</a></li>
-    <li><a href="about.html"     class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">About Us</a></li>
-    <li><a href="service.html"   class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Services</a></li>
-    <li><a href="gallery.html"   class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Gallery</a></li>
-    <li><a href="contactus.html" class="nav-link text-white/85 text-sm font-medium hover:text-white transition-colors">Contact Us</a></li>
+<nav id="mainNav">
+  <a href="index.html" class="nav-brand">Jay<span>Tech</span> Smart Systems</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="service.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contactus.html">Contact Us</a></li>
   </ul>
-  <a href="contactus.html" class="btn-red hidden lg:block bg-red-700 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-lg">
-    Get a Quote
-  </a>
-  <button id="hamburger" onclick="toggleMobile()"
-    class="lg:hidden flex flex-col gap-[5px] p-1 cursor-pointer bg-transparent border-0" aria-label="Toggle menu">
-    <span class="bar1 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
-    <span class="bar2 block w-6 h-[2px] bg-white rounded transition-opacity duration-300"></span>
-    <span class="bar3 block w-6 h-[2px] bg-white rounded transition-transform duration-300"></span>
+  <a href="contactus.html" class="nav-cta">Get a Quote</a>
+  <button class="ham" id="hamburger" onclick="toggleMobile()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
   </button>
 </nav>
 
 <!-- HERO -->
-<section class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+<section class="hero">
   <img id="heroBg"
     src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773038289/ai-generated-8029019_1920_mgks7k.jpg"
-    alt="JayTech Smart Systems"
-    class="hero-bg absolute inset-0 w-full h-full object-cover -z-10" />
-  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/55 to-red-900/30 -z-10"></div>
-  <div class="relative z-10 px-6 max-w-3xl mx-auto">
-    <span class="inline-block bg-white/10 border border-white/20 backdrop-blur-md text-white/90 text-xs font-bold tracking-[0.18em] uppercase px-5 py-2 rounded-full mb-6">
-      We Create The World You Want
-    </span>
-    <h1 class="font-display text-5xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-5">
-      Unique <span class="text-red-400">Innovation</span>
-    </h1>
-    <p class="text-white/70 text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-9">
-      Powering businesses with intelligent ICT infrastructure — from enterprise networking to smart energy and beyond.
-    </p>
-    <div class="flex flex-wrap gap-4 justify-center">
-      <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-9 py-4 rounded-lg text-sm">Our Services</a>
-      <a href="about.html" class="bg-white/10 border border-white/35 backdrop-blur-sm text-white font-display font-bold px-9 py-4 rounded-lg text-sm hover:bg-white/20 hover:border-white/60 transition-all">About Us</a>
+    alt="JayTech Smart Systems" class="hero-bg" />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-pill">We Create The World You Want</span>
+    <h1>Unique <span>Innovation</span></h1>
+    <p>Powering businesses with intelligent ICT infrastructure — from enterprise networking to smart energy and beyond.</p>
+    <div class="hero-btns">
+      <a href="service.html" class="btn-primary">Our Services</a>
+      <a href="about.html"   class="btn-ghost">About Us</a>
     </div>
   </div>
-  <div class="bounce absolute bottom-10 left-1/2 flex flex-col items-center gap-1.5 text-white/40 text-[10px] tracking-widest uppercase">
+  <div class="scroll-indicator">
     <span>Scroll</span>
     <i class="fa-solid fa-chevron-down"></i>
   </div>
 </section>
 
 <!-- SERVICES INTRO -->
-<section id="services" class="bg-white py-20 px-6 text-center">
-  <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-3">What We Do</p>
-  <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight mb-5">Our Services</h2>
-  <p class="text-gray-500 max-w-3xl mx-auto leading-relaxed text-sm md:text-base">
-    JayTech Smart Systems Ltd delivers innovative technology solutions that power modern businesses and secure critical infrastructure. We specialize in enterprise networking, wireless connectivity, intelligent surveillance, access control, RF communication, and smart power backup solutions.
-  </p>
+<section class="services-intro reveal">
+  <span class="section-eyebrow">What We Do</span>
+  <h2 class="section-title">Our Services</h2>
+  <p class="desc">JayTech Smart Systems Ltd delivers innovative technology solutions that power modern businesses and secure critical infrastructure. We specialize in enterprise networking, wireless connectivity, intelligent surveillance, access control, and smart power backup solutions.</p>
 </section>
 
 <!-- SERVICES GRID -->
-<section class="bg-white px-6 md:px-16 pb-20">
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Solar" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">Solar / Inverter Installation</h4><p class="text-gray-500 text-sm leading-relaxed">Efficient solar and inverter solutions delivering reliable, clean, and uninterrupted electricity for homes and businesses.</p></div>
+<section class="services-grid">
+  <div class="grid">
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png" alt="Solar" />
+      <div><h4>Solar / Inverter Installation</h4><p>Efficient solar and inverter solutions delivering reliable, clean, and uninterrupted electricity for homes and businesses.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Networking" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">Enterprise Networking</h4><p class="text-gray-500 text-sm leading-relaxed">Secure, scalable LAN/WAN deployments that ensure reliable connectivity and high-performance communication infrastructure.</p></div>
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png" alt="Networking" />
+      <div><h4>Enterprise Networking</h4><p>Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png" class="w-12 h-12 object-contain flex-shrink-0" alt="CCTV" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">CCTV Installation &amp; Maintenance</h4><p class="text-gray-500 text-sm leading-relaxed">Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras.</p></div>
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png" alt="CCTV" />
+      <div><h4>CCTV Installation &amp; Maintenance</h4><p>Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Access" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">Access Control Systems</h4><p class="text-gray-500 text-sm leading-relaxed">Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure.</p></div>
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png" alt="Access" />
+      <div><h4>Access Control Systems</h4><p>Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Telephony" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">IP Telephony</h4><p class="text-gray-500 text-sm leading-relaxed">Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations.</p></div>
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png" alt="Telephony" />
+      <div><h4>IP Telephony</h4><p>Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Dev" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">Web &amp; Software Development</h4><p class="text-gray-500 text-sm leading-relaxed">Modern, responsive websites and web applications using full-stack technologies for a strong digital presence.</p></div>
+    <a href="service.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png" alt="Dev" />
+      <div><h4>Web &amp; Software Development</h4><p>Modern, responsive websites and web applications using full-stack technologies for a strong digital presence.</p></div>
     </a>
-    <a href="service.html" class="service-card flex gap-4 p-5 border border-gray-100 rounded-xl sm:col-span-2 lg:col-span-1">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png" class="w-12 h-12 object-contain flex-shrink-0" alt="Internet" />
-      <div><h4 class="font-display font-bold text-base mb-1.5">Internet Connectivity Installation</h4><p class="text-gray-500 text-sm leading-relaxed">High-speed solutions including Starlink and other broadband technologies for reliable, fast, and secure internet access.</p></div>
+    <a href="service.html" class="service-card reveal" style="grid-column: span 1;">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png" alt="Internet" />
+      <div><h4>Internet Connectivity Installation</h4><p>High-speed solutions including Starlink and other broadband technologies for reliable, fast, and secure internet access.</p></div>
     </a>
   </div>
 </section>
 
 <!-- WHY CHOOSE US -->
-<section id="about" class="bg-gray-50 px-6 md:px-16 py-20">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-    <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg" alt="Why JayTech" class="w-full rounded-2xl object-cover max-h-[480px] shadow-xl" />
-    <div class="flex flex-col gap-6">
+<section class="why-us">
+  <div class="inner">
+    <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg" alt="Why JayTech" class="reveal" />
+    <div class="content reveal">
       <div>
-        <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Why JayTech</p>
-        <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Why You Should Choose Us</h2>
+        <span class="section-eyebrow">Why JayTech</span>
+        <h2 class="section-title">Why You Should Choose Us</h2>
       </div>
-      <p class="text-gray-500 text-sm md:text-base leading-relaxed">Our commitment to strong business ethics, professional engagement, and service excellence has positioned us as a trusted and preferred choice in the ICT industry.</p>
-      <div class="flex gap-4 items-start">
-        <div class="w-2.5 h-2.5 rounded-full bg-red-600 flex-shrink-0 mt-1.5"></div>
+      <p class="desc">Our commitment to strong business ethics, professional engagement, and service excellence has positioned us as a trusted and preferred choice in the ICT industry.</p>
+      <div class="why-point">
+        <div class="why-dot"></div>
         <div>
-          <h5 class="font-display font-bold text-sm mb-1">Reliable Source</h5>
-          <p class="text-gray-500 text-sm leading-relaxed">Our services are backed by industry expertise and trusted technological standards, ensuring clients receive only the most reliable ICT solutions.</p>
+          <h5>Reliable Source</h5>
+          <p>Our services are backed by industry expertise and trusted technological standards, ensuring clients receive only the most reliable ICT solutions.</p>
         </div>
       </div>
-      <div class="flex gap-4 items-start">
-        <div class="w-2.5 h-2.5 rounded-full bg-red-600 flex-shrink-0 mt-1.5"></div>
+      <div class="why-point">
+        <div class="why-dot"></div>
         <div>
-          <h5 class="font-display font-bold text-sm mb-1">Client-Focused Approach</h5>
-          <p class="text-gray-500 text-sm leading-relaxed">We carefully tailor our services to meet the unique needs of each customer, ensuring optimal performance, satisfaction, and long-term value.</p>
+          <h5>Client-Focused Approach</h5>
+          <p>We carefully tailor our services to meet the unique needs of each customer, ensuring optimal performance, satisfaction, and long-term value.</p>
         </div>
       </div>
-      <a href="about.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3.5 rounded-lg text-sm self-start inline-block">Read More</a>
+      <a href="about.html" class="btn-primary" style="align-self:flex-start;display:inline-block;">Read More</a>
     </div>
   </div>
 </section>
 
 <!-- GALLERY -->
-<section id="gallery" class="bg-white px-6 md:px-16 py-20">
-  <div class="flex items-center justify-between mb-10 flex-wrap gap-4 max-w-6xl mx-auto">
+<section class="gallery-section">
+  <div class="header reveal">
     <div>
-      <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Our Work</p>
-      <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight">Services Gallery</h2>
+      <span class="section-eyebrow">Our Work</span>
+      <h2 class="section-title">Services Gallery</h2>
     </div>
-    <a href="gallery.html" class="btn-red bg-red-700 text-white font-display font-bold px-6 py-3 rounded-lg text-sm">View More</a>
+    <a href="gallery.html" class="btn-primary">View More</a>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124115/CCTV-removebg-preview_mrusc1.png" alt="CCTV" class="h-4/5 object-contain" /></a>
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773123956/Access_Points-removebg-preview_agoteq.png" alt="Access Points" class="h-4/5 object-contain" /></a>
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124199/Panel-removebg-preview_imsdoj.png" alt="Panel" class="h-4/5 object-contain" /></a>
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Starlink" class="h-4/5 object-contain" /></a>
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png" alt="Telephone" class="h-4/5 object-contain" /></a>
-    <a href="gallery.html" class="gallery-item bg-gray-100 rounded-2xl flex items-center justify-center h-48 md:h-64 overflow-hidden"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773125448/Felicity-Solar-12.5kwh-48v-Lithium-Iron-Battery-removebg-preview_vhkzwe.png" alt="Battery" class="h-4/5 object-contain" /></a>
+  <div class="grid reveal">
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124115/CCTV-removebg-preview_mrusc1.png" alt="CCTV" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773123956/Access_Points-removebg-preview_agoteq.png" alt="Access Points" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124199/Panel-removebg-preview_imsdoj.png" alt="Panel" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Starlink" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png" alt="Telephone" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773125448/Felicity-Solar-12.5kwh-48v-Lithium-Iron-Battery-removebg-preview_vhkzwe.png" alt="Battery" /></a>
   </div>
 </section>
 
 <!-- SLIDER -->
-<section class="bg-gray-50 px-6 md:px-16 py-20">
-  <div class="text-center mb-12">
-    <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-3">How Can We Help You?</p>
-    <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight">Our Technology Solutions</h2>
+<section class="slider-section">
+  <div class="hd reveal">
+    <span class="section-eyebrow">How Can We Help You?</span>
+    <h2 class="section-title">Our Technology Solutions</h2>
   </div>
-  <div class="relative max-w-xl mx-auto overflow-hidden">
-    <div id="sliderTrack" class="flex" style="transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);">
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png" alt="Solar" class="h-40 md:h-52 mx-auto mb-6 object-contain" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">Solar / Inverter Installation</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">Efficient solar and inverter systems providing reliable, clean, and uninterrupted electricity for homes and businesses.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+  <div class="slider-wrap">
+    <div class="slider-track" id="sliderTrack">
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png" alt="Solar" />
+          <h3>Solar / Inverter Installation</h3>
+          <p>Efficient solar and inverter systems providing reliable, clean, and uninterrupted electricity for homes and businesses.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg" alt="Networking" class="h-40 md:h-52 mx-auto mb-6 object-contain rounded-xl" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">Enterprise Networking</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">High-performance wired and wireless network infrastructures ensuring secure, scalable, and reliable connectivity.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg" alt="Networking" style="border-radius:12px;" />
+          <h3>Enterprise Networking</h3>
+          <p>High-performance wired and wireless network infrastructures ensuring secure, scalable, and reliable connectivity.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png" alt="CCTV" class="h-40 md:h-52 mx-auto mb-6 object-contain" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">CCTV Surveillance Systems</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">Intelligent surveillance providing 24/7 monitoring, security analytics, and HD video recording for facilities.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png" alt="CCTV" />
+          <h3>CCTV Surveillance Systems</h3>
+          <p>Intelligent surveillance providing 24/7 monitoring, security analytics, and HD video recording for facilities.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg" alt="Access Control" class="h-40 md:h-52 mx-auto mb-6 object-contain rounded-xl" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">Access Control Systems</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">Secure access control systems regulating and monitoring entry across facilities to protect critical infrastructure.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg" alt="Access Control" style="border-radius:12px;" />
+          <h3>Access Control Systems</h3>
+          <p>Secure access control systems regulating and monitoring entry across facilities to protect critical infrastructure.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png" alt="Software" class="h-40 md:h-52 mx-auto mb-6 object-contain" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">Software Development</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">Secure, scalable software solutions helping businesses automate processes and deliver reliable digital services.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png" alt="Software" />
+          <h3>Software Development</h3>
+          <p>Secure, scalable software solutions helping businesses automate processes and deliver reliable digital services.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
-      <div class="min-w-full flex justify-center px-10">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 w-full text-center">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Internet" class="h-40 md:h-52 mx-auto mb-6 object-contain" />
-          <h3 class="font-display text-xl md:text-2xl font-bold mb-3">Internet Connectivity</h3>
-          <p class="text-gray-500 text-sm leading-relaxed mb-6">High-speed internet solutions including Starlink for reliable, fast, and secure digital access for homes and businesses.</p>
-          <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-7 py-3 rounded-lg text-sm inline-block">Know More</a>
+      <div class="slide">
+        <div class="slide-card">
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Internet" />
+          <h3>Internet Connectivity</h3>
+          <p>High-speed internet solutions including Starlink for reliable, fast, and secure digital access for homes and businesses.</p>
+          <a href="service.html" class="btn-primary">Know More</a>
         </div>
       </div>
     </div>
-    <button onclick="prevSlide()" aria-label="Previous" class="slider-btn absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 shadow-sm z-10 text-xl">&#8249;</button>
-    <button onclick="nextSlide()" aria-label="Next"     class="slider-btn absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 w-10 h-10 rounded-full flex items-center justify-center text-gray-700 shadow-sm z-10 text-xl">&#8250;</button>
+    <button class="slider-btn prev" onclick="prevSlide()" aria-label="Previous">&#8249;</button>
+    <button class="slider-btn next" onclick="nextSlide()" aria-label="Next">&#8250;</button>
   </div>
-  <div id="slideDots" class="flex items-center justify-center gap-2 mt-8"></div>
+  <div class="dots" id="slideDots"></div>
 </section>
 
 <!-- BRANDS -->
-<section class="bg-white px-6 md:px-16 py-20">
-  <div class="flex items-center justify-between mb-10 flex-wrap gap-4 max-w-6xl mx-auto">
+<section class="brands-section">
+  <div class="header reveal">
     <div>
-      <p class="text-red-600 font-bold text-xs tracking-[0.18em] uppercase mb-2">Partners</p>
-      <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight">Our Brands</h2>
+      <span class="section-eyebrow">Partners</span>
+      <h2 class="section-title">Our Brands</h2>
     </div>
-    <a href="service.html" class="btn-red bg-red-700 text-white font-display font-bold px-6 py-3 rounded-lg text-sm">View More</a>
+    <a href="service.html" class="btn-primary">View More</a>
   </div>
-  <div class="marquee-outer overflow-hidden w-full">
-    <div class="marquee-inner flex gap-16 w-max items-center">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ"     class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF"       class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke"     class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ"     class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF"       class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke"     class="h-14 object-contain opacity-60 hover:opacity-100 transition-opacity" />
+  <div class="marquee-outer">
+    <div class="marquee-inner">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke" />
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<section class="bg-gray-900 py-20 px-6">
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
-    <div class="stat-deco relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
-      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Avg. Response Time</p>
-      <p class="font-display text-5xl font-extrabold counter" data-target="18" data-suffix="">0</p>
-      <p class="text-xs opacity-50 mt-1.5">minutes</p>
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="label">Avg. Response Time</p>
+      <p class="value counter" data-target="18">0</p>
+      <p class="sub">minutes</p>
     </div>
-    <div class="stat-deco relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
-      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Customer Rating</p>
-      <p class="font-display text-5xl font-extrabold counter" data-target="4.8" data-suffix="">0</p>
-      <p class="text-xs opacity-50 mt-1.5">out of 5.0</p>
+    <div class="stat-card">
+      <p class="label">Customer Rating</p>
+      <p class="value counter" data-target="4.8" data-float="1">0</p>
+      <p class="sub">out of 5.0</p>
     </div>
-    <div class="stat-deco relative bg-red-700 rounded-2xl p-8 text-center text-white overflow-hidden">
-      <p class="text-xs font-bold tracking-[0.12em] uppercase opacity-80 mb-3">Avg. Cost Saving</p>
-      <p class="font-display text-5xl font-extrabold counter" data-target="26" data-suffix="%">0</p>
-      <p class="text-xs opacity-50 mt-1.5">per client</p>
+    <div class="stat-card">
+      <p class="label">Avg. Cost Saving</p>
+      <p class="value counter" data-target="26" data-suffix="%">0</p>
+      <p class="sub">per client</p>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer id="contact" class="bg-black border-t border-white/[0.06]">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 md:px-16 py-16 max-w-6xl mx-auto">
+<footer>
+  <div class="footer-inner">
     <div>
-      <p class="font-display font-extrabold text-lg text-white mb-4">Jay<span class="text-red-400">Tech</span> Smart Systems Ltd</p>
-      <div class="flex flex-col gap-3 text-sm text-white/55">
-        <span><i class="fa-solid fa-location-dot text-red-400 w-4 mr-2"></i>Suite 23 Grace Plaza, Ibafo</span>
-        <a href="tel:+2349059949644"             class="footer-link hover:text-red-300"><i class="fa-solid fa-phone text-red-400 w-4 mr-2"></i>+234 905 994 9644</a>
-        <a href="mailto:adeboyejojide5@gmail.com" class="footer-link hover:text-red-300"><i class="fa-solid fa-envelope text-red-400 w-4 mr-2"></i>adeboyejojide5@gmail.com</a>
+      <p class="footer-brand">Jay<span>Tech</span> Smart Systems Ltd</p>
+      <div class="footer-contacts">
+        <span><i class="fa-solid fa-location-dot"></i>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
+        <a href="tel:+2349059949644"><i class="fa-solid fa-phone"></i>+234 905 994 9644</a>
+        <a href="mailto:adeboyejojide5@gmail.com"><i class="fa-solid fa-envelope"></i>adeboyejojide5@gmail.com</a>
       </div>
-      <div class="flex gap-2.5 mt-5">
-        <a href="#" aria-label="Twitter"  class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="#" aria-label="Facebook" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" aria-label="YouTube"  class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-youtube"></i></a>
-        <a href="#" aria-label="LinkedIn" class="social-btn w-9 h-9 border border-white/15 rounded-lg flex items-center justify-center text-white/55 text-sm"><i class="fa-brands fa-linkedin-in"></i></a>
+      <div class="footer-socials">
+        <a href="#" class="soc-icon" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" class="soc-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="soc-icon" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" class="soc-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
       </div>
     </div>
-    <div>
-      <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Services</h4>
-      <div class="flex flex-col gap-3">
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Solar Energy Solutions</a>
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>CCTV Security Solutions</a>
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>IoT &amp; Automation</a>
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Web &amp; Networking</a>
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Software Solutions</a>
-        <a href="service.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Consultancy</a>
-      </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Solar Energy Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>CCTV Security Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>IoT &amp; Automation</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Web &amp; Networking</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Software Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Consultancy</a>
     </div>
-    <div>
-      <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Quick Links</h4>
-      <div class="flex flex-col gap-3">
-        <a href="about.html"     class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>About Us</a>
-        <a href="contactus.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Contact Us</a>
-        <a href="service.html"   class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Our Services</a>
-        <a href="gallery.html"   class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Gallery</a>
-        <a href="contactus.html" class="footer-link text-white/55 text-sm flex items-center gap-2 hover:text-white"><i class="fa-solid fa-chevron-right text-red-500 text-[9px]"></i>Support</a>
-      </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="about.html"><i class="fa-solid fa-chevron-right"></i>About Us</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Contact Us</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Our Services</a>
+      <a href="gallery.html"><i class="fa-solid fa-chevron-right"></i>Gallery</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Support</a>
     </div>
   </div>
-  <div class="border-t border-white/[0.06] px-6 md:px-16 py-4 text-center text-white/25 text-xs">
-    &copy; 2025 JayTech Smart Systems Ltd. All rights reserved.
-  </div>
+  <div class="footer-bar">&copy; 2025 JayTech Smart Systems Ltd. All rights reserved.</div>
 </footer>
 
-<script src="landing.js"></script>
+<script>
+  /* ── NAV SCROLL ── */
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── HERO KEN-BURNS ── */
+  const heroBg = document.getElementById('heroBg');
+  if (heroBg) heroBg.classList.add('loaded');
+
+  /* ── MOBILE MENU ── */
+  const hamburger  = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function toggleMobile() {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+  function closeMobile() {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeMobile(); }, { passive: true });
+
+  /* ── SLIDER ── */
+  let current = 0;
+  const track    = document.getElementById('sliderTrack');
+  const dotsWrap = document.getElementById('slideDots');
+  let autoTimer;
+
+  if (track && dotsWrap) {
+    const total = track.children.length;
+
+    for (let i = 0; i < total; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', 'Slide ' + (i + 1));
+      btn.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(btn);
+    }
+
+    function updateTrack() {
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+    function goTo(n) {
+      current = (n + total) % total;
+      updateTrack();
+      clearInterval(autoTimer);
+      startAuto();
+    }
+    function nextSlide() { goTo(current + 1); }
+    function prevSlide()  { goTo(current - 1); }
+    function startAuto()  { autoTimer = setInterval(nextSlide, 4500); }
+    startAuto();
+
+    track.addEventListener('mouseenter', () => clearInterval(autoTimer));
+    track.addEventListener('mouseleave', startAuto);
+
+    let tx = 0;
+    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+      const d = tx - e.changedTouches[0].clientX;
+      if (Math.abs(d) > 40) d > 0 ? nextSlide() : prevSlide();
+    });
+
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+  }
+
+  /* ── COUNTERS ── */
+  document.querySelectorAll('.counter').forEach(el => {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting || el.dataset.done) return;
+        el.dataset.done = '1';
+        const target   = parseFloat(el.dataset.target);
+        const suffix   = el.dataset.suffix || '';
+        const isFloat  = el.dataset.float === '1';
+        const duration = 1800;
+        const t0       = performance.now();
+        (function tick(now) {
+          const p = Math.min((now - t0) / duration, 1);
+          const v = target * (1 - Math.pow(1 - p, 3));
+          el.textContent = (isFloat ? v.toFixed(1) : Math.floor(v)) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = target + suffix;
+        })(t0);
+      });
+    }, { threshold: 0.5 });
+    io.observe(el);
+  });
+
+  /* ── SCROLL REVEAL ── */
+  const revObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+</script>
 </body>
 </html>
