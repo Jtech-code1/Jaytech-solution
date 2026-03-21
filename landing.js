@@ -46,13 +46,13 @@ window.addEventListener('resize', () => {
 (function patchLinks() {
   const currentPage = location.pathname.split('/').pop() || 'index.html';
 
-  const linkMap = {
-    '#':        'index.html',
-    '#about':   'about.html',
-    '#services':'service.html',
-    '#gallery': 'gallery.html',
-    '#contact': 'contactus.html',
-  };
+  // const linkMap = {
+  //   '#':        'index.html',
+  //   '#about':   'about.html',
+  //   '#services':'service.html',
+  //   '#gallery': 'gallery.html',
+  //   '#contact': 'contactus.html',
+  // };
 
   const navAreas = [
     document.getElementById('mainNav'),
