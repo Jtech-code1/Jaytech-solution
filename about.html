@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>JayTech Smart Systems Ltd</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #dc2626;
+      --red-dark:   #b91c1c;
+      --red-light:  #f87171;
+      --red-faint:  rgba(220,38,38,0.08);
+      --black:      #080808;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-400:   #9ca3af;
+      --gray-500:   #6b7280;
+      --gray-700:   #374151;
+      --gray-900:   #111827;
+
+      --nav-h:      72px;
+      --section-px: clamp(20px, 5vw, 80px);
+      --section-py: clamp(56px, 8vw, 100px);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body  { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--gray-900); overflow-x: hidden; }
+    h1,h2,h3,h4,h5,.font-syne { font-family: 'Syne', sans-serif; }
+    img   { max-width: 100%; display: block; }
+    a     { text-decoration: none; color: inherit; }
+    ul    { list-style: none; }
+
+    /* ─────────────────────────── NAV ─────────────────────────── */
+    #mainNav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--section-px); height: var(--nav-h);
+      transition: background 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+    }
+    #mainNav.scrolled {
+      background: rgba(8,8,8,0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 28px rgba(0,0,0,0.45);
+    }
+    .nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(0.88rem,2vw,1.05rem); color:#fff; white-space:nowrap; }
+    .nav-brand span { color:var(--red-light); }
+
+    .nav-links { display:flex; align-items:center; gap:clamp(20px,3vw,36px); }
+    .nav-links a { color:rgba(255,255,255,0.78); font-size:0.84rem; font-weight:500; position:relative; transition:color 0.22s; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--red); transition:width 0.28s; }
+    .nav-links a:hover { color:#fff; }
+    .nav-links a:hover::after { width:100%; }
+    .nav-links a.active { color:#fff; }
+    .nav-links a.active::after { width:100%; }
+
+    .nav-cta { background:var(--red); color:#fff; font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; padding:10px 22px; border-radius:9px; transition:background 0.2s,transform 0.2s,box-shadow 0.2s; white-space:nowrap; }
+    .nav-cta:hover { background:var(--red-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(220,38,38,0.38); }
+
+    /* hamburger */
+    .ham { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:1100; }
+    .ham span { display:block; width:24px; height:2px; background:#fff; border-radius:2px; transition:all 0.3s; }
+    .ham.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .ham.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .ham.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+    /* mobile menu */
+    #mobileMenu {
+      display:none; position:fixed; inset:0; z-index:999;
+      background:rgba(5,5,5,0.98);
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:clamp(20px,4vh,30px); text-align:center; padding:24px;
+    }
+    #mobileMenu.open { display:flex; }
+    #mobileMenu a { font-family:'Syne',sans-serif; font-size:clamp(1.6rem,7vw,2.8rem); font-weight:800; color:#fff; transition:color 0.2s; }
+    #mobileMenu a:hover { color:var(--red-light); }
+    #mobileMenu .mob-cta { background:var(--red); color:#fff !important; font-size:1rem !important; padding:14px 44px; border-radius:12px; margin-top:4px; }
+
+    @media (max-width:960px) { .nav-links,.nav-cta { display:none; } .ham { display:flex; } }
+
+    /* ─────────────────────────── HERO ─────────────────────────── */
+    .hero {
+      position:relative; min-height:100svh;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; overflow:hidden;
+    }
+    .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transform:scale(1.06); transition:transform 7s ease-out; }
+    .hero-bg.loaded { transform:scale(1); }
+    .hero-overlay { position:absolute; inset:0; z-index:-1; background:linear-gradient(135deg,rgba(0,0,0,0.84) 0%,rgba(0,0,0,0.56) 60%,rgba(180,20,20,0.28) 100%); }
+    .hero-content { position:relative; z-index:1; padding:calc(var(--nav-h) + 24px) 24px 60px; max-width:800px; }
+    .hero-pill { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(10px); color:rgba(255,255,255,0.9); font-size:0.66rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:8px 20px; border-radius:999px; margin-bottom:24px; }
+    .hero-pill::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red-light); animation:pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.5);} }
+    .hero h1 { font-size:clamp(2.6rem,8vw,5.8rem); font-weight:800; color:#fff; line-height:1.04; letter-spacing:-0.03em; margin-bottom:20px; }
+    .hero h1 span { color:var(--red-light); }
+    .hero p { color:rgba(255,255,255,0.68); font-size:clamp(0.88rem,2vw,1.08rem); max-width:520px; margin:0 auto 36px; line-height:1.78; }
+    .hero-btns { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+    .btn-primary { background:var(--red); color:#fff; font-family:'Syne',sans-serif; font-weight:700; font-size:0.86rem; padding:14px 32px; border-radius:10px; transition:background 0.2s,transform 0.2s,box-shadow 0.2s; display:inline-block; white-space:nowrap; }
+    .btn-primary:hover { background:var(--red-dark); transform:translateY(-2px); box-shadow:0 10px 28px rgba(220,38,38,0.38); }
+    .btn-ghost { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(8px); color:#fff; font-family:'Syne',sans-serif; font-weight:700; font-size:0.86rem; padding:14px 32px; border-radius:10px; transition:background 0.2s,border-color 0.2s; display:inline-block; white-space:nowrap; }
+    .btn-ghost:hover { background:rgba(255,255,255,0.18); border-color:rgba(255,255,255,0.55); }
+    .scroll-indicator { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; color:rgba(255,255,255,0.38); font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; animation:bounce 2.2s infinite; }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);} }
+
+    /* ─────────────────────────── SECTION COMMONS ─────────────────────────── */
+    .section-eyebrow { color:var(--red); font-weight:700; font-size:0.66rem; letter-spacing:0.18em; text-transform:uppercase; display:block; margin-bottom:10px; }
+    .section-title { font-size:clamp(1.6rem,4vw,2.6rem); font-weight:800; letter-spacing:-0.025em; line-height:1.14; }
+
+    /* ─────────────────────────── ABOUT US ─────────────────────────── */
+    .about-us {
+      padding: var(--section-py) var(--section-px);
+      background: #fff;
+    }
+
+    /* top row: text + main image */
+    .about-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px,5vw,72px);
+      align-items: start;
+      max-width: 1100px; margin: 0 auto 60px;
+    }
+    .about-text-block { display:flex; flex-direction:column; gap:20px; }
+    .about-lead { font-size:clamp(0.92rem,2vw,1.08rem); color:var(--gray-700); line-height:1.82; }
+    .about-lead strong { color:var(--gray-900); font-weight:600; }
+    .about-tagline {
+      display:inline-block;
+      background:var(--red-faint); border-left:3px solid var(--red);
+      padding:14px 20px; border-radius:0 10px 10px 0;
+      font-family:'Syne',sans-serif; font-weight:700; font-size:clamp(0.88rem,2vw,1rem);
+      color:var(--red-dark); line-height:1.5;
+    }
+    .about-image-wrap { position:relative; }
+    .about-main-img { width:100%; border-radius:20px; object-fit:cover; aspect-ratio:4/3; box-shadow:0 24px 64px rgba(0,0,0,0.13); }
+    .about-img-badge {
+      position:absolute; bottom:-20px; left:-20px;
+      background:var(--red); color:#fff;
+      font-family:'Syne',sans-serif; font-weight:800;
+      padding:18px 22px; border-radius:16px;
+      box-shadow:0 12px 32px rgba(220,38,38,0.35);
+      text-align:center; min-width:100px;
+    }
+    .about-img-badge .big { font-size:clamp(2rem,5vw,2.6rem); line-height:1; display:block; }
+    .about-img-badge .sm  { font-size:0.68rem; opacity:0.88; display:block; margin-top:3px; letter-spacing:0.05em; }
+
+    /* pillars */
+    .about-pillars {
+      max-width:1100px; margin:0 auto 60px;
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    .pillar-card {
+      background:var(--gray-50); border:1px solid var(--gray-200);
+      border-radius:16px; padding:clamp(20px,3vw,28px);
+      display:flex; flex-direction:column; gap:12px;
+      transition:transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .pillar-card:hover { transform:translateY(-5px); box-shadow:0 18px 40px rgba(0,0,0,0.08); border-color:rgba(220,38,38,0.25); }
+    .pillar-icon { width:46px; height:46px; border-radius:12px; background:var(--red-faint); display:flex; align-items:center; justify-content:center; color:var(--red); font-size:1.1rem; flex-shrink:0; }
+    .pillar-card h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:var(--gray-900); }
+    .pillar-card p { color:var(--gray-500); font-size:0.81rem; line-height:1.68; }
+
+    /* vision mission */
+    .about-vm {
+      max-width:1100px; margin:0 auto 60px;
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:clamp(16px,3vw,28px);
+    }
+    .vm-card {
+      border-radius:20px; padding:clamp(28px,4vw,44px);
+      display:flex; flex-direction:column; gap:16px;
+    }
+    .vm-card.vision { background:var(--gray-900); color:#fff; }
+    .vm-card.mission { background:var(--red); color:#fff; }
+    .vm-card .vm-icon { font-size:2rem; opacity:0.85; }
+    .vm-card h3 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(1.1rem,3vw,1.35rem); }
+    .vm-card p { font-size:clamp(0.84rem,2vw,0.94rem); line-height:1.78; opacity:0.85; }
+    .vm-list { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+    .vm-list li { display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; opacity:0.85; line-height:1.6; }
+    .vm-list li::before { content:''; width:6px; height:6px; border-radius:50%; background:#fff; flex-shrink:0; margin-top:7px; opacity:0.7; }
+
+    /* team / founding story */
+    .about-story {
+      max-width:1100px; margin:0 auto;
+      background:var(--gray-50); border-radius:24px;
+      padding:clamp(32px,5vw,56px);
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:clamp(32px,5vw,60px); align-items:center;
+    }
+    .story-text { display:flex; flex-direction:column; gap:18px; }
+    .story-text h3 { font-family:'Syne',sans-serif; font-size:clamp(1.3rem,3vw,1.9rem); font-weight:800; line-height:1.2; }
+    .story-text p { color:var(--gray-500); font-size:clamp(0.84rem,2vw,0.95rem); line-height:1.82; }
+    .story-stats { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .sstats-card { background:#fff; border:1px solid var(--gray-200); border-radius:14px; padding:20px 18px; text-align:center; }
+    .sstats-card .sv { font-family:'Syne',sans-serif; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:800; color:var(--red); line-height:1; }
+    .sstats-card .sl { font-size:0.75rem; color:var(--gray-500); margin-top:5px; font-weight:500; }
+
+    /* Responsive about */
+    @media (max-width:900px) {
+      .about-top { grid-template-columns:1fr; }
+      .about-pillars { grid-template-columns:repeat(2,1fr); }
+      .about-vm { grid-template-columns:1fr; }
+      .about-story { grid-template-columns:1fr; }
+    }
+    @media (max-width:560px) {
+      .about-pillars { grid-template-columns:1fr; }
+      .about-img-badge { bottom:-14px; left:-10px; padding:14px 16px; }
+    }
+
+    /* ─────────────────────────── SERVICES INTRO ─────────────────────────── */
+    .services-intro { background:var(--gray-50); padding:clamp(48px,7vw,80px) var(--section-px) clamp(24px,4vw,40px); text-align:center; }
+    .services-intro p.desc { color:var(--gray-500); max-width:680px; margin:16px auto 0; font-size:clamp(0.88rem,2vw,1rem); line-height:1.78; }
+
+    /* ─────────────────────────── SERVICES GRID ─────────────────────────── */
+    .services-grid { background:var(--gray-50); padding:clamp(24px,4vw,40px) var(--section-px) clamp(56px,8vw,90px); }
+    .services-grid .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:1100px; margin:0 auto; }
+    .service-card { display:flex; gap:16px; padding:20px; border:1px solid var(--gray-200); border-radius:14px; background:#fff; transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s; cursor:pointer; }
+    .service-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.08); border-color:rgba(220,38,38,0.25); }
+    .service-card img { width:46px; height:46px; object-fit:contain; flex-shrink:0; }
+    .service-card h4 { font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; margin-bottom:6px; }
+    .service-card p { color:var(--gray-500); font-size:0.8rem; line-height:1.66; }
+    @media (max-width:900px) { .services-grid .grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:560px) { .services-grid .grid { grid-template-columns:1fr; } }
+
+    /* ─────────────────────────── WHY US ─────────────────────────── */
+    .why-us { background:#fff; padding:var(--section-py) var(--section-px); }
+    .why-us .inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,72px); align-items:center; }
+    .why-us img { width:100%; border-radius:20px; object-fit:cover; max-height:480px; box-shadow:0 20px 60px rgba(0,0,0,0.12); }
+    .why-us .content { display:flex; flex-direction:column; gap:22px; }
+    .why-us p.desc { color:var(--gray-500); font-size:0.93rem; line-height:1.78; }
+    .why-point { display:flex; gap:14px; align-items:flex-start; }
+    .why-dot { width:10px; height:10px; border-radius:50%; background:var(--red); flex-shrink:0; margin-top:5px; }
+    .why-point h5 { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; margin-bottom:4px; }
+    .why-point p { color:var(--gray-500); font-size:0.83rem; line-height:1.66; }
+    @media (max-width:860px) { .why-us .inner { grid-template-columns:1fr; } }
+
+    /* ─────────────────────────── GALLERY ─────────────────────────── */
+    .gallery-section { background:var(--gray-50); padding:var(--section-py) var(--section-px); }
+    .gallery-section .header { max-width:1100px; margin:0 auto 36px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .gallery-section .grid { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .gallery-item { background:#fff; border-radius:16px; overflow:hidden; height:clamp(150px,16vw,230px); display:flex; align-items:center; justify-content:center; border:1px solid var(--gray-200); transition:transform 0.3s,box-shadow 0.3s; }
+    .gallery-item:hover { transform:scale(1.02); box-shadow:0 14px 36px rgba(0,0,0,0.08); }
+    .gallery-item img { height:76%; object-fit:contain; transition:transform 0.4s; }
+    .gallery-item:hover img { transform:scale(1.08); }
+    @media (max-width:700px) { .gallery-section .grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:400px) { .gallery-section .grid { grid-template-columns:1fr; } }
+
+    /* ─────────────────────────── SLIDER ─────────────────────────── */
+    .slider-section { background:#fff; padding:var(--section-py) 24px; }
+    .slider-section .hd { text-align:center; margin-bottom:48px; }
+    .slider-wrap { position:relative; max-width:520px; margin:0 auto; overflow:hidden; }
+    .slider-track { display:flex; transition:transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .slide { min-width:100%; padding:0 48px; }
+    .slide-card { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:20px; padding:clamp(24px,5vw,44px); text-align:center; }
+    .slide-card img { height:clamp(130px,18vw,190px); margin:0 auto 24px; object-fit:contain; }
+    .slide-card h3 { font-size:clamp(1rem,3vw,1.3rem); font-weight:800; margin-bottom:10px; }
+    .slide-card p { color:var(--gray-500); font-size:0.84rem; line-height:1.72; margin-bottom:22px; }
+    .slider-btn { position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:#fff; border:1px solid var(--gray-200); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--gray-900); cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.07); transition:background 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,box-shadow 0.2s; z-index:10; }
+    .slider-btn:hover { background:var(--red); color:#fff; border-color:var(--red); transform:translateY(-50%) scale(1.08); box-shadow:0 4px 18px rgba(220,38,38,0.32); }
+    .slider-btn.prev { left:0; }
+    .slider-btn.next { right:0; }
+    .dots { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:24px; }
+    .dot { width:8px; height:8px; border-radius:999px; background:var(--gray-200); border:none; cursor:pointer; transition:width 0.3s,background 0.3s; }
+    .dot.active { width:24px; background:var(--red); }
+
+    /* ─────────────────────────── BRANDS ─────────────────────────── */
+    .brands-section { background:var(--gray-50); padding:var(--section-py) var(--section-px); }
+    .brands-section .header { max-width:1100px; margin:0 auto 36px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .marquee-outer { overflow:hidden; width:100%; -webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent); mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent); }
+    .marquee-inner { display:flex; gap:64px; width:max-content; align-items:center; animation:marquee 14s linear infinite; }
+    @keyframes marquee { from{transform:translateX(0);}to{transform:translateX(-50%);} }
+    .marquee-inner img { height:50px; object-fit:contain; opacity:0.55; transition:opacity 0.2s; }
+    .marquee-inner img:hover { opacity:1; }
+
+    /* ─────────────────────────── STATS ─────────────────────────── */
+    .stats-section { background:var(--gray-900); padding:var(--section-py) 24px; }
+    .stats-grid { max-width:760px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .stat-card { background:var(--red); border-radius:18px; padding:clamp(24px,4vw,36px) 16px; text-align:center; color:#fff; position:relative; overflow:hidden; }
+    .stat-card::before { content:''; position:absolute; top:-28px; right:-28px; width:88px; height:88px; background:rgba(255,255,255,0.08); border-radius:50%; }
+    .stat-card .label { font-size:0.64rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; opacity:0.8; margin-bottom:10px; }
+    .stat-card .value { font-family:'Syne',sans-serif; font-size:clamp(2rem,6vw,3rem); font-weight:800; line-height:1; }
+    .stat-card .sub { font-size:0.67rem; opacity:0.5; margin-top:6px; }
+    @media (max-width:480px) { .stats-grid { grid-template-columns:1fr; max-width:280px; } }
+
+    /* ─────────────────────────── FOOTER ─────────────────────────── */
+    footer { background:var(--black); border-top:1px solid rgba(255,255,255,0.06); }
+    .footer-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:clamp(28px,4vw,56px); padding:clamp(44px,6vw,72px) var(--section-px) clamp(32px,4vw,52px); }
+    .footer-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:#fff; margin-bottom:16px; }
+    .footer-brand span { color:var(--red-light); }
+    .footer-tagline { color:rgba(255,255,255,0.38); font-size:0.8rem; line-height:1.7; margin-bottom:16px; }
+    .footer-contacts { display:flex; flex-direction:column; gap:10px; }
+    .footer-contacts a,.footer-contacts span { color:rgba(255,255,255,0.5); font-size:0.83rem; transition:color 0.2s; display:flex; align-items:flex-start; gap:10px; }
+    .footer-contacts a:hover { color:var(--red-light); }
+    .footer-contacts i { color:var(--red-light); width:14px; flex-shrink:0; margin-top:2px; }
+    .footer-socials { display:flex; gap:8px; margin-top:20px; flex-wrap:wrap; }
+    .soc-icon { width:34px; height:34px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.5); font-size:0.78rem; transition:background 0.2s,color 0.2s,border-color 0.2s; }
+    .soc-icon:hover { background:var(--red); color:#fff; border-color:var(--red); }
+    .footer-col h4 { font-family:'Syne',sans-serif; font-size:0.73rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.28); margin-bottom:18px; }
+    .footer-col a { display:flex; align-items:center; gap:7px; color:rgba(255,255,255,0.52); font-size:0.83rem; margin-bottom:10px; transition:color 0.2s; }
+    .footer-col a:hover { color:var(--red-light); }
+    .footer-col a i { color:var(--red); font-size:0.56rem; }
+    .footer-bar { border-top:1px solid rgba(255,255,255,0.06); padding:16px var(--section-px); text-align:center; color:rgba(255,255,255,0.2); font-size:0.74rem; }
+    @media (max-width:860px) { .footer-inner { grid-template-columns:1fr 1fr; } }
+    @media (max-width:520px) { .footer-inner { grid-template-columns:1fr; } }
+
+    /* ─────────────────────────── REVEAL ─────────────────────────── */
+    .reveal { opacity:0; transform:translateY(26px); transition:opacity 0.6s ease,transform 0.6s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    .reveal-left { opacity:0; transform:translateX(-30px); transition:opacity 0.6s ease,transform 0.6s ease; }
+    .reveal-left.in { opacity:1; transform:none; }
+    .reveal-right { opacity:0; transform:translateX(30px); transition:opacity 0.6s ease,transform 0.6s ease; }
+    .reveal-right.in { opacity:1; transform:none; }
+
+    /* ─────────────────────────── STAGGER ─────────────────────────── */
+    .stagger-1 { transition-delay:0.05s; }
+    .stagger-2 { transition-delay:0.12s; }
+    .stagger-3 { transition-delay:0.19s; }
+    .stagger-4 { transition-delay:0.26s; }
+    .stagger-5 { transition-delay:0.33s; }
+    .stagger-6 { transition-delay:0.40s; }
+
+    /* ─────────────────────────── DIVIDER ─────────────────────────── */
+    .red-line { display:block; width:48px; height:3px; background:var(--red); border-radius:99px; margin-top:12px; }
+  </style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu">
+  <a href="index.html"     onclick="closeMobile()">Home</a>
+  <a href="#about"         onclick="closeMobile()">About Us</a>
+  <a href="service.html"   onclick="closeMobile()">Services</a>
+  <a href="gallery.html"   onclick="closeMobile()">Gallery</a>
+  <a href="contactus.html" onclick="closeMobile()">Contact</a>
+  <a href="contactus.html" onclick="closeMobile()" class="mob-cta">Get a Quote</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-brand">Jay<span>Tech</span> Smart Systems</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="#about">About Us</a></li>
+    <li><a href="service.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contactus.html">Contact Us</a></li>
+  </ul>
+  <a href="contactus.html" class="nav-cta">Get a Quote</a>
+  <button class="ham" id="hamburger" onclick="toggleMobile()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <img id="heroBg"
+    src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773038289/ai-generated-8029019_1920_mgks7k.jpg"
+    alt="JayTech Smart Systems" class="hero-bg" />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-pill">We Create The World You Want</span>
+    <h1>Unique <span>Innovation</span></h1>
+    <p>Powering businesses with intelligent ICT infrastructure — from enterprise networking to smart energy and beyond.</p>
+    <div class="hero-btns">
+      <a href="service.html" class="btn-primary">Our Services</a>
+      <a href="#about" class="btn-ghost">About Us</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <i class="fa-solid fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT US ═══════════ -->
+<section class="about-us" id="about">
+
+  <!-- Top: intro text + image -->
+  <div class="about-top">
+    <div class="about-text-block reveal-left">
+      <div>
+        <span class="section-eyebrow">About JayTech</span>
+        <h2 class="section-title">Who We Are</h2>
+        <span class="red-line"></span>
+      </div>
+      <p class="about-lead">
+        <strong>JayTech Smart Systems Ltd</strong> is a forward-thinking ICT solutions company headquartered in Ibafo, Ogun State, Nigeria. We were founded on the belief that every business — regardless of size — deserves access to world-class technology that is reliable, affordable, and built to last.
+      </p>
+      <p class="about-lead">
+        We specialize in designing, deploying, and maintaining cutting-edge technology infrastructure across industries. From SMEs to large enterprises, our clients trust us to keep their operations connected, secure, and powered — 24/7.
+      </p>
+      <div class="about-tagline">
+        "Bridging the gap between technology and everyday business needs — one smart solution at a time."
+      </div>
+      <a href="contactus.html" class="btn-primary" style="align-self:flex-start;">Work With Us</a>
+    </div>
+    <div class="about-image-wrap reveal-right">
+      <img
+        src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg"
+        alt="JayTech Team at Work" class="about-main-img" />
+      <div class="about-img-badge">
+        <span class="big">5+</span>
+        <span class="sm">Years of<br>Excellence</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Pillars -->
+  <div class="about-pillars">
+    <div class="pillar-card reveal stagger-1">
+      <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <h4>Trusted & Reliable</h4>
+      <p>Every solution we deliver is backed by rigorous quality assurance and industry-best practices, so you can depend on us completely.</p>
+    </div>
+    <div class="pillar-card reveal stagger-2">
+      <div class="pillar-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h4>Innovation-Driven</h4>
+      <p>We stay ahead of technology trends, continuously evolving our service portfolio to bring you the most modern solutions available.</p>
+    </div>
+    <div class="pillar-card reveal stagger-3">
+      <div class="pillar-icon"><i class="fa-solid fa-users"></i></div>
+      <h4>Client-Centered</h4>
+      <p>Your goals are our goals. We listen first, then craft tailored solutions — never one-size-fits-all — to deliver maximum value.</p>
+    </div>
+    <div class="pillar-card reveal stagger-4">
+      <div class="pillar-icon"><i class="fa-solid fa-handshake"></i></div>
+      <h4>Ethical & Transparent</h4>
+      <p>We operate with complete integrity — honest pricing, clear timelines, and open communication from start to finish.</p>
+    </div>
+  </div>
+
+  <!-- Vision & Mission -->
+  <div class="about-vm">
+    <div class="vm-card vision reveal-left">
+      <div class="vm-icon">🎯</div>
+      <h3>Our Vision</h3>
+      <p>To be the most trusted and innovative ICT solutions partner across West Africa — empowering communities and businesses to thrive in the digital age through accessible, world-class technology.</p>
+    </div>
+    <div class="vm-card mission reveal-right">
+      <div class="vm-icon">🚀</div>
+      <h3>Our Mission</h3>
+      <ul class="vm-list">
+        <li>Deliver intelligent, tailored ICT solutions that solve real business challenges.</li>
+        <li>Maintain the highest standards of professionalism and service excellence.</li>
+        <li>Build long-term partnerships rooted in trust, value, and measurable results.</li>
+        <li>Continuously innovate to stay ahead of the rapidly evolving technology landscape.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Our Story + mini stats -->
+  <div class="about-story">
+    <div class="story-text reveal-left">
+      <span class="section-eyebrow">Our Story</span>
+      <h3>Built from Passion. Powered by Purpose.</h3>
+      <p>JayTech Smart Systems was born from a simple frustration: too many Nigerian businesses were left behind by expensive, inaccessible technology providers. Our founder set out to change that — building a company where local businesses could access premium ICT services with the personal attention and care they deserve.</p>
+      <p>Since our founding, we have grown from a small networking consultancy into a full-spectrum smart systems company, serving clients across multiple states, industries, and sectors — always guided by our core promise: <em>excellence in every connection we make.</em></p>
+      <a href="contactus.html" class="btn-primary" style="align-self:flex-start;margin-top:6px;">Get In Touch</a>
+    </div>
+    <div class="story-stats reveal-right">
+      <div class="sstats-card">
+        <p class="sv">100+</p>
+        <p class="sl">Projects Completed</p>
+      </div>
+      <div class="sstats-card">
+        <p class="sv">50+</p>
+        <p class="sl">Happy Clients</p>
+      </div>
+      <div class="sstats-card">
+        <p class="sv">7+</p>
+        <p class="sl">Services Offered</p>
+      </div>
+      <div class="sstats-card">
+        <p class="sv">24/7</p>
+        <p class="sl">Technical Support</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════ SERVICES INTRO ═══════════ -->
+<section class="services-intro reveal">
+  <span class="section-eyebrow">What We Do</span>
+  <h2 class="section-title">Our Services</h2>
+  <p class="desc">JayTech Smart Systems Ltd delivers innovative technology solutions that power modern businesses and secure critical infrastructure. We specialize in enterprise networking, wireless connectivity, intelligent surveillance, access control, and smart power backup solutions.</p>
+</section>
+
+<!-- ═══════════ SERVICES GRID ═══════════ -->
+<section class="services-grid">
+  <div class="grid">
+    <a href="service.html" class="service-card reveal stagger-1">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png" alt="Solar" />
+      <div><h4>Solar / Inverter Installation</h4><p>Efficient solar and inverter solutions delivering reliable, clean, and uninterrupted electricity for homes and businesses.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal stagger-2">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png" alt="Networking" />
+      <div><h4>Enterprise Networking</h4><p>Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal stagger-3">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png" alt="CCTV" />
+      <div><h4>CCTV Installation &amp; Maintenance</h4><p>Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal stagger-4">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png" alt="Access" />
+      <div><h4>Access Control Systems</h4><p>Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal stagger-5">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png" alt="Telephony" />
+      <div><h4>IP Telephony</h4><p>Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal stagger-6">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png" alt="Dev" />
+      <div><h4>Web &amp; Software Development</h4><p>Modern, responsive websites and web applications using full-stack technologies for a strong digital presence.</p></div>
+    </a>
+    <a href="service.html" class="service-card reveal" style="grid-column:span 1">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png" alt="Internet" />
+      <div><h4>Internet Connectivity Installation</h4><p>High-speed solutions including Starlink and other broadband technologies for reliable, fast, and secure internet access.</p></div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════ WHY CHOOSE US ═══════════ -->
+<section class="why-us">
+  <div class="inner">
+    <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg" alt="Why JayTech" class="reveal-left" />
+    <div class="content reveal-right">
+      <div>
+        <span class="section-eyebrow">Why JayTech</span>
+        <h2 class="section-title">Why You Should Choose Us</h2>
+      </div>
+      <p class="desc">Our commitment to strong business ethics, professional engagement, and service excellence has positioned us as a trusted and preferred choice in the ICT industry.</p>
+      <div class="why-point">
+        <div class="why-dot"></div>
+        <div>
+          <h5>Reliable Source</h5>
+          <p>Our services are backed by industry expertise and trusted technological standards, ensuring clients receive only the most reliable ICT solutions.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-dot"></div>
+        <div>
+          <h5>Client-Focused Approach</h5>
+          <p>We carefully tailor our services to meet the unique needs of each customer, ensuring optimal performance, satisfaction, and long-term value.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-dot"></div>
+        <div>
+          <h5>End-to-End Support</h5>
+          <p>From initial consultation through installation and ongoing maintenance, our team is with you every step of the way.</p>
+        </div>
+      </div>
+      <a href="#about" class="btn-primary" style="align-self:flex-start;display:inline-block;">Learn More About Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GALLERY ═══════════ -->
+<section class="gallery-section">
+  <div class="header reveal">
+    <div>
+      <span class="section-eyebrow">Our Work</span>
+      <h2 class="section-title">Services Gallery</h2>
+    </div>
+    <a href="gallery.html" class="btn-primary">View More</a>
+  </div>
+  <div class="grid reveal">
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124115/CCTV-removebg-preview_mrusc1.png" alt="CCTV" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773123956/Access_Points-removebg-preview_agoteq.png" alt="Access Points" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124199/Panel-removebg-preview_imsdoj.png" alt="Panel" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Starlink" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png" alt="Telephone" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773125448/Felicity-Solar-12.5kwh-48v-Lithium-Iron-Battery-removebg-preview_vhkzwe.png" alt="Battery" /></a>
+  </div>
+</section>
+
+<!-- ═══════════ SLIDER ═══════════ -->
+<section class="slider-section">
+  <div class="hd reveal">
+    <span class="section-eyebrow">How Can We Help You?</span>
+    <h2 class="section-title">Our Technology Solutions</h2>
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-track" id="sliderTrack">
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png" alt="Solar" />
+        <h3>Solar / Inverter Installation</h3>
+        <p>Efficient solar and inverter systems providing reliable, clean, and uninterrupted electricity for homes and businesses.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg" alt="Networking" style="border-radius:10px;" />
+        <h3>Enterprise Networking</h3>
+        <p>High-performance wired and wireless network infrastructures ensuring secure, scalable, and reliable connectivity.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png" alt="CCTV" />
+        <h3>CCTV Surveillance Systems</h3>
+        <p>Intelligent surveillance providing 24/7 monitoring, security analytics, and HD video recording for facilities.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg" alt="Access Control" style="border-radius:10px;" />
+        <h3>Access Control Systems</h3>
+        <p>Secure access control systems regulating and monitoring entry across facilities to protect critical infrastructure.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png" alt="Software" />
+        <h3>Software Development</h3>
+        <p>Secure, scalable software solutions helping businesses automate processes and deliver reliable digital services.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+      <div class="slide"><div class="slide-card">
+        <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Internet" />
+        <h3>Internet Connectivity</h3>
+        <p>High-speed internet solutions including Starlink for reliable, fast, and secure digital access for homes and businesses.</p>
+        <a href="service.html" class="btn-primary">Know More</a>
+      </div></div>
+    </div>
+    <button class="slider-btn prev" onclick="prevSlide()" aria-label="Previous">&#8249;</button>
+    <button class="slider-btn next" onclick="nextSlide()" aria-label="Next">&#8250;</button>
+  </div>
+  <div class="dots" id="slideDots"></div>
+</section>
+
+<!-- ═══════════ BRANDS ═══════════ -->
+<section class="brands-section">
+  <div class="header reveal">
+    <div>
+      <span class="section-eyebrow">Partners</span>
+      <h2 class="section-title">Our Brands</h2>
+    </div>
+    <a href="service.html" class="btn-primary">View More</a>
+  </div>
+  <div class="marquee-outer">
+    <div class="marquee-inner">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"      alt="LFTZ" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png"  alt="Tetracore" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                           alt="DF" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                         alt="Duke" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"      alt="LFTZ" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png"  alt="Tetracore" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                           alt="DF" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                         alt="Duke" />
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STATS ═══════════ -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="label">Avg. Response Time</p>
+      <p class="value counter" data-target="18">0</p>
+      <p class="sub">minutes</p>
+    </div>
+    <div class="stat-card">
+      <p class="label">Customer Rating</p>
+      <p class="value counter" data-target="4.8" data-float="1">0</p>
+      <p class="sub">out of 5.0</p>
+    </div>
+    <div class="stat-card">
+      <p class="label">Avg. Cost Saving</p>
+      <p class="value counter" data-target="26" data-suffix="%">0</p>
+      <p class="sub">per client</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-brand">Jay<span>Tech</span> Smart Systems Ltd</p>
+      <p class="footer-tagline">Bridging the gap between technology and everyday business needs — one smart solution at a time.</p>
+      <div class="footer-contacts">
+        <span><i class="fa-solid fa-location-dot"></i>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
+        <a href="tel:+2349059949644"><i class="fa-solid fa-phone"></i>+234 905 994 9644</a>
+        <a href="mailto:adeboyejojide5@gmail.com"><i class="fa-solid fa-envelope"></i>adeboyejojide5@gmail.com</a>
+      </div>
+      <div class="footer-socials">
+        <a href="#" class="soc-icon" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" class="soc-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="soc-icon" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" class="soc-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Solar Energy Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>CCTV Security Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>IoT &amp; Automation</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Web &amp; Networking</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Software Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Consultancy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#about"><i class="fa-solid fa-chevron-right"></i>About Us</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Contact Us</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Our Services</a>
+      <a href="gallery.html"><i class="fa-solid fa-chevron-right"></i>Gallery</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Support</a>
+    </div>
+  </div>
+  <div class="footer-bar">&copy; 2025 JayTech Smart Systems Ltd. All rights reserved.</div>
+</footer>
+
+<script src="about.js"></script>
+</body>
+</html>

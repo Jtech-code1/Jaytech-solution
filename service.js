@@ -1,298 +1,265 @@
 
-/* ─────────────────────────────────────────
-   NAV
-───────────────────────────────────────── */
-const nav = document.getElementById('mainNav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('nav-scrolled', window.scrollY > 40);
-});
+/* ═══════════════════════════════════════════════════════
+   CIRCUIT BOARD BACKGROUND ENGINE
+   Animated PCB-style node graph with glowing pulse traces
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('circuitCanvas');
+  const ctx    = canvas.getContext('2d');
 
-function toggleMobile() {
-  const m = document.getElementById('mobileMenu');
-  const h = document.getElementById('hamburger');
-  const open = m.classList.toggle('hidden');
-  m.style.display = open ? 'none' : 'flex';
-  h.classList.toggle('ham-open', !open);
-}
-function closeMobile() {
-  document.getElementById('mobileMenu').style.display = 'none';
-  document.getElementById('mobileMenu').classList.add('hidden');
-  document.getElementById('hamburger').classList.remove('ham-open');
-}
+  const CFG = {
+    nodeCount    : 44,
+    nodeR        : 3.2,
+    nodeGlowR    : 13,
+    traceW       : 1.1,
+    pulseSpeed   : 0.0017,
+    pulseLen     : 0.24,
+    spawnMs      : 2000,
+    maxPulses    : 16,
+    R            : 'rgba(220,38,38,',
+    DIM          : 'rgba(160,20,20,',
+  };
 
-document.getElementById('heroBg').addEventListener('load', function(){ this.classList.add('loaded'); });
+  let W, H, nodes=[], edges=[], pulses=[], lastSpawn=0, raf;
 
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    build();
+  }
 
-/* ─────────────────────────────────────────
-   SERVICES SIDEBAR
-───────────────────────────────────────── */
-const services = [
-  {
-    id: 'solar',
-    label: 'Solar / Inverter',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png',
-    title: 'Solar / Inverter Installation',
-    desc: 'Efficient solar and inverter systems delivering reliable, clean, and uninterrupted electricity for homes and businesses. We design, supply, install, and maintain solar power systems tailored to your energy needs.',
-    features: ['Solar panel installation', 'Inverter & battery setup', 'Hybrid power systems', 'Energy monitoring', 'Maintenance & support'],
-    bg: 'from-amber-50 to-orange-50'
-  },
-  {
-    id: 'network',
-    label: 'Enterprise Networking',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg',
-    title: 'Enterprise Networking',
-    desc: 'Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure for businesses of any size.',
-    features: ['LAN / WAN deployment', 'Structured cabling', 'Network security', 'Wireless (Wi-Fi) setup', 'Firewall & routing'],
-    bg: 'from-blue-50 to-indigo-50'
-  },
-  {
-    id: 'cctv',
-    label: 'CCTV Surveillance',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png',
-    title: 'CCTV Installation & Maintenance',
-    desc: 'Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras. We cover design, installation, and ongoing support.',
-    features: ['HD IP & analog cameras', '24/7 remote monitoring', 'DVR / NVR installation', 'Motion detection alerts', 'Preventive maintenance'],
-    bg: 'from-gray-50 to-slate-50'
-  },
-  {
-    id: 'access',
-    label: 'Access Control',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg',
-    title: 'Access Control Systems',
-    desc: 'Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure through biometric and card-based solutions.',
-    features: ['Biometric readers', 'Card & PIN systems', 'Door lock integration', 'Visitor management', 'Audit trail & reporting'],
-    bg: 'from-green-50 to-emerald-50'
-  },
-  {
-    id: 'telephony',
-    label: 'IP Telephony',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png',
-    title: 'IP Telephony',
-    desc: 'Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations — replacing legacy phone systems with flexible VoIP.',
-    features: ['VoIP PBX setup', 'SIP trunk integration', 'IP desk phones', 'Call recording', 'Multi-site connectivity'],
-    bg: 'from-purple-50 to-violet-50'
-  },
-  {
-    id: 'web',
-    label: 'Web & Software Dev',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png',
-    title: 'Web & Software Development',
-    desc: 'Modern, responsive websites and web applications using full-stack technologies. From business websites to custom software solutions, we build your digital presence.',
-    features: ['Responsive web design', 'Custom web apps', 'API integrations', 'CMS platforms', 'Ongoing maintenance'],
-    bg: 'from-rose-50 to-pink-50'
-  },
-  {
-    id: 'internet',
-    label: 'Internet Connectivity',
-    icon: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png',
-    heroImg: 'https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png',
-    title: 'Internet Connectivity Installation',
-    desc: 'High-speed internet solutions including Starlink and other broadband technologies providing reliable, fast, and secure internet access for homes and businesses.',
-    features: ['Starlink installation', 'Broadband setup', 'Point-to-point links', 'Wi-Fi coverage extension', 'Network optimization'],
-    bg: 'from-cyan-50 to-teal-50'
-  },
-];
-
-const srvSidebar   = document.getElementById('srvSidebar');
-const srvPanelArea = document.getElementById('srvPanelArea');
-const srvTabBar    = document.getElementById('srvTabBar');
-let activeSrv = 0;
-
-services.forEach((s, i) => {
-  // ── Sidebar item
-  const item = document.createElement('button');
-  item.className = 'srv-sidebar-item w-full text-left' + (i === 0 ? ' active' : '');
-  item.innerHTML = `
-    <div class="srv-icon"><img src="${s.icon}" alt="${s.label}"/></div>
-    <span class="srv-label">${s.label}</span>
-    <i class="fa-solid fa-chevron-right srv-arrow"></i>
-  `;
-  item.addEventListener('click', () => switchSrv(i));
-  srvSidebar.appendChild(item);
-
-  // ── Mobile tab
-  const tab = document.createElement('button');
-  tab.className = 'srv-tab' + (i === 0 ? ' active' : '');
-  tab.textContent = s.label;
-  tab.addEventListener('click', () => switchSrv(i));
-  srvTabBar.appendChild(tab);
-
-  // ── Panel
-  const isImg = s.heroImg.match(/\.(jpg|jpeg|png|webp)/i) && !s.heroImg.includes('removebg');
-  const panel = document.createElement('div');
-  panel.className = 'srv-panel flex-col lg:flex-row items-stretch' + (i === 0 ? ' active' : '');
-  panel.innerHTML = `
-    <!-- Left: content -->
-    <div class="flex-1 p-8 md:p-10 flex flex-col justify-center bg-gradient-to-br ${s.bg}">
-      <p class="text-red-600 font-bold text-[10px] tracking-[0.2em] uppercase mb-2">Service 0${i+1}</p>
-      <h3 class="font-display text-2xl md:text-3xl font-extrabold tracking-tight mb-4 leading-tight">${s.title}</h3>
-      <p class="text-gray-600 text-sm leading-relaxed mb-6 max-w-md">${s.desc}</p>
-      <ul class="flex flex-col gap-2 mb-8">
-        ${s.features.map(f => `
-          <li class="flex items-center gap-2.5 text-sm text-gray-700">
-            <span class="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-check text-red-600 text-[8px]"></i>
-            </span>
-            ${f}
-          </li>`).join('')}
-      </ul>
-      <a href="#contact" class="btn-red bg-red-700 text-white font-display font-bold px-6 py-3 rounded-lg text-sm self-start inline-block">Get a Quote</a>
-    </div>
-    <!-- Right: image -->
-    <div class="w-full lg:w-72 xl:w-80 bg-white flex items-center justify-center p-8 border-t lg:border-t-0 lg:border-l border-gray-100">
-      <img src="${s.heroImg}" alt="${s.title}"
-        class="max-h-52 lg:max-h-72 w-full ${isImg ? 'object-cover rounded-xl' : 'object-contain'}"
-        loading="${i === 0 ? 'eager' : 'lazy'}" />
-    </div>
-  `;
-  srvPanelArea.appendChild(panel);
-});
-
-function switchSrv(index) {
-  const sidebarItems = srvSidebar.querySelectorAll('.srv-sidebar-item');
-  const tabs         = srvTabBar.querySelectorAll('.srv-tab');
-  const panels       = srvPanelArea.querySelectorAll('.srv-panel');
-
-  sidebarItems[activeSrv].classList.remove('active');
-  tabs[activeSrv].classList.remove('active');
-  panels[activeSrv].classList.remove('active');
-
-  activeSrv = index;
-
-  sidebarItems[activeSrv].classList.add('active');
-  tabs[activeSrv].classList.add('active');
-  panels[activeSrv].classList.add('active');
-
-  // Scroll mobile tab into view
-  tabs[activeSrv].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-}
-
-
-/* ─────────────────────────────────────────
-   GALLERY SLIDESHOW
-───────────────────────────────────────── */
-const galImages = [
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640005/Feyi_climbing_ladder_mo0nc8.jpg',        cap: 'Climbing' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640076/Installing_Starlink_kbuvbt.jpg',         cap: 'Installing Starlink' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640120/Configuring_poe_access_point_uqms9f.jpg', cap: 'Configuring POE Access Point' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640153/Rack_tpqmfi.jpg',                        cap: 'Rack Setup' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640190/Feyi_cabling_ncud97.jpg',                cap: 'Cabling' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640241/CCTV_Installed_aupb2l.jpg',              cap: 'CCTV Installed' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640278/Inverter_connection_zz87tx.jpg',         cap: 'Inverter Connection' },
-  { src: 'https://res.cloudinary.com/dezoqbzim/image/upload/q_auto,f_auto/v1773640310/2_cctv_qtzoa9.jpg',                     cap: 'CCTV Overview' },
-];
-
-const galTrack   = document.getElementById('galTrack');
-const galDots    = document.getElementById('galDots');
-const galCounter = document.getElementById('galCounter');
-
-let galCurrent = 0, galTimer = null;
-
-const galSlideEls = galImages.map((img, i) => {
-  const slide = document.createElement('div');
-  slide.className = 'slide' + (i === 0 ? ' active' : '');
-  slide.innerHTML = `
-    <div class="w-full bg-gray-100 rounded-2xl overflow-hidden shadow-md">
-      <img src="${img.src}" alt="${img.cap}"
-        loading="${i < 2 ? 'eager' : 'lazy'}"
-        class="w-full h-auto max-h-[65vh] object-contain block bg-gray-900" />
-    </div>
-    <div class="mt-3 flex items-center justify-between">
-      <span class="font-display font-bold text-xs tracking-widest uppercase text-gray-800">${img.cap}</span>
-      <span class="text-[0.65rem] tracking-[0.2em] text-red-500 font-medium">${String(i+1).padStart(2,'0')} / ${String(galImages.length).padStart(2,'0')}</span>
-    </div>`;
-  galTrack.appendChild(slide);
-  return slide;
-});
-
-const galDotEls = galImages.map((_, i) => {
-  const dot = document.createElement('div');
-  dot.className = `prog-dot relative flex-1 h-[3px] bg-gray-200 overflow-hidden cursor-pointer${i === 0 ? ' active' : ''}`;
-  dot.innerHTML = `<div class="prog-fill absolute inset-0 bg-red-600"></div>`;
-  dot.addEventListener('click', () => galGoTo(i));
-  galDots.appendChild(dot);
-  return dot;
-});
-
-function updateGalCounter() {
-  galCounter.textContent = `${String(galCurrent+1).padStart(2,'0')} / ${String(galImages.length).padStart(2,'0')}`;
-}
-
-function galResetDot(dotEl) {
-  const f = dotEl.querySelector('.prog-fill');
-  f.style.animation = 'none'; dotEl.offsetHeight; f.style.animation = '';
-}
-
-function galGoTo(index) {
-  if (index === galCurrent) return;
-  clearTimeout(galTimer);
-  const prev = galCurrent;
-  galCurrent = ((index % galImages.length) + galImages.length) % galImages.length;
-  galSlideEls[prev].classList.remove('active'); galSlideEls[prev].classList.add('exit');
-  setTimeout(() => galSlideEls[prev].classList.remove('exit'), 700);
-  galSlideEls[galCurrent].classList.add('active');
-  galDotEls[prev].classList.remove('active'); galDotEls[prev].classList.add('done');
-  if (galCurrent === 0) galDotEls.forEach(d => d.classList.remove('done'));
-  galDotEls[galCurrent].classList.remove('done'); galDotEls[galCurrent].classList.add('active');
-  galResetDot(galDotEls[galCurrent]);
-  updateGalCounter();
-  galTimer = setTimeout(() => galGoTo(galCurrent + 1), 4000);
-}
-
-document.getElementById('galPrev').addEventListener('click', () => galGoTo(galCurrent - 1));
-document.getElementById('galNext').addEventListener('click', () => galGoTo(galCurrent + 1));
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') galGoTo(galCurrent + 1);
-  if (e.key === 'ArrowLeft')  galGoTo(galCurrent - 1);
-});
-updateGalCounter();
-galTimer = setTimeout(() => galGoTo(1), 4000);
-
-
-/* ─────────────────────────────────────────
-   COUNTER ANIMATION
-───────────────────────────────────────── */
-function animateCounters() {
-  document.querySelectorAll('.counter').forEach(el => {
-    const target = parseFloat(el.dataset.target);
-    const suffix = el.dataset.suffix || '';
-    const isDecimal = String(target).includes('.');
-    const duration = 1800, steps = 60;
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      const val = target * (step / steps);
-      el.textContent = (isDecimal ? val.toFixed(1) : Math.floor(val)) + suffix;
-      if (step >= steps) { el.textContent = target + suffix; clearInterval(timer); }
-    }, duration / steps);
-  });
-}
-
-/* ─────────────────────────────────────────
-   SCROLL REVEAL + COUNTER TRIGGER
-───────────────────────────────────────── */
-let counterDone = false;
-const statsSection = document.querySelector('.stat-card');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      if (e.target.classList.contains('reveal')) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
-      if (e.target.classList.contains('stat-card') && !counterDone) {
-        counterDone = true;
-        animateCounters();
+  function build(){
+    nodes=[]; edges=[]; pulses=[];
+    const cols = Math.ceil(Math.sqrt(CFG.nodeCount*(W/H)));
+    const rows = Math.ceil(CFG.nodeCount/cols);
+    const cw=W/cols, ch=H/rows;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        if(nodes.length>=CFG.nodeCount) break;
+        nodes.push({
+          x:cw*c+cw*.18+Math.random()*cw*.64,
+          y:ch*r+ch*.18+Math.random()*ch*.64,
+          phase:Math.random()*Math.PI*2,
+          dim:0.15+Math.random()*.22
+        });
       }
     }
-  });
-}, { threshold: 0.15 });
+    const maxD = Math.max(W,H)*.27;
+    for(let i=0;i<nodes.length;i++){
+      const sorted = nodes
+        .map((n,j)=>({j,d:hyp(nodes[i],n)}))
+        .filter(o=>o.j!==i&&o.d>0&&o.d<maxD)
+        .sort((a,b)=>a.d-b.d)
+        .slice(0, 2+Math.floor(Math.random()*3));
+      sorted.forEach(o=>{
+        const key=[Math.min(i,o.j),Math.max(i,o.j)].join('-');
+        if(!edges.find(e=>e.key===key)){
+          edges.push({key,a:i,b:o.j,segs:makeSegs(nodes[i],nodes[o.j])});
+        }
+      });
+    }
+  }
 
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-if (statsSection) io.observe(statsSection);
+  function hyp(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+
+  /* Manhattan L-shape with optional diagonal kink for variety */
+  function makeSegs(a,b){
+    const r=Math.random();
+    if(r<0.5){
+      /* Horizontal first */
+      const m={x:b.x,y:a.y};
+      return [{x1:a.x,y1:a.y,x2:m.x,y2:m.y},{x1:m.x,y1:m.y,x2:b.x,y2:b.y}];
+    } else if(r<0.75){
+      /* Vertical first */
+      const m={x:a.x,y:b.y};
+      return [{x1:a.x,y1:a.y,x2:m.x,y2:m.y},{x1:m.x,y1:m.y,x2:b.x,y2:b.y}];
+    } else {
+      /* 3-segment staircase */
+      const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+      return [
+        {x1:a.x,y1:a.y,x2:mx,y2:a.y},
+        {x1:mx,y1:a.y,x2:mx,y2:my},
+        {x1:mx,y1:my,x2:b.x,y2:b.y}
+      ];
+    }
+  }
+
+  function edgePt(edge, t){
+    const segs=edge.segs;
+    const total=segs.reduce((s,sg)=>s+Math.hypot(sg.x2-sg.x1,sg.y2-sg.y1),0);
+    let target=t*total;
+    for(const sg of segs){
+      const l=Math.hypot(sg.x2-sg.x1,sg.y2-sg.y1);
+      if(target<=l){
+        const f=target/l;
+        return {x:sg.x1+(sg.x2-sg.x1)*f, y:sg.y1+(sg.y2-sg.y1)*f};
+      }
+      target-=l;
+    }
+    return {x:segs.at(-1).x2,y:segs.at(-1).y2};
+  }
+
+  function spawnPulse(now){
+    if(pulses.length>=CFG.maxPulses||!edges.length) return;
+    const edge=edges[Math.floor(Math.random()*edges.length)];
+    pulses.push({
+      edge, t:0,
+      fwd:Math.random()<0.5,
+      spd:CFG.pulseSpeed*(0.55+Math.random()*.9),
+      op:0.65+Math.random()*.35,
+    });
+    lastSpawn=now;
+  }
+
+  function draw(now){
+    ctx.clearRect(0,0,W,H);
+
+    /* Static dim traces */
+    edges.forEach(edge=>{
+      edge.segs.forEach(sg=>{
+        ctx.beginPath();ctx.moveTo(sg.x1,sg.y1);ctx.lineTo(sg.x2,sg.y2);
+        ctx.strokeStyle=CFG.DIM+'0.11)';ctx.lineWidth=CFG.traceW;ctx.stroke();
+      });
+    });
+
+    /* Nodes — breathing glow */
+    nodes.forEach(n=>{
+      const ph=(Math.sin(now*.00065+n.phase)*.5+.5);
+      const a=n.dim+ph*.2;
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,CFG.nodeGlowR);
+      g.addColorStop(0,CFG.R+(a*1.5)+')');
+      g.addColorStop(1,CFG.R+'0)');
+      ctx.beginPath();ctx.arc(n.x,n.y,CFG.nodeGlowR,0,Math.PI*2);
+      ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(n.x,n.y,CFG.nodeR,0,Math.PI*2);
+      ctx.fillStyle=CFG.R+(0.22+ph*.32)+')';ctx.fill();
+      /* Solder-pad ring */
+      ctx.beginPath();ctx.arc(n.x,n.y,CFG.nodeR+2.5,0,Math.PI*2);
+      ctx.strokeStyle=CFG.R+(0.1+ph*.1)+')';ctx.lineWidth=1;ctx.stroke();
+    });
+
+    /* Pulses */
+    pulses=pulses.filter(p=>{
+      p.t+=p.spd;
+      if(p.t>1) return false;
+
+      const t1=p.fwd?p.t:1-p.t;
+      const t0=Math.max(0,t1-CFG.pulseLen);
+
+      /* Glowing trail — 32 steps */
+      for(let i=0;i<32;i++){
+        const frac=i/31;
+        const tt=t0+(t1-t0)*frac;
+        if(tt<0||tt>1) continue;
+        const pt=edgePt(p.edge,tt);
+        const alpha=frac*p.op*.88;
+        const r=CFG.traceW*(1+frac*2.5);
+        /* Bloom */
+        const bg=ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,r*3.5);
+        bg.addColorStop(0,CFG.R+(alpha*.65)+')');
+        bg.addColorStop(1,CFG.R+'0)');
+        ctx.beginPath();ctx.arc(pt.x,pt.y,r*3.5,0,Math.PI*2);
+        ctx.fillStyle=bg;ctx.fill();
+        /* Core */
+        ctx.beginPath();ctx.arc(pt.x,pt.y,r,0,Math.PI*2);
+        ctx.fillStyle=CFG.R+alpha+')';ctx.fill();
+      }
+
+      /* Bright hot head */
+      const head=edgePt(p.edge,t1);
+      const hg=ctx.createRadialGradient(head.x,head.y,0,head.x,head.y,11);
+      hg.addColorStop(0,'rgba(255,180,180,'+p.op+')');
+      hg.addColorStop(0.28,CFG.R+p.op+')');
+      hg.addColorStop(1,CFG.R+'0)');
+      ctx.beginPath();ctx.arc(head.x,head.y,11,0,Math.PI*2);
+      ctx.fillStyle=hg;ctx.fill();
+
+      /* Destination node light-up */
+      const dest=p.fwd?nodes[p.edge.b]:nodes[p.edge.a];
+      if(p.t>.78){
+        const burst=(p.t-.78)/.22*p.op;
+        const dg=ctx.createRadialGradient(dest.x,dest.y,0,dest.x,dest.y,24);
+        dg.addColorStop(0,CFG.R+burst+')');
+        dg.addColorStop(1,CFG.R+'0)');
+        ctx.beginPath();ctx.arc(dest.x,dest.y,24,0,Math.PI*2);
+        ctx.fillStyle=dg;ctx.fill();
+        ctx.beginPath();ctx.arc(dest.x,dest.y,CFG.nodeR+1.5,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,210,210,'+burst+')';ctx.fill();
+      }
+      return true;
+    });
+
+    /* Spawn */
+    if(now-lastSpawn>CFG.spawnMs+Math.random()*700) spawnPulse(now);
+  }
+
+  function loop(now){ draw(now); raf=requestAnimationFrame(loop); }
+
+  window.addEventListener('resize',()=>{
+    cancelAnimationFrame(raf); resize(); raf=requestAnimationFrame(loop);
+  },{passive:true});
+
+  resize();
+  /* Seed burst of initial pulses at staggered times */
+  for(let i=0;i<8;i++) setTimeout(()=>spawnPulse(performance.now()),i*300);
+  raf=requestAnimationFrame(loop);
+})();
+
+/* ═══════════════════════════════════════
+   NAV / MENU / FORM / FAQ — ALL ORIGINAL
+   ═══════════════════════════════════════ */
+
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50),{passive:true});
+
+const mob=document.getElementById('mobNav');
+const ham=document.getElementById('ham');
+function toggleMob(){const o=mob.classList.toggle('open');ham.classList.toggle('open',o);document.body.style.overflow=o?'hidden':'';}
+function closeMob(){mob.classList.remove('open');ham.classList.remove('open');document.body.style.overflow='';}
+window.addEventListener('resize',()=>{if(window.innerWidth>=768)closeMob();},{passive:true});
+
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+},{threshold:0.06,rootMargin:'0px 0px -24px 0px'});
+document.querySelectorAll('.rev,.rev-l').forEach(el=>obs.observe(el));
+
+document.getElementById('fileInput').addEventListener('change',function(){
+  const el=document.getElementById('fn2');
+  if(this.files[0]){el.textContent='📎 '+this.files[0].name;el.style.display='block';}
+});
+
+const fileZone=document.querySelector('.file-z');
+fileZone.addEventListener('dragover',e=>{e.preventDefault();fileZone.style.borderColor='rgba(220,38,38,.6)';fileZone.style.background='rgba(220,38,38,.07)';});
+fileZone.addEventListener('dragleave',()=>{fileZone.style.borderColor='';fileZone.style.background='';});
+fileZone.addEventListener('drop',e=>{
+  e.preventDefault();fileZone.style.borderColor='';fileZone.style.background='';
+  const f=e.dataTransfer.files[0];
+  if(f){
+    const el=document.getElementById('fn2');
+    el.textContent='📎 '+f.name;el.style.display='block';
+    document.getElementById('fileInput').files=e.dataTransfer.files;
+  }
+});
+
+document.getElementById('cForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const btn=document.getElementById('subBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  setTimeout(()=>{
+    btn.classList.remove('loading');btn.disabled=false;
+    document.getElementById('sucLay').classList.add('show');
+  },2000);
+});
+
+function resetForm(){
+  document.getElementById('sucLay').classList.remove('show');
+  document.getElementById('cForm').reset();
+  const el=document.getElementById('fn2');el.textContent='';el.style.display='none';
+}
+
+function tFaq(el){
+  const item=el.parentElement;
+  const was=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!was)item.classList.add('open');
+}
