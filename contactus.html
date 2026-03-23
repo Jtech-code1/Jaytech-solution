@@ -1,706 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
-<title>Contact Us — JayTech Smart Systems Ltd</title>
-<link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+  <title>Contact Us — JayTech Smart Systems Ltd</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dezoqbzim/image/upload/v1768668000/image_16_udh8fu.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            syne: ['Syne', 'sans-serif'],
+            dm:   ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              red:   '#dc2626',
+              dark:  '#b91c1c',
+              light: '#f87171',
+            },
+            surface: {
+              bg:    '#0f1117',
+              card:  '#171b24',
+              input: '#1e2330',
+              hover: '#232838',
+            }
+          },
+          keyframes: {
+            fadeUp:  { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+            pulseRing: { '0%,100%': { boxShadow: '0 0 0 0 rgba(34,197,94,0.3)' }, '50%': { boxShadow: '0 0 0 12px rgba(34,197,94,0)' } },
+            spin:    { to: { transform: 'rotate(360deg)' } },
+          },
+          animation: {
+            fadeUp:    'fadeUp 0.4s ease forwards',
+            pulseRing: 'pulseRing 2s infinite',
+            spin:      'spin 0.6s linear infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    h1,h2,h3,h4,h5,.font-syne { font-family: 'Syne', sans-serif; }
 
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* reveal animations */
+    .rev    { opacity: 0; transform: translateY(24px);  transition: opacity .6s ease, transform .6s ease; }
+    .rev-l  { opacity: 0; transform: translateX(-22px); transition: opacity .6s ease, transform .6s ease; }
+    .rev.in, .rev-l.in { opacity: 1; transform: none; }
 
-:root {
-  --red:       #dc2626;
-  --red-dark:  #b91c1c;
-  --red-light: #f87171;
-  --red-glow:  rgba(220,38,38,0.18);
-  --black:     #080808;
-  --s1:        #111111;
-  --s2:        #161616;
-  --border:    rgba(255,255,255,0.07);
-  --border2:   rgba(255,255,255,0.12);
-  --text:      #f1f1f1;
-  --muted:     rgba(255,255,255,0.45);
-  --muted2:    rgba(255,255,255,0.25);
-  --px:        clamp(16px, 5vw, 64px);
-  --py:        clamp(48px, 8vw, 96px);
-  --r-lg:      20px;
-  --r-md:      14px;
-  --r-sm:      10px;
-}
+    /* custom select arrow */
+    .sel-wrap { position: relative; }
+    .sel-wrap::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; pointer-events: none; font-size: 0.75rem; }
+    .sel-wrap select { cursor: pointer; padding-right: 36px; -webkit-appearance: none; appearance: none; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--text); overflow-x: hidden; line-height: 1.5; }
-img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; }
+    /* custom checkbox tick */
+    .chk input:checked ~ .chk-box { background: #dc2626; border-color: #dc2626; }
+    .chk-box i { display: none; }
+    .chk input:checked ~ .chk-box i { display: block; }
+    .chk input:checked ~ .chk-lbl { color: #fff; }
 
-/* ── BACKGROUND ── */
-.bg-grid {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); }
-.orb-1 {
-  width: clamp(200px,45vw,520px); height: clamp(200px,45vw,520px);
-  background: rgba(220,38,38,0.11); top: -100px; right: -100px;
-  animation: drift 12s ease-in-out infinite alternate;
-}
-.orb-2 {
-  width: clamp(160px,30vw,380px); height: clamp(160px,30vw,380px);
-  background: rgba(220,38,38,0.07); bottom: 15%; left: -60px;
-  animation: drift 9s ease-in-out infinite alternate-reverse;
-}
-@keyframes drift { to { transform: translate(24px,32px) scale(1.05); } }
+    /* faq open state */
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: #dc2626; color: #fff; }
+    .faq-item.open .faq-body { max-height: 220px; }
+    .faq-item.open { border-color: rgba(220,38,38,0.35); }
 
-/* ── NAV ── */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: clamp(12px,2.5vw,22px) var(--px);
-  background: rgba(8,8,8,0.78);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-  transition: padding .3s, background .3s;
-  gap: 16px;
-}
-.nav.scrolled { padding-top: 12px; padding-bottom: 12px; background: rgba(8,8,8,0.94); }
+    /* btn loading */
+    .btn-loading .btn-label { opacity: 0; }
+    .btn-loading .btn-spin  { display: flex; }
+    .btn-spin { display: none; }
 
-.nav-brand {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(0.78rem,2.2vw,1rem); color: #fff; white-space: nowrap; flex-shrink: 0;
-}
-.nav-brand span { color: var(--red-light); }
+    /* success overlay */
+    .suc-overlay { display: none; }
+    .suc-overlay.show { display: flex; animation: fadeUp 0.4s ease forwards; }
 
-.nav-links {
-  display: flex; align-items: center; gap: clamp(16px,2.8vw,36px);
-  list-style: none; flex: 1; justify-content: center;
-}
-.nav-links a {
-  color: var(--muted); font-size: 0.84rem; font-weight: 500;
-  transition: color .2s; position: relative; white-space: nowrap;
-}
-.nav-links a::after {
-  content: ''; position: absolute; bottom: -4px; left: 0;
-  width: 0; height: 2px; background: var(--red); transition: width .3s;
-}
-.nav-links a:hover, .nav-links a.active { color: #fff; }
-.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f1117; }
+    ::-webkit-scrollbar-thumb { background: #2d3444; border-radius: 99px; }
 
-.nav-cta {
-  background: var(--red); color: #fff;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem;
-  padding: 9px 18px; border-radius: var(--r-sm);
-  border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  transition: background .2s, transform .2s, box-shadow .2s;
-  display: block;
-}
-.nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 6px 18px var(--red-glow); }
-
-.ham {
-  display: none; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0;
-}
-.ham span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all .3s; }
-.ham.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.ham.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.ham.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* ── MOBILE MENU ── */
-.mob-overlay {
-  display: none; position: fixed; inset: 0; z-index: 999;
-  background: rgba(5,5,5,0.98);
-  flex-direction: column; align-items: center; justify-content: center;
-  gap: clamp(18px,5vh,34px); padding: 80px 24px 40px;
-}
-.mob-overlay.open { display: flex; }
-.mob-overlay a {
-  font-family: 'Syne', sans-serif; font-size: clamp(1.7rem,8vw,3rem);
-  font-weight: 800; color: #fff; transition: color .2s;
-}
-.mob-overlay a:hover, .mob-overlay a.active { color: var(--red-light); }
-.mob-cta-btn {
-  background: var(--red); color: #fff !important;
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 1rem !important; padding: 14px 36px;
-  border-radius: 10px; margin-top: 8px; display: inline-block;
-}
-
-@media (max-width: 768px) {
-  .nav-links, .nav-cta { display: none; }
-  .ham { display: flex; }
-}
-
-/* ── HERO ── */
-.hero {
-  position: relative; z-index: 1;
-  padding: clamp(110px,20vw,180px) var(--px) clamp(44px,8vw,80px);
-  text-align: center;
-}
-.hero-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.28);
-  color: var(--red-light); font-size: clamp(0.6rem,1.4vw,0.7rem);
-  font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-  padding: 7px 16px; border-radius: 999px; margin-bottom: clamp(14px,3vw,24px);
-}
-.hero h1 {
-  font-family: 'Syne', sans-serif; font-size: clamp(2.1rem,9vw,6.5rem);
-  font-weight: 800; line-height: 1.0; letter-spacing: -0.03em;
-  margin-bottom: clamp(12px,2.5vw,20px);
-}
-.hero h1 .ghost { -webkit-text-stroke: 2px rgba(255,255,255,0.22); color: transparent; }
-.hero p { color: var(--muted); font-size: clamp(0.86rem,2.2vw,1.05rem); max-width: min(520px,90%); margin: 0 auto; line-height: 1.75; }
-
-/* ── WRAPPER ── */
-.wrap { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 var(--px); }
-
-/* ── CONTACT GRID ── */
-.contact-grid {
-  display: grid; grid-template-columns: minmax(0,360px) minmax(0,1fr);
-  gap: clamp(14px,3vw,28px); align-items: start; padding-bottom: var(--py);
-}
-
-/* ── INFO COLUMN ── */
-.info-col { display: flex; flex-direction: column; gap: clamp(12px,2vw,18px); position: sticky; top: 88px; }
-
-.card {
-  background: var(--s1); border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: clamp(18px,3.5vw,30px); transition: border-color .3s, transform .3s;
-}
-.card:hover { border-color: rgba(220,38,38,0.28); transform: translateX(3px); }
-
-.card-lbl {
-  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--red); margin-bottom: 16px; display: flex; align-items: center; gap: 7px;
-}
-.citem { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
-.citem:last-child { margin-bottom: 0; }
-.cico {
-  width: 38px; height: 38px; flex-shrink: 0;
-  background: rgba(220,38,38,0.09); border: 1px solid rgba(220,38,38,0.18);
-  border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  color: var(--red-light); font-size: 0.78rem; margin-top: 2px;
-}
-.cdet strong { display: block; font-size: 0.69rem; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 3px; }
-.cdet span, .cdet a { font-size: clamp(0.78rem,1.8vw,0.87rem); color: var(--muted); line-height: 1.55; }
-.cdet a:hover { color: var(--red-light); }
-
-.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 4px; }
-.stt { background: rgba(220,38,38,0.07); border: 1px solid rgba(220,38,38,0.16); border-radius: var(--r-md); padding: clamp(10px,2vw,16px) 8px; text-align: center; }
-.stt .sv { font-family: 'Syne', sans-serif; font-size: clamp(1.2rem,3.5vw,1.9rem); font-weight: 800; color: var(--red-light); line-height: 1; }
-.stt .sl { font-size: clamp(0.58rem,1.3vw,0.68rem); color: var(--muted2); margin-top: 4px; line-height: 1.3; }
-
-.socs { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 4px; }
-.soc-btn {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--s2); border: 1px solid var(--border); border-radius: var(--r-sm);
-  padding: clamp(9px,1.5vw,12px) 6px; color: var(--muted); font-size: 0.78rem;
-  transition: all .25s; cursor: pointer;
-}
-.soc-btn i { font-size: 0.82rem; flex-shrink: 0; }
-.soc-btn span { font-size: 0.73rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.soc-btn:hover { background: var(--red); border-color: var(--red); color: #fff; transform: translateY(-3px); box-shadow: 0 8px 22px rgba(220,38,38,0.28); }
-
-/* ── FORM COLUMN ── */
-.form-col {
-  background: var(--s1); border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: clamp(22px,5vw,52px); position: relative; overflow: hidden;
-}
-.form-col::before {
-  content: ''; position: absolute; top: -80px; right: -80px; width: 260px; height: 260px;
-  background: radial-gradient(circle, rgba(220,38,38,0.1), transparent 68%); pointer-events: none;
-}
-
-.form-ttl { font-family: 'Syne', sans-serif; font-size: clamp(1.25rem,3.5vw,1.8rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
-.form-sub { color: var(--muted); font-size: clamp(0.8rem,1.8vw,0.9rem); line-height: 1.65; margin-bottom: clamp(22px,4vw,36px); }
-
-.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.f-grp { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
-.f-lbl { font-size: 0.69rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted2); }
-
-.f-ctrl {
-  background: rgba(255,255,255,0.035); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: clamp(11px,1.8vw,14px) clamp(12px,2vw,16px);
-  color: #fff; font-family: 'DM Sans', sans-serif; font-size: clamp(0.82rem,1.8vw,0.92rem);
-  outline: none; width: 100%; transition: border-color .25s, background .25s, box-shadow .25s;
-  -webkit-appearance: none; appearance: none;
-}
-.f-ctrl::placeholder { color: rgba(255,255,255,0.18); }
-.f-ctrl:focus { border-color: rgba(220,38,38,0.48); background: rgba(220,38,38,0.04); box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
-textarea.f-ctrl { resize: vertical; min-height: 118px; }
-
-.sel-w { position: relative; }
-.sel-w::after {
-  content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-  color: var(--muted); pointer-events: none; font-size: 0.75rem;
-}
-.sel-w select { cursor: pointer; padding-right: 36px; }
-.sel-w select option { background: #1a1a1a; color: #fff; }
-
-.chks { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 8px; margin-top: 4px; }
-.chk {
-  display: flex; align-items: center; gap: 9px;
-  background: rgba(255,255,255,0.025); border: 1px solid var(--border);
-  border-radius: 9px; padding: clamp(8px,1.5vw,11px) clamp(9px,2vw,13px);
-  cursor: pointer; user-select: none; transition: all .2s;
-}
-.chk:hover { border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.05); }
-.chk input { display: none; }
-.chkb { width: 17px; height: 17px; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.18); border-radius: 5px; display: flex; align-items: center; justify-content: center; transition: all .2s; font-size: 0.58rem; color: #fff; }
-.chk:has(input:checked) .chkb { background: var(--red); border-color: var(--red); }
-.chk:has(input:checked) { border-color: rgba(220,38,38,0.38); background: rgba(220,38,38,0.06); }
-.chk .cl { font-size: clamp(0.7rem,1.6vw,0.79rem); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chk:has(input:checked) .cl { color: #fff; }
-
-.file-z {
-  border: 1.5px dashed rgba(255,255,255,0.1); border-radius: var(--r-sm);
-  padding: clamp(14px,3vw,22px); text-align: center; cursor: pointer;
-  background: rgba(255,255,255,0.015); transition: all .2s;
-}
-.file-z:hover { border-color: rgba(220,38,38,0.35); background: rgba(220,38,38,0.04); }
-.file-z i { font-size: clamp(1.1rem,3vw,1.5rem); color: var(--muted); margin-bottom: 7px; }
-.file-z p { font-size: clamp(0.73rem,1.6vw,0.81rem); color: var(--muted); }
-.file-z p strong { color: var(--red-light); }
-.file-z input { display: none; }
-#fn2 { font-size: 0.77rem; color: var(--red-light); margin-top: 7px; display: none; }
-
-.sub-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: clamp(20px,4vw,32px); }
-.sec-note { display: flex; align-items: center; gap: 7px; font-size: clamp(0.7rem,1.5vw,0.79rem); color: var(--muted); }
-.sec-note i { color: #22c55e; font-size: 0.78rem; }
-
-.btn-sub {
-  background: var(--red); color: #fff;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(0.8rem,1.8vw,0.9rem);
-  padding: clamp(12px,2vw,15px) clamp(22px,4vw,38px); border-radius: var(--r-sm);
-  border: none; cursor: pointer; display: flex; align-items: center; gap: 10px;
-  position: relative; overflow: hidden; white-space: nowrap;
-  transition: background .2s, transform .2s, box-shadow .2s;
-}
-.btn-sub::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,.1),transparent); opacity: 0; transition: opacity .2s; }
-.btn-sub:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(220,38,38,.38); }
-.btn-sub:hover::after { opacity: 1; }
-.btn-sub:active { transform: none; }
-
-.spin { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: sp .6s linear infinite; position: absolute; }
-@keyframes sp { to { transform: rotate(360deg); } }
-.btn-sub.loading .btn-t { opacity: 0; }
-.btn-sub.loading .spin { display: block; }
-
-.suc-lay {
-  display: none; position: absolute; inset: 0; background: var(--s1); border-radius: var(--r-lg);
-  flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: clamp(24px,6vw,60px); z-index: 10;
-}
-.suc-lay.show { display: flex; animation: fadeUp .4s ease; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-.suc-ico {
-  width: clamp(58px,10vw,88px); height: clamp(58px,10vw,88px);
-  background: rgba(34,197,94,.1); border: 2px solid rgba(34,197,94,.3); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #22c55e; font-size: clamp(1.4rem,4vw,2.2rem); margin-bottom: clamp(14px,3vw,24px);
-  animation: pu 2s infinite;
-}
-@keyframes pu { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.3); } 50% { box-shadow: 0 0 0 14px rgba(34,197,94,0); } }
-.suc-lay h3 { font-family: 'Syne', sans-serif; font-size: clamp(1.25rem,4vw,1.7rem); font-weight: 800; margin-bottom: 10px; }
-.suc-lay p { color: var(--muted); font-size: clamp(0.8rem,1.8vw,0.9rem); line-height: 1.65; margin-bottom: clamp(18px,4vw,30px); max-width: 380px; }
-.btn-bk { background: rgba(255,255,255,.07); border: 1px solid var(--border); color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: .85rem; padding: 12px 28px; border-radius: var(--r-sm); cursor: pointer; transition: background .2s; }
-.btn-bk:hover { background: rgba(255,255,255,.13); }
-
-/* ── MAP ── */
-.map-sec { position: relative; z-index: 1; padding: 0 var(--px) var(--py); max-width: 1280px; margin: 0 auto; }
-.map-wrap { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); position: relative; }
-.map-wrap iframe { display: block; width: 100%; height: clamp(230px,35vw,420px); border: none; filter: invert(1) hue-rotate(200deg) grayscale(25%); }
-.map-badge { position: absolute; bottom: 14px; left: 14px; background: rgba(8,8,8,.92); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 12px; padding: 9px 14px; display: flex; align-items: center; gap: 9px; max-width: calc(100% - 28px); }
-.map-badge i { color: var(--red); font-size: .84rem; flex-shrink: 0; }
-.map-badge span { font-size: clamp(.68rem,1.7vw,.82rem); color: rgba(255,255,255,.8); }
-
-/* ── FAQ ── */
-.faq-sec { position: relative; z-index: 1; padding: 0 var(--px) var(--py); max-width: 1280px; margin: 0 auto; }
-.faq-hd { text-align: center; margin-bottom: clamp(28px,5vw,56px); }
-.faq-eye { display: inline-block; font-size: .66rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase; color: var(--red); margin-bottom: 11px; }
-.faq-hd h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.55rem,5vw,2.8rem); font-weight: 800; letter-spacing: -.02em; }
-.faq-g { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,390px),1fr)); gap: 11px; }
-.faq-item { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; transition: border-color .3s; }
-.faq-item.open { border-color: rgba(220,38,38,.3); }
-.faq-q { display: flex; align-items: center; justify-content: space-between; padding: clamp(14px,2.5vw,22px); cursor: pointer; gap: 12px; }
-.faq-q span { font-family: 'Syne', sans-serif; font-size: clamp(.8rem,1.8vw,.91rem); font-weight: 700; }
-.faq-ic { width: 27px; height: 27px; flex-shrink: 0; background: rgba(220,38,38,.1); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--red); font-size: .63rem; transition: transform .3s, background .2s; }
-.faq-item.open .faq-ic { transform: rotate(45deg); background: var(--red); color: #fff; }
-.faq-a { max-height: 0; overflow: hidden; transition: max-height .38s ease; }
-.faq-a p { padding: 0 clamp(14px,2.5vw,22px) clamp(14px,2.5vw,22px); font-size: clamp(.78rem,1.7vw,.86rem); color: var(--muted); line-height: 1.72; }
-.faq-item.open .faq-a { max-height: 220px; }
-
-/* ── FOOTER ── */
-.footer { background: var(--black); border-top: 1px solid var(--border); position: relative; z-index: 1; }
-.ft-g {
-  max-width: 1280px; margin: 0 auto;
-  padding: clamp(36px,7vw,72px) var(--px) clamp(20px,4vw,40px);
-  display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-  gap: clamp(22px,4vw,48px);
-}
-.ft-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(.86rem,2vw,1rem); color: #fff; margin-bottom: 11px; }
-.ft-brand span { color: var(--red-light); }
-.ft-desc { color: var(--muted); font-size: clamp(.76rem,1.7vw,.84rem); line-height: 1.65; margin-bottom: 16px; }
-.ft-socs { display: flex; gap: 8px; flex-wrap: wrap; }
-.ft-s { width: 33px; height: 33px; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .77rem; transition: all .2s; }
-.ft-s:hover { background: var(--red); color: #fff; border-color: var(--red); }
-.ft-col h4 { font-family: 'Syne', sans-serif; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted2); margin-bottom: clamp(12px,2.5vw,22px); }
-.ft-col a { display: block; color: var(--muted); font-size: clamp(.76rem,1.7vw,.84rem); margin-bottom: 9px; transition: color .2s; }
-.ft-col a:hover { color: var(--red-light); }
-.ft-bar { max-width: 1280px; margin: 0 auto; padding: clamp(12px,2.5vw,18px) var(--px); border-top: 1px solid var(--border); text-align: center; color: rgba(255,255,255,.18); font-size: clamp(.68rem,1.4vw,.77rem); }
-
-/* ── REVEAL ── */
-.rev { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
-.rev.in { opacity: 1; transform: none; }
-.rev-l { opacity: 0; transform: translateX(-22px); transition: opacity .6s ease, transform .6s ease; }
-.rev-l.in { opacity: 1; transform: none; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1060px) {
-  .contact-grid { grid-template-columns: 1fr; }
-  .info-col { position: static; display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); }
-}
-@media (max-width: 768px) {
-  .f-row { grid-template-columns: 1fr; gap: 0; }
-  .sub-row { flex-direction: column-reverse; align-items: stretch; }
-  .btn-sub { width: 100%; justify-content: center; }
-  .sec-note { justify-content: center; }
-  .info-col { grid-template-columns: 1fr; }
-}
-@media (max-width: 500px) {
-  .chks { grid-template-columns: 1fr 1fr; }
-  .stats-row { gap: 6px; }
-  .stt .sv { font-size: 1.25rem; }
-}
-</style>
+    /* sticky info col fix */
+    @media (min-width: 1024px) { .info-sticky { position: sticky; top: 88px; } }
+  </style>
 </head>
-<body>
+<body class="bg-surface-bg text-gray-100 overflow-x-hidden">
 
-<div class="bg-grid"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
+  <!-- ══════════════ MOBILE MENU ══════════════ -->
+  <div id="mobNav" class="hidden fixed inset-0 z-[999] bg-[#050505]/98 flex-col items-center justify-center gap-7 text-center px-6 pt-20 pb-10">
+    <a href="index.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Home</a>
+    <a href="index.html#about" onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">About Us</a>
+    <a href="service.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Services</a>
+    <a href="gallery.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Gallery</a>
+    <a href="contactus.html" onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-brand-light">Contact</a>
+    <a href="contactus.html" onclick="closeMob()" class="mt-2 bg-brand-red text-white font-syne font-bold text-base px-10 py-3 rounded-xl hover:bg-brand-dark transition-colors">Get a Quote</a>
+  </div>
 
-<!-- MOBILE MENU -->
-<div class="mob-overlay" id="mobNav">
-  <a href="index.html"     onclick="closeMob()">Home</a>
-  <a href="about.html"     onclick="closeMob()">About Us</a>
-  <a href="service.html"   onclick="closeMob()">Services</a>
-  <a href="gallery.html"   onclick="closeMob()">Gallery</a>
-  <a href="contactus.html" class="active" onclick="closeMob()">Contact</a>
-  <a href="contactus.html" class="mob-cta-btn" onclick="closeMob()">Get a Quote</a>
-</div>
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav id="mainNav" class="fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-[clamp(16px,5vw,64px)] h-[68px] bg-surface-bg/80 backdrop-blur-xl border-b border-white/[0.06] transition-all duration-300">
+    <a href="index.html" class="font-syne font-extrabold text-[clamp(0.8rem,2vw,1rem)] text-white whitespace-nowrap flex-shrink-0">Jay<span class="text-brand-light">Tech</span> Smart Systems</a>
 
-<!-- NAV -->
-<nav class="nav" id="nav">
-  <a href="index.html" class="nav-brand">Jay<span>Tech</span> Smart Systems</a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About Us</a></li>
-    <li><a href="service.html">Services</a></li>
-    <li><a href="gallery.html">Gallery</a></li>
-    <li><a href="contactus.html" class="active">Contact Us</a></li>
-  </ul>
-  <a href="contactus.html" class="nav-cta">Get a Quote</a>
-  <button class="ham" id="ham" onclick="toggleMob()" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+    <ul class="hidden lg:flex items-center gap-[clamp(18px,2.8vw,36px)] list-none">
+      <li><a href="index.html"     class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Home</a></li>
+      <li><a href="index.html#about" class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">About Us</a></li>
+      <li><a href="service.html"   class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Services</a></li>
+      <li><a href="gallery.html"   class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Gallery</a></li>
+      <li><a href="contactus.html" class="text-white text-sm font-medium after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-brand-red relative">Contact Us</a></li>
+    </ul>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-pill rev"><i class="fa-solid fa-tower-broadcast"></i> Let's Connect</div>
-  <h1 class="rev" style="transition-delay:.1s">Talk to <span class="ghost">Our</span><br/>Experts</h1>
-  <p class="rev" style="transition-delay:.2s">Ready to power your business with intelligent ICT? Our specialists respond within 18 minutes during working hours.</p>
-</div>
+    <a href="contactus.html" class="hidden lg:block bg-brand-red text-white font-syne font-bold text-[0.82rem] px-5 py-[9px] rounded-[9px] hover:bg-brand-dark transition-colors whitespace-nowrap flex-shrink-0">Get a Quote</a>
 
-<!-- CONTACT GRID -->
-<div class="wrap">
-  <div class="contact-grid">
+    <button id="hamBtn" onclick="toggleMob()" aria-label="Toggle menu" class="lg:hidden flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1">
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
+    </button>
+  </nav>
 
-    <!-- INFO -->
-    <div class="info-col">
-
-      <div class="card rev-l">
-        <p class="card-lbl"><i class="fa-solid fa-circle-nodes"></i> Get In Touch</p>
-        <div class="citem">
-          <div class="cico"><i class="fa-solid fa-location-dot"></i></div>
-          <div class="cdet"><strong>Address</strong><span>Suite 23 Grace Plaza, Ibafo, Ogun State, Nigeria</span></div>
-        </div>
-        <div class="citem">
-          <div class="cico"><i class="fa-solid fa-phone"></i></div>
-          <div class="cdet"><strong>Phone</strong><a href="tel:+2349059949644">+234 905 994 9644</a></div>
-        </div>
-        <div class="citem">
-          <div class="cico"><i class="fa-solid fa-envelope"></i></div>
-          <div class="cdet"><strong>Email</strong><a href="mailto:adeboyejojide5@gmail.com">adeboyejojide5@gmail.com</a></div>
-        </div>
-        <div class="citem">
-          <div class="cico"><i class="fa-solid fa-clock"></i></div>
-          <div class="cdet"><strong>Working Hours</strong><span>Mon – Fri: 8:00 AM – 6:00 PM<br/>Sat: 9:00 AM – 3:00 PM</span></div>
-        </div>
-      </div>
-
-      <div class="card rev-l" style="transition-delay:.08s">
-        <p class="card-lbl"><i class="fa-solid fa-bolt"></i> Our Performance</p>
-        <div class="stats-row">
-          <div class="stt"><div class="sv">18</div><div class="sl">min response</div></div>
-          <div class="stt"><div class="sv">4.8</div><div class="sl">rating / 5.0</div></div>
-          <div class="stt"><div class="sv">26%</div><div class="sl">avg savings</div></div>
-        </div>
-      </div>
-
-      <div class="card rev-l" style="transition-delay:.16s">
-        <p class="card-lbl"><i class="fa-solid fa-share-nodes"></i> Follow Us</p>
-        <div class="socs">
-          <a href="#" class="soc-btn"><i class="fa-brands fa-x-twitter"></i><span>Twitter</span></a>
-          <a href="#" class="soc-btn"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
-          <a href="#" class="soc-btn"><i class="fa-brands fa-linkedin-in"></i><span>LinkedIn</span></a>
-        </div>
-      </div>
-
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="pt-[clamp(120px,18vw,170px)] pb-[clamp(40px,7vw,72px)] px-[clamp(16px,5vw,64px)] text-center">
+    <div class="inline-flex items-center gap-2 border border-brand-red/30 bg-brand-red/10 text-brand-light text-[0.66rem] font-bold tracking-[0.18em] uppercase px-4 py-2 rounded-full mb-5 rev">
+      <i class="fa-solid fa-tower-broadcast"></i> Let's Connect
     </div>
+    <h1 class="font-syne font-extrabold text-[clamp(2.2rem,8vw,6rem)] leading-[1.02] tracking-tight text-white mb-4 rev" style="transition-delay:.08s">
+      Talk to Our<br/><span class="text-brand-red">Experts</span>
+    </h1>
+    <p class="text-gray-400 text-[clamp(0.88rem,2vw,1.05rem)] max-w-[500px] mx-auto leading-relaxed rev" style="transition-delay:.16s">
+      Ready to power your business with intelligent ICT? Our specialists respond within 18 minutes during working hours.
+    </p>
+  </section>
 
-    <!-- FORM -->
-    <div class="form-col rev" style="transition-delay:.12s">
+  <!-- ══════════════ CONTACT GRID ══════════════ -->
+  <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pb-[clamp(56px,8vw,96px)]">
+    <div class="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 items-start">
 
-      <div class="suc-lay" id="sucLay">
-        <div class="suc-ico"><i class="fa-solid fa-check"></i></div>
-        <h3>Message Sent!</h3>
-        <p>Thanks for reaching out. Our team will respond within 18 minutes during working hours.</p>
-        <button class="btn-bk" onclick="resetForm()"><i class="fa-solid fa-rotate-left" style="margin-right:8px"></i>Send Another</button>
+      <!-- INFO COLUMN -->
+      <div class="info-sticky flex flex-col gap-4">
+
+        <!-- Contact Details -->
+        <div class="bg-surface-card border border-white/[0.07] rounded-2xl p-[clamp(18px,3.5vw,28px)] hover:border-brand-red/25 transition-all duration-300 hover:translate-x-1 rev-l">
+          <p class="flex items-center gap-2 text-brand-red text-[0.65rem] font-bold tracking-[0.16em] uppercase mb-5">
+            <i class="fa-solid fa-circle-nodes"></i> Get In Touch
+          </p>
+
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-9 h-9 flex-shrink-0 bg-brand-red/10 border border-brand-red/20 rounded-[10px] flex items-center justify-center text-brand-light text-[0.78rem] mt-[2px]">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <strong class="block text-[0.67rem] font-semibold text-white/30 uppercase tracking-wide mb-1">Address</strong>
+              <span class="text-gray-400 text-[0.85rem] leading-snug">Suite 23 Grace Plaza, Ibafo, Ogun State, Nigeria</span>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-9 h-9 flex-shrink-0 bg-brand-red/10 border border-brand-red/20 rounded-[10px] flex items-center justify-center text-brand-light text-[0.78rem] mt-[2px]">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <div>
+              <strong class="block text-[0.67rem] font-semibold text-white/30 uppercase tracking-wide mb-1">Phone</strong>
+              <a href="tel:+2349059949644" class="text-gray-400 text-[0.85rem] hover:text-brand-light transition-colors">+234 905 994 9644</a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-9 h-9 flex-shrink-0 bg-brand-red/10 border border-brand-red/20 rounded-[10px] flex items-center justify-center text-brand-light text-[0.78rem] mt-[2px]">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div>
+              <strong class="block text-[0.67rem] font-semibold text-white/30 uppercase tracking-wide mb-1">Email</strong>
+              <a href="mailto:adeboyejojide5@gmail.com" class="text-gray-400 text-[0.85rem] hover:text-brand-light transition-colors break-all">adeboyejojide5@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 flex-shrink-0 bg-brand-red/10 border border-brand-red/20 rounded-[10px] flex items-center justify-center text-brand-light text-[0.78rem] mt-[2px]">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+              <strong class="block text-[0.67rem] font-semibold text-white/30 uppercase tracking-wide mb-1">Working Hours</strong>
+              <span class="text-gray-400 text-[0.85rem] leading-snug">Mon – Fri: 8:00 AM – 6:00 PM<br/>Sat: 9:00 AM – 3:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance Stats -->
+        <div class="bg-surface-card border border-white/[0.07] rounded-2xl p-[clamp(18px,3.5vw,28px)] hover:border-brand-red/25 transition-all duration-300 hover:translate-x-1 rev-l" style="transition-delay:.07s">
+          <p class="flex items-center gap-2 text-brand-red text-[0.65rem] font-bold tracking-[0.16em] uppercase mb-4">
+            <i class="fa-solid fa-bolt"></i> Our Performance
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-surface-input border border-white/[0.05] rounded-xl p-3 text-center">
+              <div class="font-syne font-extrabold text-[clamp(1.2rem,3.5vw,1.9rem)] text-brand-light leading-none">18</div>
+              <div class="text-[0.62rem] text-white/30 mt-1">min response</div>
+            </div>
+            <div class="bg-surface-input border border-white/[0.05] rounded-xl p-3 text-center">
+              <div class="font-syne font-extrabold text-[clamp(1.2rem,3.5vw,1.9rem)] text-brand-light leading-none">4.8</div>
+              <div class="text-[0.62rem] text-white/30 mt-1">rating / 5.0</div>
+            </div>
+            <div class="bg-surface-input border border-white/[0.05] rounded-xl p-3 text-center">
+              <div class="font-syne font-extrabold text-[clamp(1.2rem,3.5vw,1.9rem)] text-brand-light leading-none">26%</div>
+              <div class="text-[0.62rem] text-white/30 mt-1">avg savings</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="bg-surface-card border border-white/[0.07] rounded-2xl p-[clamp(18px,3.5vw,28px)] hover:border-brand-red/25 transition-all duration-300 hover:translate-x-1 rev-l" style="transition-delay:.14s">
+          <p class="flex items-center gap-2 text-brand-red text-[0.65rem] font-bold tracking-[0.16em] uppercase mb-4">
+            <i class="fa-solid fa-share-nodes"></i> Follow Us
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <a href="#" class="flex items-center justify-center gap-2 bg-surface-input border border-white/[0.05] rounded-[9px] py-3 text-gray-400 text-[0.78rem] hover:bg-brand-red hover:border-brand-red hover:text-white hover:-translate-y-1 transition-all duration-200">
+              <i class="fa-brands fa-x-twitter text-[0.82rem]"></i><span class="text-[0.73rem]">Twitter</span>
+            </a>
+            <a href="#" class="flex items-center justify-center gap-2 bg-surface-input border border-white/[0.05] rounded-[9px] py-3 text-gray-400 text-[0.78rem] hover:bg-brand-red hover:border-brand-red hover:text-white hover:-translate-y-1 transition-all duration-200">
+              <i class="fa-brands fa-facebook-f text-[0.82rem]"></i><span class="text-[0.73rem]">Facebook</span>
+            </a>
+            <a href="#" class="flex items-center justify-center gap-2 bg-surface-input border border-white/[0.05] rounded-[9px] py-3 text-gray-400 text-[0.78rem] hover:bg-brand-red hover:border-brand-red hover:text-white hover:-translate-y-1 transition-all duration-200">
+              <i class="fa-brands fa-linkedin-in text-[0.82rem]"></i><span class="text-[0.73rem]">LinkedIn</span>
+            </a>
+          </div>
+        </div>
+
       </div>
 
-      <h2 class="form-ttl">Send Us a Message</h2>
-      <p class="form-sub">Fill in the details below and one of our ICT specialists will be in touch shortly.</p>
+      <!-- FORM COLUMN -->
+      <div class="bg-surface-card border border-white/[0.07] rounded-2xl p-[clamp(22px,5vw,52px)] relative overflow-hidden rev" style="transition-delay:.1s">
 
-      <form id="cForm" novalidate>
-        <div class="f-row">
-          <div class="f-grp">
-            <label class="f-lbl" for="firstName">First Name *</label>
-            <input class="f-ctrl" type="text" id="firstName" name="firstName" placeholder="John" required/>
+        <!-- Success Overlay -->
+        <div id="sucLay" class="suc-overlay absolute inset-0 bg-surface-card rounded-2xl flex-col items-center justify-center text-center px-8 z-10">
+          <div class="w-[clamp(56px,10vw,84px)] h-[clamp(56px,10vw,84px)] bg-green-500/10 border-2 border-green-500/30 rounded-full flex items-center justify-center text-green-400 text-[clamp(1.4rem,4vw,2rem)] mb-6 animate-pulseRing">
+            <i class="fa-solid fa-check"></i>
           </div>
-          <div class="f-grp">
-            <label class="f-lbl" for="lastName">Last Name *</label>
-            <input class="f-ctrl" type="text" id="lastName" name="lastName" placeholder="Doe" required/>
-          </div>
-        </div>
-
-        <div class="f-row">
-          <div class="f-grp">
-            <label class="f-lbl" for="email">Email Address *</label>
-            <input class="f-ctrl" type="email" id="email" name="email" placeholder="john@company.com" required/>
-          </div>
-          <div class="f-grp">
-            <label class="f-lbl" for="phone">Phone Number</label>
-            <input class="f-ctrl" type="tel" id="phone" name="phone" placeholder="+234 800 000 0000"/>
-          </div>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl" for="company">Company / Organisation</label>
-          <input class="f-ctrl" type="text" id="company" name="company" placeholder="Your company name"/>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl" for="svc">Primary Service of Interest</label>
-          <div class="sel-w">
-            <select class="f-ctrl" id="svc" name="service">
-              <option value="" disabled selected>Select a service…</option>
-              <option>Solar / Inverter Installation</option>
-              <option>Enterprise Networking</option>
-              <option>CCTV Installation &amp; Maintenance</option>
-              <option>Access Control Systems</option>
-              <option>IP Telephony</option>
-              <option>Web &amp; Software Development</option>
-              <option>Internet Connectivity (Starlink)</option>
-              <option>General Enquiry</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl">Also Interested In</label>
-          <div class="chks">
-            <label class="chk"><input type="checkbox" name="int" value="solar"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">⚡ Solar</span></label>
-            <label class="chk"><input type="checkbox" name="int" value="networking"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">🌐 Networking</span></label>
-            <label class="chk"><input type="checkbox" name="int" value="cctv"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">📷 CCTV</span></label>
-            <label class="chk"><input type="checkbox" name="int" value="access"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">🔐 Access</span></label>
-            <label class="chk"><input type="checkbox" name="int" value="software"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">💻 Software</span></label>
-            <label class="chk"><input type="checkbox" name="int" value="internet"/><div class="chkb"><i class="fa-solid fa-check"></i></div><span class="cl">🛰️ Starlink</span></label>
-          </div>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl" for="budget">Estimated Budget</label>
-          <div class="sel-w">
-            <select class="f-ctrl" id="budget" name="budget">
-              <option value="" disabled selected>Select a range…</option>
-              <option>Under ₦200,000</option>
-              <option>₦200,000 – ₦500,000</option>
-              <option>₦500,000 – ₦1,000,000</option>
-              <option>₦1,000,000 – ₦5,000,000</option>
-              <option>Above ₦5,000,000</option>
-              <option>Prefer not to say</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl" for="message">Message *</label>
-          <textarea class="f-ctrl" id="message" name="message" placeholder="Describe your project, requirements, or questions in detail…" required></textarea>
-        </div>
-
-        <div class="f-grp">
-          <label class="f-lbl">Attach a File (optional)</label>
-          <div class="file-z" onclick="document.getElementById('fileInput').click()">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <p>Drag &amp; drop or <strong>click to upload</strong></p>
-            <p style="margin-top:4px;font-size:.7rem">PDF, DOCX, JPG, PNG — Max 10 MB</p>
-            <input type="file" id="fileInput" accept=".pdf,.docx,.jpg,.jpeg,.png"/>
-          </div>
-          <p id="fn2"></p>
-        </div>
-
-        <div class="sub-row">
-          <p class="sec-note"><i class="fa-solid fa-shield-halved"></i>Your data is secure &amp; never shared.</p>
-          <button type="submit" class="btn-sub" id="subBtn">
-            <span class="btn-t"><i class="fa-solid fa-paper-plane"></i>&nbsp; Send Message</span>
-            <span class="spin"></span>
+          <h3 class="font-syne font-extrabold text-[clamp(1.25rem,4vw,1.7rem)] text-white mb-3">Message Sent!</h3>
+          <p class="text-gray-400 text-[clamp(0.8rem,1.8vw,0.9rem)] leading-relaxed mb-7 max-w-[360px]">Thanks for reaching out. Our team will respond within 18 minutes during working hours.</p>
+          <button onclick="resetForm()" class="bg-surface-hover border border-white/[0.08] text-white font-syne font-bold text-[0.85rem] px-7 py-3 rounded-[9px] hover:bg-white/10 transition-colors cursor-pointer">
+            <i class="fa-solid fa-rotate-left mr-2"></i>Send Another
           </button>
         </div>
-      </form>
+
+        <h2 class="font-syne font-extrabold text-[clamp(1.3rem,3.5vw,1.85rem)] tracking-tight text-white mb-2">Send Us a Message</h2>
+        <p class="text-gray-400 text-[clamp(0.82rem,1.8vw,0.92rem)] leading-relaxed mb-8">Fill in the details below and one of our ICT specialists will be in touch shortly.</p>
+
+        <form id="cForm" novalidate>
+
+          <!-- Name Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="flex flex-col gap-2">
+              <label for="firstName" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">First Name *</label>
+              <input type="text" id="firstName" name="firstName" placeholder="John" required
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="lastName" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Doe" required
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full" />
+            </div>
+          </div>
+
+          <!-- Email / Phone -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="flex flex-col gap-2">
+              <label for="email" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Email Address *</label>
+              <input type="email" id="email" name="email" placeholder="john@company.com" required
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="phone" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="+234 800 000 0000"
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full" />
+            </div>
+          </div>
+
+          <!-- Company -->
+          <div class="flex flex-col gap-2 mb-4">
+            <label for="company" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Company / Organisation</label>
+            <input type="text" id="company" name="company" placeholder="Your company name"
+              class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full" />
+          </div>
+
+          <!-- Service Select -->
+          <div class="flex flex-col gap-2 mb-4">
+            <label for="svc" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Primary Service of Interest</label>
+            <div class="sel-wrap">
+              <select id="svc" name="service"
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-gray-300 text-[0.9rem] outline-none focus:border-brand-red/50 transition-all w-full">
+                <option value="" disabled selected class="text-gray-500">Select a service…</option>
+                <option class="bg-surface-card">Solar / Inverter Installation</option>
+                <option class="bg-surface-card">Enterprise Networking</option>
+                <option class="bg-surface-card">CCTV Installation &amp; Maintenance</option>
+                <option class="bg-surface-card">Access Control Systems</option>
+                <option class="bg-surface-card">IP Telephony</option>
+                <option class="bg-surface-card">Web &amp; Software Development</option>
+                <option class="bg-surface-card">Internet Connectivity (Starlink)</option>
+                <option class="bg-surface-card">General Enquiry</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Also Interested In -->
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Also Interested In</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="solar" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">⚡ Solar</span>
+              </label>
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="networking" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">🌐 Networking</span>
+              </label>
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="cctv" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">📷 CCTV</span>
+              </label>
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="access" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">🔐 Access</span>
+              </label>
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="software" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">💻 Software</span>
+              </label>
+              <label class="chk flex items-center gap-2 bg-surface-input border border-white/[0.06] rounded-[9px] px-3 py-[10px] cursor-pointer hover:border-brand-red/30 hover:bg-surface-hover transition-all select-none">
+                <input type="checkbox" name="int" value="internet" class="hidden"/>
+                <div class="chk-box w-[17px] h-[17px] flex-shrink-0 border-2 border-white/20 rounded-[5px] flex items-center justify-center transition-all"><i class="fa-solid fa-check text-white text-[0.55rem]"></i></div>
+                <span class="chk-lbl text-gray-400 text-[0.78rem] truncate">🛰️ Starlink</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Budget -->
+          <div class="flex flex-col gap-2 mb-4">
+            <label for="budget" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Estimated Budget</label>
+            <div class="sel-wrap">
+              <select id="budget" name="budget"
+                class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-gray-300 text-[0.9rem] outline-none focus:border-brand-red/50 transition-all w-full">
+                <option value="" disabled selected class="text-gray-500">Select a range…</option>
+                <option class="bg-surface-card">Under ₦200,000</option>
+                <option class="bg-surface-card">₦200,000 – ₦500,000</option>
+                <option class="bg-surface-card">₦500,000 – ₦1,000,000</option>
+                <option class="bg-surface-card">₦1,000,000 – ₦5,000,000</option>
+                <option class="bg-surface-card">Above ₦5,000,000</option>
+                <option class="bg-surface-card">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="flex flex-col gap-2 mb-4">
+            <label for="message" class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Message *</label>
+            <textarea id="message" name="message" required rows="5" placeholder="Describe your project, requirements, or questions in detail…"
+              class="bg-surface-input border border-white/[0.07] rounded-[9px] px-4 py-[13px] text-white text-[0.9rem] placeholder-white/20 outline-none focus:border-brand-red/50 focus:bg-surface-hover transition-all w-full resize-y min-h-[118px]"></textarea>
+          </div>
+
+          <!-- File Upload -->
+          <div class="flex flex-col gap-2 mb-6">
+            <label class="text-[0.68rem] font-semibold tracking-wider uppercase text-white/40">Attach a File (optional)</label>
+            <div onclick="document.getElementById('fileInput').click()" class="border border-dashed border-white/[0.1] rounded-[9px] py-5 px-4 text-center cursor-pointer hover:border-brand-red/35 hover:bg-surface-input transition-all">
+              <i class="fa-solid fa-cloud-arrow-up text-gray-500 text-xl mb-2 block"></i>
+              <p class="text-gray-500 text-[0.8rem]">Drag &amp; drop or <strong class="text-brand-light font-semibold">click to upload</strong></p>
+              <p class="text-gray-600 text-[0.7rem] mt-1">PDF, DOCX, JPG, PNG — Max 10 MB</p>
+              <input type="file" id="fileInput" accept=".pdf,.docx,.jpg,.jpeg,.png" class="hidden"/>
+            </div>
+            <p id="fn2" class="hidden text-brand-light text-[0.77rem]"></p>
+          </div>
+
+          <!-- Submit Row -->
+          <div class="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 flex-wrap">
+            <p class="flex items-center gap-2 text-gray-500 text-[0.77rem]">
+              <i class="fa-solid fa-shield-halved text-green-400 text-[0.78rem]"></i>
+              Your data is secure &amp; never shared.
+            </p>
+            <button type="submit" id="subBtn" class="relative w-full sm:w-auto flex items-center justify-center gap-3 bg-brand-red text-white font-syne font-bold text-[0.88rem] px-9 py-[14px] rounded-[9px] hover:bg-brand-dark hover:-translate-y-[2px] hover:shadow-[0_10px_28px_rgba(220,38,38,0.35)] transition-all cursor-pointer overflow-hidden whitespace-nowrap">
+              <span class="btn-label flex items-center gap-2"><i class="fa-solid fa-paper-plane"></i> Send Message</span>
+              <span class="btn-spin absolute inset-0 flex items-center justify-center">
+                <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              </span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<!-- MAP -->
-<div class="map-sec">
-  <div class="map-wrap rev">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0!2d3.4833!3d6.7167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c7b45c7e289%3A0x1!2sIbafo%2C+Ogun+State!5e0!3m2!1sen!2sng!4v1234567890" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="JayTech Location"></iframe>
-    <div class="map-badge">
-      <i class="fa-solid fa-location-dot"></i>
-      <span>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
-    </div>
-  </div>
-</div>
-
-<!-- FAQ -->
-<div class="faq-sec">
-  <div class="faq-hd">
-    <p class="faq-eye">Common Questions</p>
-    <h2 class="rev">Frequently Asked Questions</h2>
-  </div>
-  <div class="faq-g">
-    <div class="faq-item rev"><div class="faq-q" onclick="tFaq(this)"><span>How quickly do you respond to enquiries?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>We typically respond within 18 minutes during working hours. After hours, we follow up first thing the next business day.</p></div></div>
-    <div class="faq-item rev" style="transition-delay:.05s"><div class="faq-q" onclick="tFaq(this)"><span>Do you offer free site assessments?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>Yes! Complimentary on-site assessments are available within Ogun and Lagos State for qualifying projects.</p></div></div>
-    <div class="faq-item rev" style="transition-delay:.1s"><div class="faq-q" onclick="tFaq(this)"><span>What industries do you serve?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>We serve corporate offices, healthcare, education, manufacturing, retail, and residential sectors across Nigeria.</p></div></div>
-    <div class="faq-item rev" style="transition-delay:.15s"><div class="faq-q" onclick="tFaq(this)"><span>Do you provide post-installation support?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>All installations include a warranty plus optional maintenance packages. Our support team operates 6 days a week.</p></div></div>
-    <div class="faq-item rev" style="transition-delay:.2s"><div class="faq-q" onclick="tFaq(this)"><span>Can you handle large enterprise projects?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>Absolutely. JayTech handles any scale — single office to multi-site enterprise deployments spanning multiple states.</p></div></div>
-    <div class="faq-item rev" style="transition-delay:.25s"><div class="faq-q" onclick="tFaq(this)"><span>How do I get a detailed quotation?</span><div class="faq-ic"><i class="fa-solid fa-plus"></i></div></div><div class="faq-a"><p>Fill out the contact form above. We'll review your requirements and deliver a comprehensive proposal within 24 hours.</p></div></div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="ft-g">
-    <div>
-      <p class="ft-brand">Jay<span>Tech</span> Smart Systems Ltd</p>
-      <p class="ft-desc">Powering businesses with intelligent ICT infrastructure across Nigeria.</p>
-      <div class="ft-socs">
-        <a href="#" class="ft-s"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="#" class="ft-s"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="ft-s"><i class="fa-brands fa-youtube"></i></a>
-        <a href="#" class="ft-s"><i class="fa-brands fa-linkedin-in"></i></a>
+  <!-- ══════════════ MAP ══════════════ -->
+  <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pb-[clamp(56px,8vw,96px)]">
+    <div class="rev border border-white/[0.07] rounded-2xl overflow-hidden relative">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0!2d3.4833!3d6.7167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c7b45c7e289%3A0x1!2sIbafo%2C+Ogun+State!5e0!3m2!1sen!2sng!4v1234567890"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="JayTech Location"
+        class="w-full block border-none" style="height:clamp(230px,35vw,420px);filter:invert(1) hue-rotate(200deg) grayscale(25%)"></iframe>
+      <div class="absolute bottom-3 left-3 bg-surface-bg/90 backdrop-blur-xl border border-white/[0.07] rounded-xl px-4 py-2 flex items-center gap-3 max-w-[calc(100%-24px)]">
+        <i class="fa-solid fa-location-dot text-brand-red text-[0.84rem] flex-shrink-0"></i>
+        <span class="text-[clamp(0.68rem,1.7vw,0.82rem)] text-white/80">Suite 23 Grace Plaza, Ibafo, Ogun State</span>
       </div>
     </div>
-    <div class="ft-col">
-      <h4>Services</h4>
-      <a href="service.html">Solar Energy Solutions</a>
-      <a href="service.html">CCTV Security Systems</a>
-      <a href="service.html">Enterprise Networking</a>
-      <a href="service.html">Access Control</a>
-      <a href="service.html">Web &amp; Software Dev</a>
-      <a href="service.html">IP Telephony</a>
+  </div>
+
+  <!-- ══════════════ FAQ ══════════════ -->
+  <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pb-[clamp(56px,8vw,96px)]">
+    <div class="text-center mb-[clamp(28px,5vw,52px)]">
+      <p class="inline-block text-brand-red text-[0.66rem] font-bold tracking-[0.17em] uppercase mb-3">Common Questions</p>
+      <h2 class="font-syne font-extrabold text-[clamp(1.5rem,5vw,2.6rem)] tracking-tight text-white rev">Frequently Asked Questions</h2>
     </div>
-    <div class="ft-col">
-      <h4>Company</h4>
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="service.html">Services</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="contactus.html">Contact Us</a>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">How quickly do you respond to enquiries?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">We typically respond within 18 minutes during working hours. After hours, we follow up first thing the next business day.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev" style="transition-delay:.05s">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">Do you offer free site assessments?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">Yes! Complimentary on-site assessments are available within Ogun and Lagos State for qualifying projects.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev" style="transition-delay:.1s">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">What industries do you serve?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">We serve corporate offices, healthcare, education, manufacturing, retail, and residential sectors across Nigeria.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev" style="transition-delay:.15s">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">Do you provide post-installation support?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">All installations include a warranty plus optional maintenance packages. Our support team operates 6 days a week.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev" style="transition-delay:.2s">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">Can you handle large enterprise projects?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">Absolutely. JayTech handles any scale — single office to multi-site enterprise deployments spanning multiple states.</p>
+        </div>
+      </div>
+
+      <div class="faq-item bg-surface-card border border-white/[0.07] rounded-2xl overflow-hidden transition-colors duration-300 rev" style="transition-delay:.25s">
+        <div class="faq-q flex items-center justify-between px-[clamp(14px,2.5vw,22px)] py-[clamp(14px,2.5vw,20px)] cursor-pointer gap-3" onclick="tFaq(this)">
+          <span class="font-syne font-bold text-[clamp(0.8rem,1.8vw,0.91rem)] text-white">How do I get a detailed quotation?</span>
+          <div class="faq-icon w-7 h-7 flex-shrink-0 bg-brand-red/10 rounded-[7px] flex items-center justify-center text-brand-red text-[0.62rem] transition-all duration-300"><i class="fa-solid fa-plus"></i></div>
+        </div>
+        <div class="faq-body max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <p class="px-[clamp(14px,2.5vw,22px)] pb-[clamp(14px,2.5vw,20px)] text-[clamp(0.78rem,1.7vw,0.86rem)] text-gray-400 leading-relaxed">Fill out the contact form above. We'll review your requirements and deliver a comprehensive proposal within 24 hours.</p>
+        </div>
+      </div>
+
     </div>
   </div>
-  <div class="ft-bar">&copy; 2025 JayTech Smart Systems Ltd. All rights reserved.</div>
-</footer>
 
-<script>
-  /* ── NAV SCROLL ── */
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), { passive: true });
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="bg-[#080808] border-t border-white/[0.06]">
+    <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pt-[clamp(40px,7vw,72px)] pb-[clamp(24px,4vw,44px)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] gap-[clamp(28px,4vw,56px)]">
+      <div>
+        <p class="font-syne font-extrabold text-base text-white mb-3">Jay<span class="text-brand-light">Tech</span> Smart Systems Ltd</p>
+        <p class="text-gray-500 text-[0.82rem] leading-relaxed mb-5">Powering businesses with intelligent ICT infrastructure across Nigeria.</p>
+        <div class="flex gap-2 flex-wrap">
+          <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-syne text-[0.74rem] font-bold uppercase tracking-widest text-white/25 mb-5">Services</h4>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Solar Energy Solutions</a>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">CCTV Security Systems</a>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Enterprise Networking</a>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Access Control</a>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Web &amp; Software Dev</a>
+        <a href="service.html" class="block text-gray-500 text-[0.82rem] hover:text-brand-light transition-colors">IP Telephony</a>
+      </div>
+      <div>
+        <h4 class="font-syne text-[0.74rem] font-bold uppercase tracking-widest text-white/25 mb-5">Company</h4>
+        <a href="index.html"     class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Home</a>
+        <a href="index.html#about" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">About Us</a>
+        <a href="service.html"   class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Services</a>
+        <a href="gallery.html"   class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Gallery</a>
+        <a href="contactus.html" class="block text-gray-500 text-[0.82rem] hover:text-brand-light transition-colors">Contact Us</a>
+      </div>
+    </div>
+    <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] border-t border-white/[0.06] py-4 text-center text-white/20 text-[0.74rem]">
+      &copy; 2025 JayTech Smart Systems Ltd. All rights reserved.
+    </div>
+  </footer>
 
-  /* ── MOBILE MENU ── */
-  const mob = document.getElementById('mobNav');
-  const ham = document.getElementById('ham');
-  function toggleMob() {
-    const o = mob.classList.toggle('open');
-    ham.classList.toggle('open', o);
-    document.body.style.overflow = o ? 'hidden' : '';
-  }
-  function closeMob() {
-    mob.classList.remove('open');
-    ham.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  window.addEventListener('resize', () => { if (window.innerWidth >= 768) closeMob(); }, { passive: true });
+  <script>
+    /* ── NAV SCROLL ── */
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('bg-surface-bg/95', scrollY > 50);
+      nav.classList.toggle('shadow-[0_2px_28px_rgba(0,0,0,0.45)]', scrollY > 50);
+    }, { passive: true });
 
-  /* ── SCROLL REVEAL ── */
-  const obs = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
-  }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
-  document.querySelectorAll('.rev, .rev-l').forEach(el => obs.observe(el));
+    /* ── MOBILE MENU ── */
+    const mob = document.getElementById('mobNav');
+    const hamBtn = document.getElementById('hamBtn');
+    const hamLines = hamBtn.querySelectorAll('.ham-line');
+    function toggleMob() {
+      const o = mob.classList.toggle('hidden');
+      if (!o) {
+        mob.style.display = 'flex';
+        mob.classList.remove('hidden');
+        hamLines[0].style.transform = 'translateY(7px) rotate(45deg)';
+        hamLines[1].style.opacity = '0';
+        hamLines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+        document.body.style.overflow = 'hidden';
+      } else {
+        closeMob();
+      }
+    }
+    function closeMob() {
+      mob.classList.add('hidden');
+      mob.style.display = '';
+      hamLines[0].style.transform = '';
+      hamLines[1].style.opacity = '';
+      hamLines[2].style.transform = '';
+      document.body.style.overflow = '';
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeMob(); }, { passive: true });
 
-  /* ── FILE INPUT ── */
-  document.getElementById('fileInput').addEventListener('change', function() {
-    const el = document.getElementById('fn2');
-    if (this.files[0]) { el.textContent = '📎 ' + this.files[0].name; el.style.display = 'block'; }
-  });
+    /* ── SCROLL REVEAL ── */
+    const obs = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+    document.querySelectorAll('.rev, .rev-l').forEach(el => obs.observe(el));
 
-  /* ── FORM SUBMIT ── */
-  document.getElementById('cForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('subBtn');
-    btn.classList.add('loading'); btn.disabled = true;
-    setTimeout(() => {
-      btn.classList.remove('loading'); btn.disabled = false;
-      document.getElementById('sucLay').classList.add('show');
-    }, 2000);
-  });
+    /* ── CHECKBOXES ── */
+    document.querySelectorAll('.chk').forEach(label => {
+      const inp = label.querySelector('input');
+      inp.addEventListener('change', () => {
+        const box = label.querySelector('.chk-box');
+        if (inp.checked) {
+          box.style.background = '#dc2626';
+          box.style.borderColor = '#dc2626';
+          label.style.borderColor = 'rgba(220,38,38,0.38)';
+          label.style.background = 'rgba(220,38,38,0.06)';
+          label.querySelector('.chk-lbl').style.color = '#fff';
+        } else {
+          box.style.background = '';
+          box.style.borderColor = '';
+          label.style.borderColor = '';
+          label.style.background = '';
+          label.querySelector('.chk-lbl').style.color = '';
+        }
+      });
+    });
 
-  function resetForm() {
-    document.getElementById('sucLay').classList.remove('show');
-    document.getElementById('cForm').reset();
-    const el = document.getElementById('fn2');
-    el.textContent = ''; el.style.display = 'none';
-  }
+    /* ── FILE INPUT ── */
+    document.getElementById('fileInput').addEventListener('change', function() {
+      const el = document.getElementById('fn2');
+      if (this.files[0]) { el.textContent = '📎 ' + this.files[0].name; el.classList.remove('hidden'); }
+    });
 
-  /* ── FAQ ── */
-  function tFaq(el) {
-    const item = el.parentElement;
-    const was = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    if (!was) item.classList.add('open');
-  }
-</script>
+    /* ── FORM SUBMIT ── */
+    document.getElementById('cForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('subBtn');
+      btn.classList.add('btn-loading');
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.classList.remove('btn-loading');
+        btn.disabled = false;
+        document.getElementById('sucLay').classList.add('show');
+      }, 2000);
+    });
+
+    function resetForm() {
+      document.getElementById('sucLay').classList.remove('show');
+      document.getElementById('cForm').reset();
+      const el = document.getElementById('fn2');
+      el.textContent = ''; el.classList.add('hidden');
+      document.querySelectorAll('.chk').forEach(label => {
+        const box = label.querySelector('.chk-box');
+        box.style.background = '';
+        box.style.borderColor = '';
+        label.style.borderColor = '';
+        label.style.background = '';
+        label.querySelector('.chk-lbl').style.color = '';
+      });
+    }
+
+    /* ── FAQ ── */
+    function tFaq(el) {
+      const item = el.parentElement;
+      const was = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!was) item.classList.add('open');
+    }
+  </script>
 </body>
 </html>
