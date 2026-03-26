@@ -11,361 +11,736 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
+    /* ── RESET & TOKENS ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --red:       #dc2626;
-      --red-dark:  #b91c1c;
-      --red-light: #f87171;
-      --black:     #080808;
-      --gray-50:   #f9fafb;
-      --gray-100:  #f3f4f6;
-      --gray-500:  #6b7280;
-      --gray-900:  #111827;
+      --red:        #dc2626;
+      --red-dark:   #b91c1c;
+      --red-light:  #f87171;
+      --black:      #080808;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-500:   #6b7280;
+      --gray-900:   #111827;
+
+      /* spacing scale */
+      --sp-xs:   8px;
+      --sp-sm:   16px;
+      --sp-md:   24px;
+      --sp-lg:   40px;
+      --sp-xl:   64px;
+      --sp-2xl:  80px;
+
+      /* section horizontal padding — fluid */
+      --px: clamp(16px, 5vw, 64px);
+
+      /* border-radius */
+      --r-sm:  8px;
+      --r-md:  14px;
+      --r-lg:  20px;
     }
 
-    html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--gray-900); overflow-x: hidden; }
-    h1,h2,h3,h4,h5,.font-display { font-family: 'Syne', sans-serif; }
-    img { max-width: 100%; display: block; }
-    a { text-decoration: none; color: inherit; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
-    /* ── NAV ── */
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: var(--gray-900);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, h5, .font-display { font-family: 'Syne', sans-serif; }
+
+    img { max-width: 100%; display: block; }
+    a   { text-decoration: none; color: inherit; }
+
+    /* ── UTILITY ── */
+    .section-eyebrow {
+      color: var(--red);
+      font-weight: 700;
+      font-size: clamp(0.6rem, 1.2vw, 0.68rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.78rem, 1.8vw, 0.88rem);
+      padding: clamp(11px,2vw,15px) clamp(20px,4vw,34px);
+      border-radius: var(--r-md);
+      transition: background 0.22s, transform 0.22s, box-shadow 0.22s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(220,38,38,.38);
+    }
+    .btn-ghost {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.78rem, 1.8vw, 0.88rem);
+      padding: clamp(11px,2vw,15px) clamp(20px,4vw,34px);
+      border-radius: var(--r-md);
+      transition: background 0.22s, border-color 0.22s;
+      white-space: nowrap;
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.55);
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
     #mainNav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 64px;
-      transition: all 0.35s ease;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: clamp(14px,2.5vw,20px) var(--px);
+      transition: background 0.35s, backdrop-filter 0.35s, box-shadow 0.35s, padding 0.35s;
     }
     #mainNav.scrolled {
-      background: rgba(8,8,8,0.94);
+      background: rgba(8,8,8,0.95);
       backdrop-filter: blur(18px);
-      padding: 14px 64px;
+      -webkit-backdrop-filter: blur(18px);
       box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+      padding: clamp(10px,2vw,14px) var(--px);
     }
+
     .nav-brand {
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      font-size: 1rem; color: #fff; white-space: nowrap;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.82rem, 2vw, 1rem);
+      color: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .nav-brand span { color: var(--red-light); }
+
     .nav-links {
-      display: flex; align-items: center; gap: 36px;
+      display: flex;
+      align-items: center;
+      gap: clamp(16px, 3vw, 36px);
       list-style: none;
     }
     .nav-links a {
-      color: rgba(255,255,255,0.8); font-size: 0.85rem; font-weight: 500;
-      position: relative; transition: color 0.25s;
+      color: rgba(255,255,255,0.8);
+      font-size: clamp(0.78rem, 1.4vw, 0.85rem);
+      font-weight: 500;
+      position: relative;
+      transition: color 0.25s;
+      white-space: nowrap;
     }
     .nav-links a::after {
-      content: ''; position: absolute; bottom: -4px; left: 0;
-      width: 0; height: 2px; background: var(--red);
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--red);
       transition: width 0.3s;
     }
-    .nav-links a:hover { color: #fff; }
-    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover         { color: #fff; }
+    .nav-links a:hover::after  { width: 100%; }
+    .nav-links a.active-link   { color: var(--red-light); }
+
     .nav-cta {
-      background: var(--red); color: #fff;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.82rem;
-      padding: 10px 20px; border-radius: 9px;
+      background: var(--red);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.75rem, 1.4vw, 0.82rem);
+      padding: clamp(8px,1.5vw,10px) clamp(14px,2.5vw,20px);
+      border-radius: var(--r-sm);
       transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(220,38,38,0.35); }
+    .nav-cta:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(220,38,38,.35);
+    }
 
     /* hamburger */
     .ham {
-      display: none; flex-direction: column; gap: 5px;
-      background: none; border: none; cursor: pointer; padding: 4px;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
+      z-index: 1100;
     }
-    .ham span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+    .ham span {
+      display: block;
+      width: 24px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
     .ham.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .ham.open span:nth-child(2) { opacity: 0; }
     .ham.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* ── MOBILE MENU ── */
     #mobileMenu {
-      display: none; position: fixed; inset: 0; z-index: 999;
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
       background: rgba(5,5,5,0.98);
-      flex-direction: column; align-items: center; justify-content: center;
-      gap: 28px; text-align: center;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(18px, 4vw, 28px);
+      text-align: center;
+      overflow-y: auto;
+      padding: 80px var(--px) 40px;
     }
     #mobileMenu.open { display: flex; }
     #mobileMenu a {
-      font-family: 'Syne', sans-serif; font-size: clamp(1.8rem,8vw,3rem);
-      font-weight: 800; color: #fff; transition: color 0.2s;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 7vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      transition: color 0.2s;
     }
     #mobileMenu a:hover { color: var(--red-light); }
     #mobileMenu .mob-cta {
-      background: var(--red); color: #fff !important;
-      font-size: 1.1rem !important; padding: 14px 40px;
-      border-radius: 10px; margin-top: 8px;
+      background: var(--red);
+      color: #fff !important;
+      font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+      padding: clamp(12px,3vw,14px) clamp(28px,6vw,40px);
+      border-radius: 10px;
+      margin-top: 8px;
     }
 
+    /* breakpoints */
     @media (max-width: 1024px) {
-      #mainNav { padding: 18px 24px; }
-      #mainNav.scrolled { padding: 12px 24px; }
       .nav-links, .nav-cta { display: none; }
       .ham { display: flex; }
     }
+    @media (min-width: 1025px) {
+      #mobileMenu { display: none !important; }
+    }
 
-    /* ── HERO ── */
+    /* ============================================================
+       HERO
+    ============================================================ */
     .hero {
-      position: relative; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; overflow: hidden;
+      position: relative;
+      min-height: 100svh;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
     }
     .hero-bg {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; z-index: -2;
-      transform: scale(1.06); transition: transform 7s ease-out;
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      transform: scale(1.06);
+      transition: transform 7s ease-out;
     }
     .hero-bg.loaded { transform: scale(1); }
     .hero-overlay {
-      position: absolute; inset: 0; z-index: -1;
-      background: linear-gradient(135deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 60%, rgba(180,20,20,0.28) 100%);
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 60%, rgba(180,20,20,.28) 100%);
     }
-    .hero-content { position: relative; z-index: 1; padding: 0 24px; max-width: 760px; }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: clamp(80px,12vw,120px) clamp(16px,6vw,24px) clamp(60px,10vw,80px);
+      max-width: 760px;
+      width: 100%;
+    }
     .hero-pill {
       display: inline-block;
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px); color: rgba(255,255,255,0.9);
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-      padding: 8px 20px; border-radius: 999px; margin-bottom: 24px;
-      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(0.58rem, 1.5vw, 0.68rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 8px clamp(14px,3vw,20px);
+      border-radius: 999px;
+      margin-bottom: clamp(16px,3vw,24px);
     }
     .hero h1 {
-      font-size: clamp(3rem,9vw,6rem); font-weight: 800;
-      color: #fff; line-height: 1.04; letter-spacing: -0.03em; margin-bottom: 20px;
+      font-size: clamp(2.6rem, 9vw, 6rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin-bottom: clamp(14px,2.5vw,20px);
     }
     .hero h1 span { color: var(--red-light); }
     .hero p {
-      color: rgba(255,255,255,0.68); font-size: clamp(0.9rem,2vw,1.08rem);
-      max-width: 500px; margin: 0 auto 36px; line-height: 1.75;
+      color: rgba(255,255,255,0.68);
+      font-size: clamp(0.85rem, 2vw, 1.08rem);
+      max-width: 500px;
+      margin: 0 auto clamp(24px,4vw,36px);
+      line-height: 1.75;
     }
-    .hero-btns { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
-    .btn-primary {
-      background: var(--red); color: #fff;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
-      padding: 15px 34px; border-radius: 10px;
-      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    .hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(10px,2vw,14px);
+      justify-content: center;
     }
-    .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(220,38,38,0.38); }
-    .btn-ghost {
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(8px); color: #fff;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
-      padding: 15px 34px; border-radius: 10px;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .btn-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.55); }
 
     .scroll-indicator {
-      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      color: rgba(255,255,255,0.38); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+      position: absolute;
+      bottom: clamp(20px,4vw,36px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.38);
+      font-size: clamp(0.55rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
       animation: bounce 2.2s infinite;
     }
-    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
-
-    /* ── SECTIONS ── */
-    .section-eyebrow {
-      color: var(--red); font-weight: 700; font-size: 0.68rem;
-      letter-spacing: 0.18em; text-transform: uppercase; display: block; margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: clamp(1.7rem,4vw,2.6rem); font-weight: 800;
-      letter-spacing: -0.025em; line-height: 1.15;
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
     }
 
-    /* ── SERVICES INTRO ── */
+    /* ============================================================
+       SERVICES INTRO
+    ============================================================ */
     .services-intro {
-      background: #fff; padding: 80px 24px 32px; text-align: center;
+      background: #fff;
+      padding: clamp(48px,8vw,80px) var(--px) clamp(24px,4vw,32px);
+      text-align: center;
     }
     .services-intro p.desc {
-      color: var(--gray-500); max-width: 680px; margin: 16px auto 0;
-      font-size: clamp(0.88rem,2vw,1rem); line-height: 1.75;
+      color: var(--gray-500);
+      max-width: 680px;
+      margin: 16px auto 0;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      line-height: 1.75;
     }
 
-    /* ── SERVICE GRID ── */
-    .services-grid {
-      background: #fff; padding: 32px 64px 80px;
-    }
+    /* ============================================================
+       SERVICE GRID
+    ============================================================ */
+    .services-grid { background: #fff; padding: clamp(16px,3vw,32px) var(--px) clamp(48px,8vw,80px); }
     .services-grid .grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 16px; max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(10px,2vw,16px);
+      max-width: 1100px;
+      margin: 0 auto;
     }
+    @media (max-width: 900px) { .services-grid .grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 500px) { .services-grid .grid { grid-template-columns: 1fr; } }
+
     .service-card {
-      display: flex; gap: 16px; padding: 20px;
-      border: 1px solid #e5e7eb; border-radius: 14px;
+      display: flex;
+      gap: clamp(10px,2vw,16px);
+      padding: clamp(14px,2.5vw,20px);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--r-md);
       transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
       cursor: pointer;
     }
-    .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color: rgba(220,38,38,0.25); }
-    .service-card img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
-    .service-card h4 { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; }
-    .service-card p { color: var(--gray-500); font-size: 0.82rem; line-height: 1.65; }
-
-    @media (max-width: 900px) { .services-grid .grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 580px) { .services-grid .grid { grid-template-columns: 1fr; } .services-grid { padding: 24px; } }
-
-    /* ── WHY US ── */
-    .why-us {
-      background: var(--gray-50); padding: 80px 64px;
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.08);
+      border-color: rgba(220,38,38,.25);
     }
+    .service-card img {
+      width: clamp(36px,5vw,48px);
+      height: clamp(36px,5vw,48px);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .service-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(0.82rem,1.8vw,0.92rem);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .service-card p { color: var(--gray-500); font-size: clamp(0.76rem,1.5vw,0.82rem); line-height: 1.65; }
+
+    /* ============================================================
+       WHY US
+    ============================================================ */
+    .why-us { background: var(--gray-50); padding: clamp(48px,8vw,80px) var(--px); }
     .why-us .inner {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px,6vw,64px);
+      align-items: center;
     }
-    .why-us img { width: 100%; border-radius: 20px; object-fit: cover; max-height: 460px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
-    .why-us .content { display: flex; flex-direction: column; gap: 24px; }
-    .why-us p.desc { color: var(--gray-500); font-size: 0.93rem; line-height: 1.75; }
+    @media (max-width: 860px) { .why-us .inner { grid-template-columns: 1fr; gap: 32px; } }
+
+    .why-us img {
+      width: 100%;
+      border-radius: var(--r-lg);
+      object-fit: cover;
+      max-height: clamp(280px,40vw,460px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+    .why-us .content { display: flex; flex-direction: column; gap: clamp(16px,2.5vw,24px); }
+    .why-us p.desc { color: var(--gray-500); font-size: clamp(0.86rem,1.8vw,0.93rem); line-height: 1.75; }
     .why-point { display: flex; gap: 14px; align-items: flex-start; }
-    .why-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); flex-shrink: 0; margin-top: 5px; }
-    .why-point h5 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-    .why-point p { color: var(--gray-500); font-size: 0.84rem; line-height: 1.65; }
+    .why-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .why-point h5 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(0.84rem,1.8vw,0.9rem); margin-bottom: 4px; }
+    .why-point p  { color: var(--gray-500); font-size: clamp(0.78rem,1.5vw,0.84rem); line-height: 1.65; }
 
-    @media (max-width: 900px) { .why-us .inner { grid-template-columns: 1fr; gap: 36px; } .why-us { padding: 60px 24px; } }
-
-    /* ── GALLERY ── */
-    .gallery-section { background: #fff; padding: 80px 64px; }
+    /* ============================================================
+       GALLERY
+    ============================================================ */
+    .gallery-section { background: #fff; padding: clamp(48px,8vw,80px) var(--px); }
     .gallery-section .header {
-      max-width: 1100px; margin: 0 auto 40px;
-      display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto clamp(24px,4vw,40px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
     }
     .gallery-section .grid {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(8px,1.5vw,14px);
     }
+    @media (max-width: 700px) { .gallery-section .grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 400px) { .gallery-section .grid { grid-template-columns: 1fr; } }
+
     .gallery-item {
-      background: var(--gray-100); border-radius: 16px; overflow: hidden;
-      height: clamp(160px,18vw,240px);
-      display: flex; align-items: center; justify-content: center;
+      background: var(--gray-100);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      height: clamp(130px, 16vw, 240px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: transform 0.3s;
     }
     .gallery-item:hover { transform: scale(1.02); }
     .gallery-item img { height: 78%; object-fit: contain; transition: transform 0.4s; }
     .gallery-item:hover img { transform: scale(1.08); }
 
-    @media (max-width: 720px) { .gallery-section .grid { grid-template-columns: repeat(2,1fr); } .gallery-section { padding: 60px 24px; } }
+    /* ============================================================
+       SLIDER
+    ============================================================ */
+    .slider-section { background: var(--gray-50); padding: clamp(48px,8vw,80px) clamp(16px,4vw,24px); }
+    .slider-section .hd { text-align: center; margin-bottom: clamp(28px,5vw,48px); }
 
-    /* ── SLIDER ── */
-    .slider-section { background: var(--gray-50); padding: 80px 24px; }
-    .slider-section .hd { text-align: center; margin-bottom: 48px; }
-    .slider-wrap { position: relative; max-width: 520px; margin: 0 auto; overflow: hidden; }
+    .slider-wrap {
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
     .slider-track {
       display: flex;
       transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
     }
-    .slide { min-width: 100%; padding: 0 52px; }
-    .slide-card {
-      background: #fff; border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-      padding: clamp(24px,5vw,48px); text-align: center;
+    .slide {
+      min-width: 100%;
+      padding: 0 clamp(32px,8vw,52px);
     }
-    .slide-card img { height: clamp(140px,20vw,200px); margin: 0 auto 24px; object-fit: contain; }
-    .slide-card h3 { font-size: clamp(1.1rem,3vw,1.4rem); font-weight: 800; margin-bottom: 12px; }
-    .slide-card p { color: var(--gray-500); font-size: 0.85rem; line-height: 1.7; margin-bottom: 24px; }
+    .slide-card {
+      background: #fff;
+      border-radius: var(--r-lg);
+      box-shadow: 0 8px 32px rgba(0,0,0,.08);
+      padding: clamp(20px,5vw,48px);
+      text-align: center;
+    }
+    .slide-card img {
+      height: clamp(110px,18vw,200px);
+      margin: 0 auto clamp(16px,3vw,24px);
+      object-fit: contain;
+    }
+    .slide-card h3 { font-size: clamp(1rem,3vw,1.4rem); font-weight: 800; margin-bottom: 12px; }
+    .slide-card p  { color: var(--gray-500); font-size: clamp(0.8rem,1.8vw,0.85rem); line-height: 1.7; margin-bottom: 0; }
+
     .slider-btn {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 40px; height: 40px; border-radius: 50%;
-      background: #fff; border: 1px solid #e5e7eb;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; color: var(--gray-900); cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: clamp(34px,5vw,40px);
+      height: clamp(34px,5vw,40px);
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1rem,2.5vw,1.2rem);
+      color: var(--gray-900);
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
       transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
       z-index: 10;
     }
-    .slider-btn:hover { background: var(--red); color: #fff; border-color: var(--red); transform: translateY(-50%) scale(1.08); box-shadow: 0 4px 18px rgba(220,38,38,0.32); }
+    .slider-btn:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 4px 18px rgba(220,38,38,.32);
+    }
     .slider-btn.prev { left: 0; }
     .slider-btn.next { right: 0; }
-    .dots { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 24px; }
+
+    .dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: clamp(16px,3vw,24px);
+    }
     .dot {
-      width: 8px; height: 8px; border-radius: 999px;
-      background: #d1d5db; border: none; cursor: pointer;
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: #d1d5db;
+      border: none;
+      cursor: pointer;
       transition: width 0.3s, background 0.3s;
     }
     .dot.active { width: 24px; background: var(--red); }
 
-    /* ── BRANDS ── */
-    .brands-section { background: #fff; padding: 80px 64px; }
+    /* ============================================================
+       BRANDS
+    ============================================================ */
+    .brands-section { background: #fff; padding: clamp(48px,8vw,80px) var(--px); }
     .brands-section .header {
-      max-width: 1100px; margin: 0 auto 40px;
-      display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto clamp(24px,4vw,40px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
     }
     .marquee-outer {
-      overflow: hidden; width: 100%;
+      overflow: hidden;
+      width: 100%;
       -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
       mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     }
     .marquee-inner {
-      display: flex; gap: 64px; width: max-content; align-items: center;
+      display: flex;
+      gap: clamp(32px,6vw,64px);
+      width: max-content;
+      align-items: center;
       animation: marquee 14s linear infinite;
     }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .marquee-inner img { height: 52px; object-fit: contain; opacity: 0.55; transition: opacity 0.2s; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-inner img {
+      height: clamp(36px,5vw,52px);
+      object-fit: contain;
+      opacity: 0.55;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
     .marquee-inner img:hover { opacity: 1; }
 
-    @media (max-width: 768px) { .brands-section { padding: 60px 24px; } }
-
-    /* ── STATS ── */
-    .stats-section { background: var(--gray-900); padding: 80px 24px; }
+    /* ============================================================
+       STATS
+    ============================================================ */
+    .stats-section { background: var(--gray-900); padding: clamp(48px,8vw,80px) clamp(16px,4vw,24px); }
     .stats-grid {
-      max-width: 700px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
+      max-width: 700px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: clamp(10px,2vw,14px);
     }
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+        max-width: 280px;
+      }
+    }
+
     .stat-card {
-      background: var(--red); border-radius: 18px; padding: 32px 16px;
-      text-align: center; color: #fff;
-      position: relative; overflow: hidden;
+      background: var(--red);
+      border-radius: clamp(14px,2vw,18px);
+      padding: clamp(20px,4vw,32px) clamp(12px,2.5vw,16px);
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
     }
     .stat-card::before {
-      content: ''; position: absolute; top: -28px; right: -28px;
-      width: 88px; height: 88px; background: rgba(255,255,255,0.08); border-radius: 50%;
+      content: '';
+      position: absolute;
+      top: -28px; right: -28px;
+      width: 88px; height: 88px;
+      background: rgba(255,255,255,.08);
+      border-radius: 50%;
     }
-    .stat-card .label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8; margin-bottom: 12px; }
-    .stat-card .value { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem,6vw,3rem); font-weight: 800; line-height: 1; }
-    .stat-card .sub { font-size: 0.68rem; opacity: 0.5; margin-top: 6px; }
+    .stat-card .label {
+      font-size: clamp(0.58rem,1.2vw,0.65rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+    .stat-card .value {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem,5vw,3rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+    .stat-card .sub { font-size: clamp(0.6rem,1.2vw,0.68rem); opacity: 0.5; margin-top: 6px; }
 
-    @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; max-width: 280px; } }
-
-    /* ── FOOTER ── */
-    footer { background: var(--black); border-top: 1px solid rgba(255,255,255,0.06); }
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
     .footer-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 48px; padding: 64px 64px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: clamp(28px,5vw,48px);
+      padding: clamp(40px,7vw,64px) var(--px) clamp(28px,5vw,48px);
     }
-    .footer-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: #fff; margin-bottom: 16px; }
+    @media (max-width: 860px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .footer-inner { grid-template-columns: 1fr; } }
+
+    .footer-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.88rem,2vw,1rem);
+      color: #fff;
+      margin-bottom: 16px;
+    }
     .footer-brand span { color: var(--red-light); }
+
     .footer-contacts { display: flex; flex-direction: column; gap: 10px; }
-    .footer-contacts a, .footer-contacts span { color: rgba(255,255,255,0.5); font-size: 0.84rem; transition: color 0.2s; }
+    .footer-contacts a,
+    .footer-contacts span {
+      color: rgba(255,255,255,.5);
+      font-size: clamp(0.78rem,1.6vw,0.84rem);
+      transition: color 0.2s;
+    }
     .footer-contacts a:hover { color: var(--red-light); }
     .footer-contacts i { color: var(--red-light); width: 16px; margin-right: 8px; }
-    .footer-socials { display: flex; gap: 8px; margin-top: 20px; }
+
+    .footer-socials { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
     .soc-icon {
-      width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,0.5); font-size: 0.78rem;
+      width: 34px; height: 34px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.5);
+      font-size: 0.78rem;
       transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
     .soc-icon:hover { background: var(--red); color: #fff; border-color: var(--red); }
-    .footer-col h4 { font-family: 'Syne', sans-serif; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.28); margin-bottom: 20px; }
-    .footer-col a { display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.52); font-size: 0.84rem; margin-bottom: 10px; transition: color 0.2s; }
+
+    .footer-col h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(0.68rem,1.4vw,0.76rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,.28);
+      margin-bottom: 20px;
+    }
+    .footer-col a {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(255,255,255,.52);
+      font-size: clamp(0.78rem,1.6vw,0.84rem);
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
     .footer-col a:hover { color: var(--red-light); }
     .footer-col a i { color: var(--red); font-size: 0.58rem; }
-    .footer-bar { border-top: 1px solid rgba(255,255,255,0.06); padding: 16px 64px; text-align: center; color: rgba(255,255,255,0.2); font-size: 0.76rem; max-width: 100%; }
 
-    @media (max-width: 900px) { .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; padding: 48px 24px 32px; } .footer-bar { padding: 14px 24px; } }
-    @media (max-width: 560px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-bar {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: clamp(12px,2vw,16px) var(--px);
+      text-align: center;
+      color: rgba(255,255,255,.2);
+      font-size: clamp(0.68rem,1.4vw,0.76rem);
+    }
 
-    /* ── REVEAL ── */
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
-    .reveal.in { opacity: 1; transform: none; }
+    /* ── TOUCH-FRIENDLY MINIMUM TARGET SIZE ── */
+    @media (hover: none) and (pointer: coarse) {
+      .slider-btn { width: 44px; height: 44px; }
+      .nav-cta    { padding: 11px 20px; }
+      .dot        { min-width: 24px; min-height: 24px; border-radius: 999px; }
+    }
   </style>
 </head>
 <body>
 
 <!-- MOBILE MENU -->
-<div id="mobileMenu">
+<div id="mobileMenu" role="dialog" aria-label="Navigation menu">
   <a href="index.html"     onclick="closeMobile()">Home</a>
   <a href="about.html"     onclick="closeMobile()">About Us</a>
   <a href="service.html"   onclick="closeMobile()">Services</a>
@@ -375,7 +750,7 @@
 </div>
 
 <!-- NAV -->
-<nav id="mainNav">
+<nav id="mainNav" aria-label="Main navigation">
   <a href="index.html" class="nav-brand">Jay<span>Tech</span> Smart Systems</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
@@ -385,17 +760,18 @@
     <li><a href="contactus.html">Contact Us</a></li>
   </ul>
   <a href="contactus.html" class="nav-cta">Get a Quote</a>
-  <button class="ham" id="hamburger" onclick="toggleMobile()" aria-label="Toggle menu">
+  <button class="ham" id="hamburger" onclick="toggleMobile()" aria-label="Toggle menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" aria-label="Hero">
   <img id="heroBg"
     src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773038289/ai-generated-8029019_1920_mgks7k.jpg"
-    alt="JayTech Smart Systems" class="hero-bg" />
-  <div class="hero-overlay"></div>
+    alt="JayTech Smart Systems" class="hero-bg"
+    fetchpriority="high" />
+  <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-content">
     <span class="hero-pill">We Create The World You Want</span>
     <h1>Unique <span>Innovation</span></h1>
@@ -405,7 +781,7 @@
       <a href="about.html"   class="btn-ghost">About Us</a>
     </div>
   </div>
-  <div class="scroll-indicator">
+  <div class="scroll-indicator" aria-hidden="true">
     <span>Scroll</span>
     <i class="fa-solid fa-chevron-down"></i>
   </div>
@@ -419,43 +795,64 @@
 </section>
 
 <!-- SERVICES GRID -->
-<section class="services-grid">
+<section class="services-grid" aria-label="Services">
   <div class="grid">
     <a href="solarinverter.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png" alt="Solar" />
-      <div><h4>Solar / Inverter Installation</h4><p>Efficient solar and inverter solutions delivering reliable, clean, and uninterrupted electricity for homes and businesses.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773162890/Batteries-removebg-preview_prvaqa.png" alt="Solar" loading="lazy" />
+      <div>
+        <h4>Solar / Inverter Installation</h4>
+        <p>Efficient solar and inverter solutions delivering reliable, clean, and uninterrupted electricity for homes and businesses.</p>
+      </div>
     </a>
     <a href="EnterpriseNetworking.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png" alt="Networking" />
-      <div><h4>Enterprise Networking</h4><p>Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163080/Networking-removebg-preview_dtxomv.png" alt="Networking" loading="lazy" />
+      <div>
+        <h4>Enterprise Networking</h4>
+        <p>Secure, scalable LAN/WAN deployments ensuring reliable connectivity and high-performance communication infrastructure.</p>
+      </div>
     </a>
     <a href="cctv.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png" alt="CCTV" />
-      <div><h4>CCTV Installation &amp; Maintenance</h4><p>Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163416/icons8-cctv-100_prsuqc.png" alt="CCTV" loading="lazy" />
+      <div>
+        <h4>CCTV Installation &amp; Maintenance</h4>
+        <p>Advanced surveillance systems enabling real-time monitoring using high-definition IP and analog cameras.</p>
+      </div>
     </a>
     <a href="accesscontrol.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png" alt="Access" />
-      <div><h4>Access Control Systems</h4><p>Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163548/icons8-access-control-64_xcxsb3.png" alt="Access Control" loading="lazy" />
+      <div>
+        <h4>Access Control Systems</h4>
+        <p>Intelligent systems regulating entry across facilities, ensuring secure authentication and protection of critical infrastructure.</p>
+      </div>
     </a>
     <a href="iptelephony.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png" alt="Telephony" />
-      <div><h4>IP Telephony</h4><p>Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773163652/icons8-telephone-64_p7tmwu.png" alt="IP Telephony" loading="lazy" />
+      <div>
+        <h4>IP Telephony</h4>
+        <p>Modern IP telephony systems delivering reliable, scalable, and high-quality voice communication for organizations.</p>
+      </div>
     </a>
     <a href="websoftware.html" class="service-card reveal">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png" alt="Dev" />
-      <div><h4>Web &amp; Software Development</h4><p>Modern, responsive websites and web applications using full-stack technologies for a strong digital presence.</p></div>
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169104/icons8-full-stack-64_sw7vml.png" alt="Web Development" loading="lazy" />
+      <div>
+        <h4>Web &amp; Software Development</h4>
+        <p>Modern, responsive websites and web applications using full-stack technologies for a strong digital presence.</p>
+      </div>
     </a>
-    <a href="internetconnection.html" class="service-card reveal" style="grid-column: span 1;">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png" alt="Internet" />
-      <div><h4>Internet Connectivity Installation</h4><p>High-speed solutions including Starlink and other broadband technologies for reliable, fast, and secure internet access.</p></div>
+    <a href="internetconnection.html" class="service-card reveal">
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773209354/icons8-internet-100_1_boicth.png" alt="Internet Connectivity" loading="lazy" />
+      <div>
+        <h4>Internet Connectivity Installation</h4>
+        <p>High-speed solutions including Starlink and other broadband technologies for reliable, fast, and secure internet access.</p>
+      </div>
     </a>
   </div>
 </section>
 
 <!-- WHY CHOOSE US -->
-<section class="why-us">
+<section class="why-us" aria-label="Why choose JayTech">
   <div class="inner">
-    <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg" alt="Why JayTech" class="reveal" />
+    <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773086082/Interconnection_kqi5sg.jpg" alt="Why JayTech" class="reveal" loading="lazy" />
     <div class="content reveal">
       <div>
         <span class="section-eyebrow">Why JayTech</span>
@@ -476,13 +873,13 @@
           <p>We carefully tailor our services to meet the unique needs of each customer, ensuring optimal performance, satisfaction, and long-term value.</p>
         </div>
       </div>
-      <a href="#" class="btn-primary" style="align-self:flex-start;display:inline-block;">Read More</a>
+      <a href="about.html" class="btn-primary" style="align-self:flex-start;">Read More</a>
     </div>
   </div>
 </section>
 
 <!-- GALLERY -->
-<section class="gallery-section">
+<section class="gallery-section" aria-label="Gallery">
   <div class="header reveal">
     <div>
       <span class="section-eyebrow">Our Work</span>
@@ -491,80 +888,74 @@
     <a href="gallery.html" class="btn-primary">View More</a>
   </div>
   <div class="grid reveal">
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124115/CCTV-removebg-preview_mrusc1.png" alt="CCTV" /></a>
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773123956/Access_Points-removebg-preview_agoteq.png" alt="Access Points" /></a>
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124199/Panel-removebg-preview_imsdoj.png" alt="Panel" /></a>
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Starlink" /></a>
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png" alt="Telephone" /></a>
-    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773125448/Felicity-Solar-12.5kwh-48v-Lithium-Iron-Battery-removebg-preview_vhkzwe.png" alt="Battery" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124115/CCTV-removebg-preview_mrusc1.png" alt="CCTV" loading="lazy" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773123956/Access_Points-removebg-preview_agoteq.png" alt="Access Points" loading="lazy" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124199/Panel-removebg-preview_imsdoj.png" alt="Panel" loading="lazy" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Starlink" loading="lazy" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773124696/Telephone-removebg-preview_soj0ac.png" alt="Telephone" loading="lazy" /></a>
+    <a href="gallery.html" class="gallery-item"><img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773125448/Felicity-Solar-12.5kwh-48v-Lithium-Iron-Battery-removebg-preview_vhkzwe.png" alt="Battery" loading="lazy" /></a>
   </div>
 </section>
 
 <!-- SLIDER -->
-<section class="slider-section">
+<section class="slider-section" aria-label="Technology solutions">
   <div class="hd reveal">
     <span class="section-eyebrow">How Can We Help You?</span>
     <h2 class="section-title">Our Technology Solutions</h2>
   </div>
-  <div class="slider-wrap">
+  <div class="slider-wrap" role="region" aria-label="Technology solutions carousel">
     <div class="slider-track" id="sliderTrack">
       <div class="slide">
         <div class="slide-card">
-         <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png" alt="Solar" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165293/Solar_Panel-removebg-preview_ggtcpy.png" alt="Solar" loading="lazy" />
           <h3>Solar / Inverter Installation</h3>
           <p>Efficient solar and inverter systems providing reliable, clean, and uninterrupted electricity for homes and businesses.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
       <div class="slide">
         <div class="slide-card">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg" alt="Networking" style="border-radius:12px;" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773166480/routers_xxslmx.jpg" alt="Networking" style="border-radius:12px;" loading="lazy" />
           <h3>Enterprise Networking</h3>
           <p>High-performance wired and wireless network infrastructures ensuring secure, scalable, and reliable connectivity.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
       <div class="slide">
         <div class="slide-card">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png" alt="CCTV" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773165965/CCTV_with_Monitoring-removebg-preview_qjjb0b.png" alt="CCTV" loading="lazy" />
           <h3>CCTV Surveillance Systems</h3>
           <p>Intelligent surveillance providing 24/7 monitoring, security analytics, and HD video recording for facilities.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
       <div class="slide">
         <div class="slide-card">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg" alt="Access Control" style="border-radius:12px;" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773168227/GuardMe_Access_Control_nudwjl.jpg" alt="Access Control" style="border-radius:12px;" loading="lazy" />
           <h3>Access Control Systems</h3>
           <p>Secure access control systems regulating and monitoring entry across facilities to protect critical infrastructure.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
       <div class="slide">
         <div class="slide-card">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png" alt="Software" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773169424/Full_Stack_Software_Developer_i2vbnf.png" alt="Software" loading="lazy" />
           <h3>Software Development</h3>
           <p>Secure, scalable software solutions helping businesses automate processes and deliver reliable digital services.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
       <div class="slide">
         <div class="slide-card">
-          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Internet" />
+          <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773208930/Starlink-removebg-preview_tpx6ho.png" alt="Internet" loading="lazy" />
           <h3>Internet Connectivity</h3>
           <p>High-speed internet solutions including Starlink for reliable, fast, and secure digital access for homes and businesses.</p>
-          <!-- <a href="service.html" class="btn-primary">Know More</a> -->
         </div>
       </div>
     </div>
-    <button class="slider-btn prev" onclick="prevSlide()" aria-label="Previous">&#8249;</button>
-    <button class="slider-btn next" onclick="nextSlide()" aria-label="Next">&#8250;</button>
+    <button class="slider-btn prev" onclick="prevSlide()" aria-label="Previous slide">&#8249;</button>
+    <button class="slider-btn next" onclick="nextSlide()" aria-label="Next slide">&#8250;</button>
   </div>
-  <div class="dots" id="slideDots"></div>
+  <div class="dots" id="slideDots" role="tablist" aria-label="Slide navigation"></div>
 </section>
 
 <!-- BRANDS -->
-<section class="brands-section">
+<section class="brands-section" aria-label="Our brands">
   <div class="header reveal">
     <div>
       <span class="section-eyebrow">Partners</span>
@@ -572,22 +963,23 @@
     </div>
     <a href="service.html" class="btn-primary">View More</a>
   </div>
-  <div class="marquee-outer">
+  <div class="marquee-outer" aria-hidden="true">
     <div class="marquee-inner">
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"     alt="LFTZ" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png" alt="Tetracore" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                         alt="DF" />
-      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                       alt="Duke" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"      alt="LFTZ" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png"  alt="Tetracore" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                          alt="DF" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                        alt="Duke" loading="lazy" />
+      <!-- duplicate set for seamless loop -->
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210034/lftz-removebg-preview_ob6iyj.png"      alt="LFTZ" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210301/Tetracore-removebg-preview_qbyc7d.png"  alt="Tetracore" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773210586/DF_fbe6tj.png"                          alt="DF" loading="lazy" />
+      <img src="https://res.cloudinary.com/dezoqbzim/image/upload/v1773213279/Duke_mngbtz.png"                        alt="Duke" loading="lazy" />
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<section class="stats-section">
+<section class="stats-section" aria-label="Statistics">
   <div class="stats-grid">
     <div class="stat-card">
       <p class="label">Years of Experience</p>
@@ -613,141 +1005,38 @@
     <div>
       <p class="footer-brand">Jay<span>Tech</span> Smart Systems Ltd</p>
       <div class="footer-contacts">
-        <span><i class="fa-solid fa-location-dot"></i>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
-        <a href="tel:+2349059949644"><i class="fa-solid fa-phone"></i>+234 905 994 9644</a>
-        <a href="mailto:adeboyejojide5@gmail.com"><i class="fa-solid fa-envelope"></i>adeboyejojide5@gmail.com</a>
+        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Suite 23 Grace Plaza, Ibafo, Ogun State</span>
+        <a href="tel:+2349059949644"><i class="fa-solid fa-phone" aria-hidden="true"></i>+234 905 994 9644</a>
+        <a href="mailto:adeboyejojide5@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>adeboyejojide5@gmail.com</a>
       </div>
       <div class="footer-socials">
-        <a href="#" class="soc-icon" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="#" class="soc-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="soc-icon" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-        <a href="#" class="soc-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" class="soc-icon" aria-label="Twitter / X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+        <a href="#" class="soc-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+        <a href="#" class="soc-icon" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        <a href="#" class="soc-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
       </div>
     </div>
     <div class="footer-col">
       <h4>Services</h4>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Solar Energy Solutions</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>CCTV Security Solutions</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>IoT &amp; Automation</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Web &amp; Networking</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Software Solutions</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Consultancy</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Solar Energy Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>CCTV Security Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>IoT &amp; Automation</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Web &amp; Networking</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Software Solutions</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Consultancy</a>
     </div>
     <div class="footer-col">
       <h4>Quick Links</h4>
-      <a href="#"><i class="fa-solid fa-chevron-right"></i>About Us</a>
-      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Contact Us</a>
-      <a href="service.html"><i class="fa-solid fa-chevron-right"></i>Our Services</a>
-      <a href="gallery.html"><i class="fa-solid fa-chevron-right"></i>Gallery</a>
-      <a href="contactus.html"><i class="fa-solid fa-chevron-right"></i>Support</a>
+      <a href="about.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>About Us</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Contact Us</a>
+      <a href="service.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Our Services</a>
+      <a href="gallery.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Gallery</a>
+      <a href="contactus.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i>Support</a>
     </div>
   </div>
   <div class="footer-bar">&copy; 2025 JayTech Smart Systems Ltd. All rights reserved.</div>
 </footer>
 
-<script>
-  /* ── NAV SCROLL ── */
-  const nav = document.getElementById('mainNav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 60);
-  }, { passive: true });
-
-  /* ── HERO KEN-BURNS ── */
-  const heroBg = document.getElementById('heroBg');
-  if (heroBg) heroBg.classList.add('loaded');
-
-  /* ── MOBILE MENU ── */
-  const hamburger  = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobileMenu');
-
-  function toggleMobile() {
-    const isOpen = mobileMenu.classList.toggle('open');
-    hamburger.classList.toggle('open', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-  }
-  function closeMobile() {
-    mobileMenu.classList.remove('open');
-    hamburger.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeMobile(); }, { passive: true });
-
-  /* ── SLIDER ── */
-  let current = 0;
-  const track    = document.getElementById('sliderTrack');
-  const dotsWrap = document.getElementById('slideDots');
-  let autoTimer;
-
-  if (track && dotsWrap) {
-    const total = track.children.length;
-
-    for (let i = 0; i < total; i++) {
-      const btn = document.createElement('button');
-      btn.className = 'dot' + (i === 0 ? ' active' : '');
-      btn.setAttribute('aria-label', 'Slide ' + (i + 1));
-      btn.addEventListener('click', () => goTo(i));
-      dotsWrap.appendChild(btn);
-    }
-
-    function updateTrack() {
-      track.style.transform = `translateX(-${current * 100}%)`;
-      dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
-    }
-    function goTo(n) {
-      current = (n + total) % total;
-      updateTrack();
-      clearInterval(autoTimer);
-      startAuto();
-    }
-    function nextSlide() { goTo(current + 1); }
-    function prevSlide()  { goTo(current - 1); }
-    function startAuto()  { autoTimer = setInterval(nextSlide, 4500); }
-    startAuto();
-
-    track.addEventListener('mouseenter', () => clearInterval(autoTimer));
-    track.addEventListener('mouseleave', startAuto);
-
-    let tx = 0;
-    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchend', e => {
-      const d = tx - e.changedTouches[0].clientX;
-      if (Math.abs(d) > 40) d > 0 ? nextSlide() : prevSlide();
-    });
-
-    window.nextSlide = nextSlide;
-    window.prevSlide = prevSlide;
-  }
-
-  /* ── COUNTERS ── */
-  document.querySelectorAll('.counter').forEach(el => {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting || el.dataset.done) return;
-        el.dataset.done = '1';
-        const target   = parseFloat(el.dataset.target);
-        const suffix   = el.dataset.suffix || '';
-        const isFloat  = el.dataset.float === '1';
-        const duration = 1800;
-        const t0       = performance.now();
-        (function tick(now) {
-          const p = Math.min((now - t0) / duration, 1);
-          const v = target * (1 - Math.pow(1 - p, 3));
-          el.textContent = (isFloat ? v.toFixed(1) : Math.floor(v)) + suffix;
-          if (p < 1) requestAnimationFrame(tick);
-          else el.textContent = target + suffix;
-        })(t0);
-      });
-    }, { threshold: 0.5 });
-    io.observe(el);
-  });
-
-  /* ── SCROLL REVEAL ── */
-  const revObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
-</script>
+<script src="landing.js"></script>
 </body>
 </html>
