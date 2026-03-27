@@ -29,17 +29,27 @@
               card:  '#171b24',
               input: '#1e2330',
               hover: '#232838',
+            },
+            wa: {
+              green: '#25D366',
+              dark:  '#128C7E',
             }
           },
           keyframes: {
-            fadeUp:  { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+            fadeUp:    { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+            fadeIn:    { from: { opacity: '0' }, to: { opacity: '1' } },
             pulseRing: { '0%,100%': { boxShadow: '0 0 0 0 rgba(34,197,94,0.3)' }, '50%': { boxShadow: '0 0 0 12px rgba(34,197,94,0)' } },
-            spin:    { to: { transform: 'rotate(360deg)' } },
+            waPulse:   { '0%,100%': { boxShadow: '0 0 0 0 rgba(37,211,102,0.45)' }, '60%': { boxShadow: '0 0 0 14px rgba(37,211,102,0)' } },
+            spin:      { to: { transform: 'rotate(360deg)' } },
+            bounce:    { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } },
           },
           animation: {
             fadeUp:    'fadeUp 0.4s ease forwards',
+            fadeIn:    'fadeIn 0.3s ease forwards',
             pulseRing: 'pulseRing 2s infinite',
+            waPulse:   'waPulse 2.2s infinite',
             spin:      'spin 0.6s linear infinite',
+            bounce:    'bounce 2s ease-in-out infinite',
           }
         }
       }
@@ -86,18 +96,139 @@
 
     /* sticky info col fix */
     @media (min-width: 1024px) { .info-sticky { position: sticky; top: 88px; } }
+
+    /* ── WhatsApp FAB ── */
+    .wa-fab {
+      position: fixed;
+      bottom: clamp(16px, 4vw, 28px);
+      right: clamp(16px, 4vw, 28px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      cursor: pointer;
+    }
+
+    .wa-fab-btn {
+      width: clamp(50px, 8vw, 60px);
+      height: clamp(50px, 8vw, 60px);
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4), 0 2px 8px rgba(0,0,0,0.3);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: waPulse 2.2s infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    .wa-fab-btn i {
+      font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+      color: #fff;
+    }
+
+    .wa-fab:hover .wa-fab-btn {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.55), 0 3px 12px rgba(0,0,0,0.35);
+      animation: none;
+    }
+
+    /* Tooltip label */
+    .wa-fab-label {
+      position: absolute;
+      right: calc(100% + 12px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #111827;
+      border: 1px solid rgba(37,211,102,0.25);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 8px 14px;
+      border-radius: 10px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-50%) translateX(6px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+
+    .wa-fab-label::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 6px solid #111827;
+    }
+
+    .wa-fab:hover .wa-fab-label {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* Online dot */
+    .wa-dot {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 11px;
+      height: 11px;
+      background: #4ade80;
+      border: 2px solid #0f1117;
+      border-radius: 50%;
+    }
+
+    /* Mobile: hide label, show smaller fab */
+    @media (max-width: 480px) {
+      .wa-fab-label { display: none; }
+      .wa-fab-btn {
+        width: 52px;
+        height: 52px;
+      }
+    }
+
+    /* Entrance animation for FAB */
+    @keyframes fabIn {
+      from { opacity: 0; transform: scale(0.6) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .wa-fab {
+      animation: fabIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
+    }
   </style>
 </head>
 <body class="bg-surface-bg text-gray-100 overflow-x-hidden">
 
+  <!-- ══════════════ WHATSAPP FIXED FAB ══════════════ -->
+  <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
+     target="_blank" rel="noopener noreferrer"
+     class="wa-fab"
+     aria-label="Chat with us on WhatsApp">
+    <span class="wa-fab-label">
+      <span style="color:#25D366; font-weight:700;">Chat with us</span> — we reply fast!
+    </span>
+    <div class="wa-fab-btn">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span class="wa-dot"></span>
+    </div>
+  </a>
+
   <!-- ══════════════ MOBILE MENU ══════════════ -->
   <div id="mobNav" class="hidden fixed inset-0 z-[999] bg-[#050505]/98 flex-col items-center justify-center gap-7 text-center px-6 pt-20 pb-10">
-    <a href="index.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Home</a>
+    <a href="index.html"       onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Home</a>
     <a href="index.html#about" onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">About Us</a>
-    <a href="service.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Services</a>
-    <a href="gallery.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Gallery</a>
-    <a href="contactus.html" onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-brand-light">Contact</a>
-    <a href="contactus.html" onclick="closeMob()" class="mt-2 bg-brand-red text-white font-syne font-bold text-base px-10 py-3 rounded-xl hover:bg-brand-dark transition-colors">Get a Quote</a>
+    <a href="service.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Services</a>
+    <a href="gallery.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Gallery</a>
+    <a href="contactus.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-brand-light">Contact</a>
+    <a href="contactus.html"   onclick="closeMob()" class="mt-2 bg-brand-red text-white font-syne font-bold text-base px-10 py-3 rounded-xl hover:bg-brand-dark transition-colors">Get a Quote</a>
   </div>
 
   <!-- ══════════════ NAV ══════════════ -->
@@ -105,11 +236,11 @@
     <a href="index.html" class="font-syne font-extrabold text-[clamp(0.8rem,2vw,1rem)] text-white whitespace-nowrap flex-shrink-0">Jay<span class="text-brand-light">Tech</span> Smart Systems</a>
 
     <ul class="hidden lg:flex items-center gap-[clamp(18px,2.8vw,36px)] list-none">
-      <li><a href="index.html"     class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Home</a></li>
+      <li><a href="index.html"       class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Home</a></li>
       <li><a href="index.html#about" class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">About Us</a></li>
-      <li><a href="service.html"   class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Services</a></li>
-      <li><a href="gallery.html"   class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Gallery</a></li>
-      <li><a href="contactus.html" class="text-white text-sm font-medium after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-brand-red relative">Contact Us</a></li>
+      <li><a href="service.html"     class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Services</a></li>
+      <li><a href="gallery.html"     class="text-white/60 text-sm font-medium hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-brand-red after:transition-all hover:after:w-full">Gallery</a></li>
+      <li><a href="contactus.html"   class="text-white text-sm font-medium after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-brand-red relative">Contact Us</a></li>
     </ul>
 
     <a href="contactus.html" class="hidden lg:block bg-brand-red text-white font-syne font-bold text-[0.82rem] px-5 py-[9px] rounded-[9px] hover:bg-brand-dark transition-colors whitespace-nowrap flex-shrink-0">Get a Quote</a>
@@ -177,7 +308,7 @@
             </div>
           </div>
 
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-3 mb-4">
             <div class="w-9 h-9 flex-shrink-0 bg-brand-red/10 border border-brand-red/20 rounded-[10px] flex items-center justify-center text-brand-light text-[0.78rem] mt-[2px]">
               <i class="fa-solid fa-clock"></i>
             </div>
@@ -186,6 +317,20 @@
               <span class="text-gray-400 text-[0.85rem] leading-snug">Mon – Fri: 8:00 AM – 6:00 PM<br/>Sat: 9:00 AM – 3:00 PM</span>
             </div>
           </div>
+
+          <!-- WhatsApp quick link inside info card -->
+          <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
+             target="_blank" rel="noopener noreferrer"
+             class="mt-1 flex items-center gap-3 bg-[#25D366]/10 border border-[#25D366]/25 rounded-[10px] px-4 py-3 hover:bg-[#25D366]/18 hover:border-[#25D366]/45 transition-all group">
+            <div class="w-8 h-8 flex-shrink-0 bg-[#25D366]/15 rounded-[8px] flex items-center justify-center text-[#25D366] text-[0.9rem] group-hover:scale-110 transition-transform">
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div>
+              <strong class="block text-[0.67rem] font-semibold text-white/30 uppercase tracking-wide mb-0.5">WhatsApp</strong>
+              <span class="text-[#25D366] text-[0.82rem] font-medium">Chat with us instantly</span>
+            </div>
+            <i class="fa-solid fa-arrow-right text-[#25D366]/50 text-[0.7rem] ml-auto group-hover:translate-x-1 transition-transform"></i>
+          </a>
         </div>
 
         <!-- Performance Stats -->
@@ -238,7 +383,14 @@
             <i class="fa-solid fa-check"></i>
           </div>
           <h3 class="font-syne font-extrabold text-[clamp(1.25rem,4vw,1.7rem)] text-white mb-3">Message Sent!</h3>
-          <p class="text-gray-400 text-[clamp(0.8rem,1.8vw,0.9rem)] leading-relaxed mb-7 max-w-[360px]">Thanks for reaching out. Our team will respond within 18 minutes during working hours.</p>
+          <p class="text-gray-400 text-[clamp(0.8rem,1.8vw,0.9rem)] leading-relaxed mb-5 max-w-[360px]">Thanks for reaching out. Our team will respond within 18 minutes during working hours.</p>
+          <!-- Also suggest WhatsApp on success -->
+          <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
+             target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] font-semibold text-[0.82rem] px-5 py-2.5 rounded-[9px] hover:bg-[#25D366]/20 transition-colors mb-4">
+            <i class="fa-brands fa-whatsapp text-base"></i> Also reach us on WhatsApp
+          </a>
+          <br/>
           <button onclick="resetForm()" class="bg-surface-hover border border-white/[0.08] text-white font-syne font-bold text-[0.85rem] px-7 py-3 rounded-[9px] hover:bg-white/10 transition-colors cursor-pointer">
             <i class="fa-solid fa-rotate-left mr-2"></i>Send Another
           </button>
@@ -492,6 +644,10 @@
           <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-youtube"></i></a>
           <a href="#" class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-brand-red hover:text-white hover:border-brand-red transition-all"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="https://wa.me/2349059949644" target="_blank" rel="noopener noreferrer"
+             class="w-[33px] h-[33px] border border-white/10 rounded-[8px] flex items-center justify-center text-gray-500 text-[0.77rem] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
         </div>
       </div>
       <div>
@@ -505,13 +661,34 @@
       </div>
       <div>
         <h4 class="font-syne text-[0.74rem] font-bold uppercase tracking-widest text-white/25 mb-5">Company</h4>
-        <a href="index.html"     class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Home</a>
+        <a href="index.html"       class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Home</a>
         <a href="index.html#about" class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">About Us</a>
-        <a href="service.html"   class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Services</a>
-        <a href="gallery.html"   class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Gallery</a>
-        <a href="contactus.html" class="block text-gray-500 text-[0.82rem] hover:text-brand-light transition-colors">Contact Us</a>
+        <a href="service.html"     class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Services</a>
+        <a href="gallery.html"     class="block text-gray-500 text-[0.82rem] mb-[9px] hover:text-brand-light transition-colors">Gallery</a>
+        <a href="contactus.html"   class="block text-gray-500 text-[0.82rem] hover:text-brand-light transition-colors">Contact Us</a>
       </div>
     </div>
+
+    <!-- Footer WhatsApp strip -->
+    <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pb-4">
+      <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
+         target="_blank" rel="noopener noreferrer"
+         class="flex items-center justify-between gap-4 bg-[#25D366]/8 border border-[#25D366]/18 rounded-xl px-5 py-4 hover:bg-[#25D366]/14 hover:border-[#25D366]/30 transition-all group">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 flex-shrink-0 bg-[#25D366]/15 rounded-[9px] flex items-center justify-center text-[#25D366] text-lg">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white text-[0.82rem] font-semibold truncate">Prefer to chat? Message us on WhatsApp</p>
+            <p class="text-gray-500 text-[0.73rem] truncate">+234 905 994 9644 · Usually responds in minutes</p>
+          </div>
+        </div>
+        <span class="flex-shrink-0 flex items-center gap-1.5 text-[#25D366] text-[0.78rem] font-semibold whitespace-nowrap group-hover:gap-2.5 transition-all">
+          Chat now <i class="fa-solid fa-arrow-right text-[0.7rem]"></i>
+        </span>
+      </a>
+    </div>
+
     <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] border-t border-white/[0.06] py-4 text-center text-white/20 text-[0.74rem]">
       &copy; 2025 JayTech Smart Systems Ltd. All rights reserved.
     </div>
