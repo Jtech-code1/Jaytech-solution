@@ -42,6 +42,7 @@
             waPulse:   { '0%,100%': { boxShadow: '0 0 0 0 rgba(37,211,102,0.45)' }, '60%': { boxShadow: '0 0 0 14px rgba(37,211,102,0)' } },
             spin:      { to: { transform: 'rotate(360deg)' } },
             bounce:    { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } },
+            menuSlide: { from: { opacity: '0', transform: 'translateY(-12px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
           },
           animation: {
             fadeUp:    'fadeUp 0.4s ease forwards',
@@ -50,6 +51,7 @@
             waPulse:   'waPulse 2.2s infinite',
             spin:      'spin 0.6s linear infinite',
             bounce:    'bounce 2s ease-in-out infinite',
+            menuSlide: 'menuSlide 0.3s ease forwards',
           }
         }
       }
@@ -136,7 +138,6 @@
       animation: none;
     }
 
-    /* Tooltip label */
     .wa-fab-label {
       position: absolute;
       right: calc(100% + 12px);
@@ -174,7 +175,6 @@
       transform: translateY(-50%) translateX(0);
     }
 
-    /* Online dot */
     .wa-dot {
       position: absolute;
       top: 2px;
@@ -186,16 +186,11 @@
       border-radius: 50%;
     }
 
-    /* Mobile: hide label, show smaller fab */
     @media (max-width: 480px) {
       .wa-fab-label { display: none; }
-      .wa-fab-btn {
-        width: 52px;
-        height: 52px;
-      }
+      .wa-fab-btn { width: 52px; height: 52px; }
     }
 
-    /* Entrance animation for FAB */
     @keyframes fabIn {
       from { opacity: 0; transform: scale(0.6) translateY(20px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
@@ -203,6 +198,108 @@
     .wa-fab {
       animation: fabIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
     }
+
+    /* ══════════════════════════════════════
+       MOBILE MENU — Pure black, no conflicts
+       ══════════════════════════════════════ */
+    #mobNav {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background-color: #000000;   /* solid black — zero transparency */
+      display: none;               /* hidden by default (JS toggles) */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      text-align: center;
+      padding: 80px 24px 40px;
+      overflow-y: auto;
+    }
+
+    #mobNav.mob-open {
+      display: flex;
+      animation: menuSlide 0.3s ease forwards;
+    }
+
+    @keyframes menuSlide {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .mob-link {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.7rem, 8vw, 3rem);
+      color: #ffffff;
+      text-decoration: none;
+      display: block;
+      padding: 10px 0;
+      line-height: 1.1;
+      transition: color 0.2s ease;
+      letter-spacing: -0.02em;
+    }
+
+    .mob-link:hover,
+    .mob-link.active {
+      color: #f87171;
+    }
+
+    .mob-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 8px auto;
+    }
+
+    .mob-cta {
+      margin-top: 20px;
+      background: #dc2626;
+      color: #ffffff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 40px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .mob-cta:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+    }
+
+    /* Close button inside mobile menu */
+    .mob-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+    }
+
+    .mob-close-btn:hover {
+      background: rgba(220,38,38,0.25);
+      border-color: rgba(220,38,38,0.4);
+    }
+
+    /* Hamburger animation */
+    .ham-line { transition: transform 0.3s ease, opacity 0.3s ease; }
+    #hamBtn.is-open .ham-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    #hamBtn.is-open .ham-line:nth-child(2) { opacity: 0; }
+    #hamBtn.is-open .ham-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   </style>
 </head>
 <body class="bg-surface-bg text-gray-100 overflow-x-hidden">
@@ -222,13 +319,22 @@
   </a>
 
   <!-- ══════════════ MOBILE MENU ══════════════ -->
-  <div id="mobNav" class="hidden fixed inset-0 z-[999] bg-[#050505]/98 flex-col items-center justify-center gap-7 text-center px-6 pt-20 pb-10">
-    <a href="index.html"       onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Home</a>
-    <a href="index.html#about" onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">About Us</a>
-    <a href="service.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Services</a>
-    <a href="gallery.html"     onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-white hover:text-brand-light transition-colors">Gallery</a>
-    <a href="contactus.html"   onclick="closeMob()" class="font-syne text-[clamp(1.7rem,8vw,3rem)] font-extrabold text-brand-light">Contact</a>
-    <a href="contactus.html"   onclick="closeMob()" class="mt-2 bg-brand-red text-white font-syne font-bold text-base px-10 py-3 rounded-xl hover:bg-brand-dark transition-colors">Get a Quote</a>
+  <div id="mobNav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <!-- Close button -->
+    <button class="mob-close-btn" onclick="closeMob()" aria-label="Close menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <a href="index.html"       class="mob-link" onclick="closeMob()">Home</a>
+    <div class="mob-divider"></div>
+    <a href="index.html#about" class="mob-link" onclick="closeMob()">About Us</a>
+    <div class="mob-divider"></div>
+    <a href="service.html"     class="mob-link" onclick="closeMob()">Services</a>
+    <div class="mob-divider"></div>
+    <a href="gallery.html"     class="mob-link" onclick="closeMob()">Gallery</a>
+    <div class="mob-divider"></div>
+    <a href="contactus.html"   class="mob-link active" onclick="closeMob()">Contact</a>
+    <a href="contactus.html"   class="mob-cta" onclick="closeMob()">Get a Quote</a>
   </div>
 
   <!-- ══════════════ NAV ══════════════ -->
@@ -246,9 +352,9 @@
     <a href="contactus.html" class="hidden lg:block bg-brand-red text-white font-syne font-bold text-[0.82rem] px-5 py-[9px] rounded-[9px] hover:bg-brand-dark transition-colors whitespace-nowrap flex-shrink-0">Get a Quote</a>
 
     <button id="hamBtn" onclick="toggleMob()" aria-label="Toggle menu" class="lg:hidden flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1">
-      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
-      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
-      <span class="ham-line block w-6 h-[2px] bg-white rounded-full transition-all duration-300"></span>
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full"></span>
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full"></span>
+      <span class="ham-line block w-6 h-[2px] bg-white rounded-full"></span>
     </button>
   </nav>
 
@@ -318,7 +424,6 @@
             </div>
           </div>
 
-          <!-- WhatsApp quick link inside info card -->
           <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
              target="_blank" rel="noopener noreferrer"
              class="mt-1 flex items-center gap-3 bg-[#25D366]/10 border border-[#25D366]/25 rounded-[10px] px-4 py-3 hover:bg-[#25D366]/18 hover:border-[#25D366]/45 transition-all group">
@@ -384,7 +489,6 @@
           </div>
           <h3 class="font-syne font-extrabold text-[clamp(1.25rem,4vw,1.7rem)] text-white mb-3">Message Sent!</h3>
           <p class="text-gray-400 text-[clamp(0.8rem,1.8vw,0.9rem)] leading-relaxed mb-5 max-w-[360px]">Thanks for reaching out. Our team will respond within 18 minutes during working hours.</p>
-          <!-- Also suggest WhatsApp on success -->
           <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
              target="_blank" rel="noopener noreferrer"
              class="inline-flex items-center gap-2 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] font-semibold text-[0.82rem] px-5 py-2.5 rounded-[9px] hover:bg-[#25D366]/20 transition-colors mb-4">
@@ -669,7 +773,6 @@
       </div>
     </div>
 
-    <!-- Footer WhatsApp strip -->
     <div class="max-w-[1280px] mx-auto px-[clamp(16px,5vw,64px)] pb-4">
       <a href="https://wa.me/2349059949644?text=Hello%20JayTech%2C%20I%27d%20like%20to%20enquire%20about%20your%20services."
          target="_blank" rel="noopener noreferrer"
@@ -703,31 +806,35 @@
     }, { passive: true });
 
     /* ── MOBILE MENU ── */
-    const mob = document.getElementById('mobNav');
+    const mob    = document.getElementById('mobNav');
     const hamBtn = document.getElementById('hamBtn');
-    const hamLines = hamBtn.querySelectorAll('.ham-line');
+
     function toggleMob() {
-      const o = mob.classList.toggle('hidden');
-      if (!o) {
-        mob.style.display = 'flex';
-        mob.classList.remove('hidden');
-        hamLines[0].style.transform = 'translateY(7px) rotate(45deg)';
-        hamLines[1].style.opacity = '0';
-        hamLines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
-        document.body.style.overflow = 'hidden';
-      } else {
-        closeMob();
-      }
+      const isOpen = mob.classList.contains('mob-open');
+      isOpen ? closeMob() : openMob();
     }
+
+    function openMob() {
+      mob.classList.add('mob-open');
+      hamBtn.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
     function closeMob() {
-      mob.classList.add('hidden');
-      mob.style.display = '';
-      hamLines[0].style.transform = '';
-      hamLines[1].style.opacity = '';
-      hamLines[2].style.transform = '';
+      mob.classList.remove('mob-open');
+      hamBtn.classList.remove('is-open');
       document.body.style.overflow = '';
     }
-    window.addEventListener('resize', () => { if (window.innerWidth >= 1024) closeMob(); }, { passive: true });
+
+    // Close on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) closeMob();
+    }, { passive: true });
+
+    // Close on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMob();
+    });
 
     /* ── SCROLL REVEAL ── */
     const obs = new IntersectionObserver(es => {
@@ -741,16 +848,16 @@
       inp.addEventListener('change', () => {
         const box = label.querySelector('.chk-box');
         if (inp.checked) {
-          box.style.background = '#dc2626';
-          box.style.borderColor = '#dc2626';
+          box.style.background   = '#dc2626';
+          box.style.borderColor  = '#dc2626';
           label.style.borderColor = 'rgba(220,38,38,0.38)';
-          label.style.background = 'rgba(220,38,38,0.06)';
+          label.style.background  = 'rgba(220,38,38,0.06)';
           label.querySelector('.chk-lbl').style.color = '#fff';
         } else {
-          box.style.background = '';
-          box.style.borderColor = '';
+          box.style.background   = '';
+          box.style.borderColor  = '';
           label.style.borderColor = '';
-          label.style.background = '';
+          label.style.background  = '';
           label.querySelector('.chk-lbl').style.color = '';
         }
       });
@@ -782,10 +889,10 @@
       el.textContent = ''; el.classList.add('hidden');
       document.querySelectorAll('.chk').forEach(label => {
         const box = label.querySelector('.chk-box');
-        box.style.background = '';
-        box.style.borderColor = '';
+        box.style.background   = '';
+        box.style.borderColor  = '';
         label.style.borderColor = '';
-        label.style.background = '';
+        label.style.background  = '';
         label.querySelector('.chk-lbl').style.color = '';
       });
     }
@@ -793,7 +900,7 @@
     /* ── FAQ ── */
     function tFaq(el) {
       const item = el.parentElement;
-      const was = item.classList.contains('open');
+      const was  = item.classList.contains('open');
       document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
       if (!was) item.classList.add('open');
     }
